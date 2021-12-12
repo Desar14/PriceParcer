@@ -4,8 +4,8 @@
     {
         public Guid Id { get; set; }
 
-        public virtual ProductFromSites Product { get; set; }
-        public Guid ProductId { get; set; }
+        public virtual ProductFromSites ProductFromSite { get; set; }
+        public Guid ProductFromSiteId { get; set; }
 
         public DateTime ParseDate { get; set; }
         public double FullPrice { get; set; }
