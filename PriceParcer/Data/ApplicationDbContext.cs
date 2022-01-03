@@ -9,8 +9,7 @@ namespace PriceParcer.Data
         public DbSet<MarketSite> MarketSites { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductFromSites> ProductsFromSites { get; set; }
-        public DbSet<ProductInfoAggregated> ProductsAggregations { get; set; }
-        public DbSet<ProductPrice> ProductPrices { get; set; }
+        public DbSet<ProductPrice> ProductPricesHistory { get; set; }
         public DbSet<UserReview> UserReviews { get; set; }
 
 
