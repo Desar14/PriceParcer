@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using PriceParcer.Data.Entities;
 
 namespace PriceParcer.Data
 {
-    public class UserReview
+    public class UserReview : BaseEntity
     {
-        public Guid Id { get; set; }
         public IdentityUser User { get; set; }
         public string UserId { get; set; }
         public Product Product { get; set; }

@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using PriceParcer.Data.Entities;
 
 namespace PriceParcer.Data
 {
-    public class ProductFromSites
+    public class ProductFromSites : BaseEntity
     {
-        public Guid Id { get; set; }
-
         public virtual Product product { get; set; }
         public Guid ProductId { get; set; }
 

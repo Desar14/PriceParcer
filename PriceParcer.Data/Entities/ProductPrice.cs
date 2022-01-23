@@ -1,9 +1,9 @@
-﻿namespace PriceParcer.Data
-{
-    public class ProductPrice
-    {
-        public Guid Id { get; set; }
+﻿using PriceParcer.Data.Entities;
 
+namespace PriceParcer.Data
+{
+    public class ProductPrice : BaseEntity
+    {
         public virtual ProductFromSites ProductFromSite { get; set; }
         public Guid ProductFromSiteId { get; set; }
 

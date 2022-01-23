@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using PriceParcer.Data
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace PriceParcer.Data
+namespace PriceParcer
 {
     public class ApplicationDbContext : IdentityDbContext
     {
