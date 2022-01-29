@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PriceParcer;
 
@@ -11,9 +12,10 @@ using PriceParcer;
 namespace PriceParcer.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220129193228_NullableTypes")]
+    partial class NullableTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -258,7 +260,7 @@ namespace PriceParcer.Data.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
-                    b.ToTable("MarketSites", (string)null);
+                    b.ToTable("MarketSites");
                 });
 
             modelBuilder.Entity("PriceParcer.Data.Product", b =>
@@ -311,7 +313,7 @@ namespace PriceParcer.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("PriceParcer.Data.ProductFromSites", b =>
@@ -349,7 +351,7 @@ namespace PriceParcer.Data.Migrations
 
                     b.HasIndex("SiteId");
 
-                    b.ToTable("ProductsFromSites", (string)null);
+                    b.ToTable("ProductsFromSites");
                 });
 
             modelBuilder.Entity("PriceParcer.Data.ProductPrice", b =>
@@ -381,7 +383,7 @@ namespace PriceParcer.Data.Migrations
 
                     b.HasIndex("ProductFromSiteId");
 
-                    b.ToTable("ProductPricesHistory", (string)null);
+                    b.ToTable("ProductPricesHistory");
                 });
 
             modelBuilder.Entity("PriceParcer.Data.UserReview", b =>
@@ -413,7 +415,7 @@ namespace PriceParcer.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserReviews", (string)null);
+                    b.ToTable("UserReviews");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

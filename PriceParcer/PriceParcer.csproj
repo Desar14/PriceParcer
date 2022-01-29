@@ -29,6 +29,7 @@
     <ProjectReference Include="..\PriceParcer.Core\PriceParcer.Core.csproj" />
     <ProjectReference Include="..\PriceParcer.DataAccess\PriceParcer.DataAccess.csproj" />
     <ProjectReference Include="..\PriceParcer.Data\PriceParcer.Data.csproj" />
+    <ProjectReference Include="..\PriceParcer.Domain\PriceParcer.Domain.csproj" />
   </ItemGroup>
 
 </Project>

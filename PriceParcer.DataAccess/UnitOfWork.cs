@@ -13,21 +13,31 @@ namespace PriceParcer.DataAccess
     {
 
         private readonly ApplicationDbContext _db;
+        private readonly IRepository<MarketSite> _marketSitesRepo;
+        private readonly IRepository<Product> _productRepo;
+        private readonly IRepository<ProductFromSites> _productFromSitesRepo;
+        private readonly IRepository<ProductPrice> _productPricesRepo;
+        private readonly IRepository<UserReview> _userReviewsRepo;
 
-        public UnitOfWork(ApplicationDbContext db)
+        public UnitOfWork(ApplicationDbContext db, IRepository<MarketSite> marketSitesRepo, IRepository<Product> productRepo, IRepository<ProductFromSites> productFromSitesRepo, IRepository<ProductPrice> productPricesRepo, IRepository<UserReview> userReviewsRepo)
         {
             _db = db;
+            _marketSitesRepo = marketSitesRepo;
+            _productRepo = productRepo;
+            _productFromSitesRepo = productFromSitesRepo;
+            _productPricesRepo = productPricesRepo;
+            _userReviewsRepo = userReviewsRepo;
         }
 
-        public IRepository<MarketSite> MarketSites => new Repository<MarketSite>(_db);
+        public IRepository<MarketSite> MarketSites => _marketSitesRepo;
 
-        public IRepository<Product> Products => new Repository<Product>(_db);
+        public IRepository<Product> Products => _productRepo;
 
-        public IRepository<ProductFromSites> ProductsFromSites => new Repository<ProductFromSites>(_db);
+        public IRepository<ProductFromSites> ProductsFromSites => _productFromSitesRepo;
 
-        public IRepository<ProductPrice> ProductPricesHistory => new Repository<ProductPrice>(_db);
+        public IRepository<ProductPrice> ProductPricesHistory => _productPricesRepo;
 
-        public IRepository<UserReview> UserReviews => new Repository<UserReview>(_db);
+        public IRepository<UserReview> UserReviews => _userReviewsRepo;
 
         public async Task<int> Commit()
         {

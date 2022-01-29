@@ -12,6 +12,7 @@ namespace PriceParcer.Mappers
             CreateMap<Product, ProductDTO>();
             CreateMap<Product, ProductItemListModel>();
             CreateMap<ProductDTO, Product>();
+            CreateMap<ProductDTO, ProductItemListModel>();
         }
     }
 }

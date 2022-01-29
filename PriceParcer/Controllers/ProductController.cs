@@ -23,7 +23,7 @@ namespace PriceParcer.Controllers
             var articles = (await _productService.GetAllProductsAsync())
                 .Select(product => _mapper.Map<ProductItemListModel>(product))
                 .OrderByDescending(product => product.Name).ToList();
-            return View();
+            return View(articles);
         }
 
         // GET: ProductController/Details/5

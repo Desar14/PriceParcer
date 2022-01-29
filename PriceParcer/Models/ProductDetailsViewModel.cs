@@ -1,14 +1,14 @@
-﻿using PriceParcer.Data.Entities;
-
-namespace PriceParcer.Data
+﻿namespace PriceParcer.Models
 {
-    public class Product : BaseEntity
+    public class ProductDetailsViewModel
     {
+        public Guid Id { get; set; }
+
         public string? Name { get; set; }
         public string? Category { get; set; }
         public string? Description { get; set; }
         public string? ImagePath { get; set; }
-        public byte[]? ImageData { get; set; }
+        public byte[] ImageData { get; set; }
         public bool UseExternalImage { get; set; }
 
         public bool Hidden { get; set; }
@@ -24,8 +24,6 @@ namespace PriceParcer.Data
 
         public float AverageScore { get; set; }
 
-        public virtual List<UserReview> Reviews { get; set; }
-        public virtual List<ProductFromSites> FromSites { get; set; }
-
+        //public List<>
     }
 }

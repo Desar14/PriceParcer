@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PriceParcer;
+using PriceParcer.Core;
+using PriceParcer.Core.Interfaces;
 using PriceParcer.Data;
+using PriceParcer.DataAccess;
+using PriceParcer.Domain;
 
 namespace PriceParcer
 {
@@ -23,23 +27,34 @@ namespace PriceParcer
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            builder.Services.AddScoped<IRepository<Product>, Repository<Product>>();
+            builder.Services.AddScoped<IRepository<MarketSite>, Repository<MarketSite>>();
+            builder.Services.AddScoped<IRepository<ProductFromSites>, Repository<ProductFromSites>>();
+            builder.Services.AddScoped<IRepository<ProductPrice>, Repository<ProductPrice>>();
+            builder.Services.AddScoped<IRepository<UserReview>, Repository<UserReview>>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IProductsService, ProductService>();
+            
+            
+           
+
             var app = builder.Build();
 
             //apply migrations on every startup
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                try
-                {
+                //try
+                //{
                     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                     db.Database.Migrate();
-                }
-                catch (Exception ex)
-                {
+                //}
+                //catch (Exception ex)
+                //{
                     //TODO not working now
                     //var logger = services.GetRequiredService<ILogger>();
                     //logger.LogError(ex, "An error occurred while migrating the database.");
-                }
+                //}
 
             }
 
