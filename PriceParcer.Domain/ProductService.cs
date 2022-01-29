@@ -20,5 +20,15 @@ namespace PriceParcer.Domain
             return (await _unitOfWork.Products.Get())
                 .Select(product => _mapper.Map<ProductDTO>(product));
         }
+
+        public async Task<ProductDTO> GetProductDetailsAsync(Guid id)
+        {
+            
+            var result = (await _unitOfWork.Products.Get(prod => prod.Id == id, null, prod => prod.FromSites, prod => prod.Reviews))
+                .FirstOrDefault();
+
+
+            return _mapper.Map<ProductDTO>(result);
+        }
     }
 }

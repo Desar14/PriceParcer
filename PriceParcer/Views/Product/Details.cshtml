@@ -1,0 +1,96 @@
+﻿@model PriceParcer.Models.ProductDetailsViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+<div class="container">
+  <div>
+    <h4>ProductDetailsViewModel</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Category)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.BestPriceNow)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.BestPriceNow)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.BestPriceOverall)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.BestPriceOverall)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AveragePriceNow)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AveragePriceNow)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AveragePriceOverall)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AveragePriceOverall)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CurrencyCode)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CurrencyCode)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AverageScore)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AverageScore)
+        </dd>
+    </dl>
+</div>
+<h5>Sites</h5>
+<ul class="list-group">
+    @foreach (var item in Model.marketSites)
+    {
+        <li class="list-group-item">@item.Name</li>
+    }
+</ul>
+
+<h5>Reviews</h5>
+<ul class="list-group">
+    @foreach (var item in Model.userReviews)
+    {
+        <li class="list-group-item">@item.UserName</li>
+    }
+</ul>
+
+<div>
+    @Html.ActionLink("Edit", "Edit", new {  id = Model.Id  }) |
+    <a asp-action="Index">Back to List</a>
+</div>
+</div>
+

@@ -20,16 +20,20 @@ namespace PriceParcer.Controllers
         // GET: ProductController
         public async Task<IActionResult> Index()
         {
-            var articles = (await _productService.GetAllProductsAsync())
+            var products = (await _productService.GetAllProductsAsync())
                 .Select(product => _mapper.Map<ProductItemListModel>(product))
                 .OrderByDescending(product => product.Name).ToList();
-            return View(articles);
+            return View(products);
         }
 
         // GET: ProductController/Details/5
-        public ActionResult Details(Guid id)
+        public async Task<IActionResult> Details(Guid id)
         {
-            return View();
+            var productDetailDTO = (await _productService.GetProductDetailsAsync(id));
+            
+            var model = _mapper.Map<ProductDetailsViewModel>(productDetailDTO);
+
+            return View(model);
         }
 
         // GET: ProductController/Create

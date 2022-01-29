@@ -10,5 +10,7 @@ namespace PriceParcer.Core.Interfaces
     public interface IProductsService
     {
         Task<IEnumerable<ProductDTO>> GetAllProductsAsync();
+        Task<ProductDTO> GetProductDetailsAsync(Guid id);
+        
     }
 }

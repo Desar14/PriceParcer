@@ -13,6 +13,17 @@ namespace PriceParcer.Mappers
             CreateMap<Product, ProductItemListModel>();
             CreateMap<ProductDTO, Product>();
             CreateMap<ProductDTO, ProductItemListModel>();
+
+            CreateMap<ProductDTO, ProductDetailsViewModel>();
+
+            CreateMap<MarketSite, MarketSiteInProductViewModel>();
+
+            CreateMap<UserReview, UserReviewInProductViewModel>();
+
+            CreateMap<UserReview, UserReviewInProductViewModel>()
+                .ForMember(dest => dest.UserName,
+                    opt => opt.MapFrom(src => src.User.UserName));
+
         }
     }
 }
