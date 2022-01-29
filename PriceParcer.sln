@@ -5,13 +5,15 @@ VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PriceParcer", "PriceParcer\PriceParcer.csproj", "{758C8BE1-D361-4678-B048-7EE7E2C5BF90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceParcer.Core", "PriceParcer.Core\PriceParcer.Core.csproj", "{FAD4B659-9004-44C9-AD78-832C156A7085}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PriceParcer.Core", "PriceParcer.Core\PriceParcer.Core.csproj", "{FAD4B659-9004-44C9-AD78-832C156A7085}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{489AC955-AAB5-4BE8-9A94-F14384F11566}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceParcer.Data", "PriceParcer.Data\PriceParcer.Data.csproj", "{1DFCCFFD-5453-4DBC-8DC8-1FA06F14528F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PriceParcer.Data", "PriceParcer.Data\PriceParcer.Data.csproj", "{1DFCCFFD-5453-4DBC-8DC8-1FA06F14528F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceParcer.DataAccess", "PriceParcer.DataAccess\PriceParcer.DataAccess.csproj", "{18F6042C-0E42-4793-B3BE-304FEA3839D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PriceParcer.DataAccess", "PriceParcer.DataAccess\PriceParcer.DataAccess.csproj", "{18F6042C-0E42-4793-B3BE-304FEA3839D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceParcer.Domain", "PriceParcer.Domain\PriceParcer.Domain.csproj", "{B0467755-5F54-451C-835F-197879F2139D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{18F6042C-0E42-4793-B3BE-304FEA3839D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18F6042C-0E42-4793-B3BE-304FEA3839D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18F6042C-0E42-4793-B3BE-304FEA3839D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0467755-5F54-451C-835F-197879F2139D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0467755-5F54-451C-835F-197879F2139D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0467755-5F54-451C-835F-197879F2139D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0467755-5F54-451C-835F-197879F2139D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

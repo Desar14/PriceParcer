@@ -12,7 +12,7 @@ namespace PriceParcer.Core.Interfaces
         IRepository<MarketSite> MarketSites { get; }
         IRepository<Product> Products { get; }  
         IRepository<ProductFromSites> ProductsFromSites { get; }
-        IRepository<ProductPrice> ProductPrice { get; }
+        IRepository<ProductPrice> ProductPricesHistory { get; }
         IRepository<UserReview> UserReviews { get; }
 
         Task<int> Commit();

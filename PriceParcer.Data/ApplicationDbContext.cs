@@ -1,4 +1,4 @@
-﻿using PriceParcer.Data
+﻿using PriceParcer.Data;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

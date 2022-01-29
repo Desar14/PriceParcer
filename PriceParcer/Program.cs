@@ -21,7 +21,27 @@ namespace PriceParcer
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             var app = builder.Build();
+
+            //apply migrations on every startup
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    db.Database.Migrate();
+                }
+                catch (Exception ex)
+                {
+                    //TODO not working now
+                    //var logger = services.GetRequiredService<ILogger>();
+                    //logger.LogError(ex, "An error occurred while migrating the database.");
+                }
+
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
