@@ -67,7 +67,7 @@ namespace PriceParcer.DataAccess
                 query = includes.Aggregate(query, (current, include) => current.Include(include));
             }
 
-
+            
             if (orderBy != null)
             {
                 return await orderBy(query).ToListAsync();

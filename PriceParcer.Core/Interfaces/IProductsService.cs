@@ -11,6 +11,12 @@ namespace PriceParcer.Core.Interfaces
     {
         Task<IEnumerable<ProductDTO>> GetAllProductsAsync();
         Task<ProductDTO> GetProductDetailsAsync(Guid id);
-        
+
+        Task<bool> AddProduct(ProductDTO product);
+
+        Task<bool> EditProduct(ProductDTO product);
+
+        Task<bool> DeleteProduct(Guid id);
+
     }
 }

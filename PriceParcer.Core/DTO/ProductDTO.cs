@@ -29,5 +29,8 @@ namespace PriceParcer.Core.DTO
         public string? CurrencyCode { get; set; }
 
         public float AverageScore { get; set; }
+
+        public List<UserReviewDTO> Reviews { get; set; }
+        public List<ProductFromSitesDTO> FromSites { get; set; }
     }
 }

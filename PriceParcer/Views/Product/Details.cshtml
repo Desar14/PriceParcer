@@ -89,8 +89,9 @@
 </ul>
 
 <div>
-    @Html.ActionLink("Edit", "Edit", new {  id = Model.Id  }) |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" asp-fragment="" class="btn btn-primary">Edit</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id" asp-fragment="" class="btn btn-primary">Delete</a>    
+    <a asp-action="Index" class="btn btn-primary">Back to List</a>
 </div>
 </div>
 

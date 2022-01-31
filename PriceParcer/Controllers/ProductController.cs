@@ -28,7 +28,7 @@ namespace PriceParcer.Controllers
 
         // GET: ProductController/Details/5
         public async Task<IActionResult> Details(Guid id)
-        {
+        {   
             var productDetailDTO = (await _productService.GetProductDetailsAsync(id));
             
             var model = _mapper.Map<ProductDetailsViewModel>(productDetailDTO);
@@ -45,58 +45,74 @@ namespace PriceParcer.Controllers
         // POST: ProductController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create(CreateEditProductViewModel model)
         {
+            model.Id = new Guid();
+            var productToAdd = _mapper.Map<Core.DTO.ProductDTO>(model);
             try
             {
+                await _productService.AddProduct(productToAdd);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(model);
             }
         }
 
         // GET: ProductController/Edit/5
-        public ActionResult Edit(Guid id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            return View();
+
+            var productDetailDTO = (await _productService.GetProductDetailsAsync(id));
+
+            var model = _mapper.Map<CreateEditProductViewModel>(productDetailDTO);
+
+            return View(model);
         }
 
         // POST: ProductController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Guid id, IFormCollection collection)
+        public async Task<IActionResult> Edit(CreateEditProductViewModel model)
         {
-            try
-            {
+            var productToAdd = _mapper.Map<Core.DTO.ProductDTO>(model);
+            //try
+            //{
+                await _productService.EditProduct(productToAdd);
                 return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            //}
+            //catch
+            //{
+            //    return View(model);
+            //}
         }
 
         // GET: ProductController/Delete/5
-        public ActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            return View();
+
+            var productDetailDTO = (await _productService.GetProductDetailsAsync(id));
+
+            var model = _mapper.Map<ProductDeleteViewModel>(productDetailDTO);
+
+            return View(model);
         }
 
         // POST: ProductController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(Guid id, IFormCollection collection)
+        public async Task<IActionResult> Delete(ProductDeleteViewModel model)
         {
-            try
-            {
+            //try
+            //{
+                await _productService.DeleteProduct(model.Id);
                 return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            //}
+            //catch
+            //{
+            //    return View(model);
+            //}
         }
     }
 }

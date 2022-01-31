@@ -12,18 +12,41 @@ namespace PriceParcer.Mappers
             CreateMap<Product, ProductDTO>();
             CreateMap<Product, ProductItemListModel>();
             CreateMap<ProductDTO, Product>();
-            CreateMap<ProductDTO, ProductItemListModel>();
+            CreateMap<ProductDTO, ProductItemListModel>();              
 
-            CreateMap<ProductDTO, ProductDetailsViewModel>();
+            CreateMap<ProductFromSitesDTO, MarketSiteInProductViewModel>();
+            CreateMap<ProductFromSitesDTO, MarketSiteInProductViewModel>()
+                .ForMember(dest => dest.Name,
+                    opt => opt.MapFrom(src => src.Site.Name));
 
             CreateMap<MarketSite, MarketSiteInProductViewModel>();
 
             CreateMap<UserReview, UserReviewInProductViewModel>();
+            CreateMap<UserReview, UserReviewDTO>();
+            CreateMap<UserReviewDTO, UserReviewInProductViewModel>();
+
+
+            CreateMap<MarketSite, MarketSiteDTO>();
+            CreateMap<MarketSiteDTO, MarketSiteInProductViewModel>();
 
             CreateMap<UserReview, UserReviewInProductViewModel>()
                 .ForMember(dest => dest.UserName,
                     opt => opt.MapFrom(src => src.User.UserName));
 
+            CreateMap<ProductFromSites, ProductFromSitesDTO>();
+
+            CreateMap<ProductDTO, ProductDetailsViewModel>();
+            CreateMap<ProductDTO, ProductDetailsViewModel>()
+                .ForMember(dest => dest.marketSites,
+                    opt => opt.MapFrom(src => src.FromSites))
+                .ForMember(dest => dest.userReviews,
+                    opt => opt.MapFrom(src => src.Reviews));
+
+            CreateMap<CreateEditProductViewModel, ProductDTO>();
+            CreateMap<ProductDTO, CreateEditProductViewModel>();
+
+            CreateMap<ProductDeleteViewModel, ProductDTO>();
+            CreateMap<ProductDTO, ProductDeleteViewModel>();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PriceParcer.Core.DTO;
 using PriceParcer.Core.Interfaces;
+using PriceParcer.Data;
 
 namespace PriceParcer.Domain
 {
@@ -24,11 +25,46 @@ namespace PriceParcer.Domain
         public async Task<ProductDTO> GetProductDetailsAsync(Guid id)
         {
             
-            var result = (await _unitOfWork.Products.Get(prod => prod.Id == id, null, prod => prod.FromSites, prod => prod.Reviews))
-                .FirstOrDefault();
+            var result = (await _unitOfWork.Products.GetByID(id));
 
+            if (result != null)
+            {
+                result.FromSites = new(await _unitOfWork.ProductsFromSites.Get(prod => prod.ProductId == id, null, prod => prod.Site));
+                result.Reviews = new(await _unitOfWork.UserReviews.Get(prod => prod.ProductId == id, null, prod => prod.User));
+            }                       
 
             return _mapper.Map<ProductDTO>(result);
+        }
+
+        async Task<bool> IProductsService.AddProduct(ProductDTO product)
+        {
+            var entity = _mapper.Map<Product>(product);
+
+            await _unitOfWork.Products.Add(entity);
+
+            var result = await _unitOfWork.Commit();
+
+            return result > 0;
+        }
+
+        async Task<bool> IProductsService.DeleteProduct(Guid id)
+        {
+            await _unitOfWork.Products.Delete(id);
+
+            var result = await _unitOfWork.Commit();
+            
+            return result > 0;
+        }
+
+        async Task<bool> IProductsService.EditProduct(ProductDTO product)
+        {
+            var entity = _mapper.Map<Product>(product);
+
+            await _unitOfWork.Products.Update(entity);
+
+            var result = await _unitOfWork.Commit();
+
+            return result > 0;
         }
     }
 }
