@@ -1,4 +1,5 @@
-﻿using PriceParcer.Data;
+﻿using Microsoft.AspNetCore.Identity;
+using PriceParcer.Data;
 using PriceParcer.Data.Entities;
 using System;
 using System.Collections.Generic;

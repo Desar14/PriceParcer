@@ -34,9 +34,10 @@ namespace PriceParcer
             builder.Services.AddScoped<IRepository<UserReview>, Repository<UserReview>>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductsService, ProductService>();
-            
-            
-           
+            builder.Services.AddScoped<IMarketSitesService, MarketSitesService>();
+
+
+
 
             var app = builder.Build();
 

@@ -21,12 +21,20 @@ namespace PriceParcer.Mappers
 
             CreateMap<MarketSite, MarketSiteInProductViewModel>();
 
+            CreateMap<MarketSiteDTO, MarketSiteListItemViewModel>()
+                .ForMember(dest => dest.CreatedByUserName,
+                    opt => opt.MapFrom(src => src.CreatedByUser.UserName));
+            CreateMap<MarketSiteDTO, MarketSiteDetailsViewModel>();
+            CreateMap<MarketSiteDTO, MarketSitesCreateEditViewModel>();
+            CreateMap<MarketSitesCreateEditViewModel, MarketSiteDTO>();
+
             CreateMap<UserReview, UserReviewInProductViewModel>();
             CreateMap<UserReview, UserReviewDTO>();
             CreateMap<UserReviewDTO, UserReviewInProductViewModel>();
 
 
             CreateMap<MarketSite, MarketSiteDTO>();
+            CreateMap<MarketSiteDTO, MarketSite>();
             CreateMap<MarketSiteDTO, MarketSiteInProductViewModel>();
 
             CreateMap<UserReview, UserReviewInProductViewModel>()

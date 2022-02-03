@@ -17,7 +17,7 @@ namespace PriceParcer.Data
         public string? ParseSchedule { get; set; }
 
         public DateTime Created { get; set; }
-        public IdentityUser? CreatedByUser { get; set; }
+        public virtual IdentityUser? CreatedByUser { get; set; }
         public string? CreatedByUserId { get; set; }
 
         public virtual List<ProductPrice> Prices { get; set; }

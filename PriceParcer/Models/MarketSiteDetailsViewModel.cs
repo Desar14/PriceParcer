@@ -1,13 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PriceParcer.Core.DTO
+namespace PriceParcer.Models
 {
-    public class MarketSiteDTO
+    public class MarketSiteDetailsViewModel
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }
@@ -19,8 +14,6 @@ namespace PriceParcer.Core.DTO
         public bool IsAvailable { get; set; }
         public DateTime Created { get; set; }
         public IdentityUser? CreatedByUser { get; set; }
-
-        public string? CreatedByUserId { get; set; }
-
+        
     }
 }

@@ -53,7 +53,7 @@ namespace PriceParcer.Domain
 
         async Task<IEnumerable<MarketSiteDTO>> IMarketSitesService.GetAllSitesAsync()
         {
-            return (await _unitOfWork.MarketSites.Get())
+            return (await _unitOfWork.MarketSites.Get(includes: site => site.CreatedByUser))
                 .Select(product => _mapper.Map<MarketSiteDTO>(product));
         }
 
