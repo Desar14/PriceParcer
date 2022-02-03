@@ -26,6 +26,7 @@ namespace PriceParcer.Mappers
                     opt => opt.MapFrom(src => src.CreatedByUser.UserName));
             CreateMap<MarketSiteDTO, MarketSiteDetailsViewModel>();
             CreateMap<MarketSiteDTO, MarketSitesCreateEditViewModel>();
+            CreateMap<MarketSiteDTO, MarketSiteDeleteViewModel>();
             CreateMap<MarketSitesCreateEditViewModel, MarketSiteDTO>();
 
             CreateMap<UserReview, UserReviewInProductViewModel>();
