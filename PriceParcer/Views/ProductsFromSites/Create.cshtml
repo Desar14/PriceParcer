@@ -1,4 +1,4 @@
-﻿@model PriceParcer.Models.MarketSiteCreateEditViewModel
+﻿@model PriceParcer.Models.ProductFromSite.ProductFromSiteCreateEditViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -6,7 +6,7 @@
 
 <h1>Create</h1>
 
-<h4>MarketSitesCreateEditViewModel</h4>
+<h4>ProductFromSiteCreateEditViewModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -18,34 +18,29 @@
                 <span asp-validation-for="Id" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label class="col-sm-2 col-form-label" asp-for="Product"></label>
+                <select asp-for="ProductId" asp-items="@Model.ProductsList"></select>
+                <span asp-validation-for="ProductId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AuthType" class="control-label"></label>
-                <input asp-for="AuthType" class="form-control" />
-                <span asp-validation-for="AuthType" class="text-danger"></span>
+                <label class="col-sm-2 col-form-label" asp-for="Site"></label>
+                <select asp-for="SiteId" asp-items="@Model.SitesList"></select>
+                <span asp-validation-for="SiteId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SiteLogin" class="control-label"></label>
-                <input asp-for="SiteLogin" class="form-control" />
-                <span asp-validation-for="SiteLogin" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SitePassword" class="control-label"></label>
-                <input asp-for="SitePassword" class="form-control" />
-                <span asp-validation-for="SitePassword" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ParseType" class="control-label"></label>
-                <input asp-for="ParseType" class="form-control" />
-                <span asp-validation-for="ParseType" class="text-danger"></span>
+                <label asp-for="Path" class="control-label"></label>
+                <input asp-for="Path" class="form-control" />
+                <span asp-validation-for="Path" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsAvailable" /> @Html.DisplayNameFor(model => model.IsAvailable)
+                    <input class="form-check-input" asp-for="DoNotParse" /> @Html.DisplayNameFor(model => model.DoNotParse)
                 </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="ParseSchedule" class="control-label"></label>
+                <input asp-for="ParseSchedule" class="form-control" />
+                <span asp-validation-for="ParseSchedule" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Created" class="control-label"></label>

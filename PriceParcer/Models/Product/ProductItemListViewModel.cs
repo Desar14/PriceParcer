@@ -1,6 +1,6 @@
 ﻿namespace PriceParcer.Models
 {
-    public class ProductItemListModel
+    public class ProductItemListViewModel
     {        
 
         public Guid Id { get; set; }
@@ -9,7 +9,7 @@
         public double BestPriceNow { get; set; }
         public float AverageScore { get; set; }
 
-        public ProductItemListModel()
+        public ProductItemListViewModel()
         {
             Name = "";
             Category = "";

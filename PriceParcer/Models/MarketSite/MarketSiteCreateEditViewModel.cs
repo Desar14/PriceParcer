@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace PriceParcer.Models
 {
-    public class MarketSitesCreateEditViewModel
+    public class MarketSiteCreateEditViewModel
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }

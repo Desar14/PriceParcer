@@ -43,16 +43,12 @@ namespace PriceParcer.Controllers
         // GET: MarketSitesController/Create
         public async Task<IActionResult> Create()
         {
-            var model = new MarketSitesCreateEditViewModel
+            var model = new MarketSiteCreateEditViewModel
             {
                 Id = Guid.NewGuid(),
                 Created = DateTime.Now,
                 IsAvailable = true,
-                UsersList = _userManager.Users.Select(a => new SelectListItem()
-                {
-                    Value = a.Id.ToString(),
-                    Text = a.UserName
-                }).ToList()
+                UsersList = _userManager.Users.Select(product => _mapper.Map<SelectListItem>(product)).ToList()
             };
 
             return View(model);
@@ -61,7 +57,7 @@ namespace PriceParcer.Controllers
         // POST: MarketSitesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(MarketSitesCreateEditViewModel model)
+        public async Task<IActionResult> Create(MarketSiteCreateEditViewModel model)
         {
 
             var siteToAdd = _mapper.Map<Core.DTO.MarketSiteDTO>(model);
@@ -71,9 +67,10 @@ namespace PriceParcer.Controllers
                 await _marketService.AddSite(siteToAdd);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", ex.Message);
+                return View(model);
             }
         }
 
@@ -83,14 +80,9 @@ namespace PriceParcer.Controllers
 
             var siteDetailDTO = (await _marketService.GetSiteDetailsAsync(id));
 
-            var model = _mapper.Map<MarketSitesCreateEditViewModel>(siteDetailDTO);
+            var model = _mapper.Map<MarketSiteCreateEditViewModel>(siteDetailDTO);
 
-            model.UsersList = _userManager.Users.Select(a => new SelectListItem()
-            {
-                Value = a.Id.ToString(),
-                Text = a.UserName,
-                Selected = model.CreatedByUserId == a.Id
-            }).ToList();
+            model.UsersList = _userManager.Users.Select(product => _mapper.Map<SelectListItem>(product)).ToList();
 
             return View(model);
 
@@ -99,20 +91,21 @@ namespace PriceParcer.Controllers
         // POST: MarketSitesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(MarketSitesCreateEditViewModel model)
+        public async Task<IActionResult> Edit(MarketSiteCreateEditViewModel model)
         {
 
             var siteToAdd = _mapper.Map<Core.DTO.MarketSiteDTO>(model);
 
-            //try
-            //{
+            try
+            {
                 await _marketService.EditSite(siteToAdd);
                 return RedirectToAction(nameof(Index));
-            //}
-            //catch
-            //{
-            //    return View();
-            //}
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(model);
+            }
         }
 
         // GET: MarketSitesController/Delete/5
@@ -136,9 +129,10 @@ namespace PriceParcer.Controllers
                 await _marketService.DeleteSite(model.Id);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", ex.Message);
+                return View(model);
             }
         }
     }

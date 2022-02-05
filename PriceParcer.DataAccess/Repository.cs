@@ -78,9 +78,17 @@ namespace PriceParcer.DataAccess
             }
         }
 
-        public virtual async Task<T?> GetByID(object id)
+        public virtual async Task<T?> GetByID(object id, params Expression<Func<T, object>>[] includes)
         {
-            return await _dbSet.AsNoTracking()
+            
+            var query = _dbSet.AsNoTracking();
+
+            if (includes.Any())
+            {
+                query = includes.Aggregate(query, (current, include) => current.Include(include));
+            }
+
+            return await query
                 .FirstOrDefaultAsync(entity => entity.Id.Equals(id));
         }
 

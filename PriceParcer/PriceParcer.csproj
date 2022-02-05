@@ -22,10 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Entities\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\PriceParcer.Core\PriceParcer.Core.csproj" />
     <ProjectReference Include="..\PriceParcer.DataAccess\PriceParcer.DataAccess.csproj" />
     <ProjectReference Include="..\PriceParcer.Data\PriceParcer.Data.csproj" />

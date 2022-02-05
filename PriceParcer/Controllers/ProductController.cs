@@ -21,7 +21,7 @@ namespace PriceParcer.Controllers
         public async Task<IActionResult> Index()
         {
             var products = (await _productService.GetAllProductsAsync())
-                .Select(product => _mapper.Map<ProductItemListModel>(product))
+                .Select(product => _mapper.Map<ProductItemListViewModel>(product))
                 .OrderByDescending(product => product.Name).ToList();
             return View(products);
         }
@@ -45,7 +45,7 @@ namespace PriceParcer.Controllers
         // POST: ProductController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateEditProductViewModel model)
+        public async Task<IActionResult> Create(ProductCreateEditViewModel model)
         {
             model.Id = new Guid();
             var productToAdd = _mapper.Map<Core.DTO.ProductDTO>(model);
@@ -54,8 +54,9 @@ namespace PriceParcer.Controllers
                 await _productService.AddProduct(productToAdd);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                ModelState.AddModelError("", ex.Message);
                 return View(model);
             }
         }
@@ -66,7 +67,7 @@ namespace PriceParcer.Controllers
 
             var productDetailDTO = (await _productService.GetProductDetailsAsync(id));
 
-            var model = _mapper.Map<CreateEditProductViewModel>(productDetailDTO);
+            var model = _mapper.Map<ProductCreateEditViewModel>(productDetailDTO);
 
             return View(model);
         }
@@ -74,18 +75,19 @@ namespace PriceParcer.Controllers
         // POST: ProductController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(CreateEditProductViewModel model)
+        public async Task<IActionResult> Edit(ProductCreateEditViewModel model)
         {
             var productToAdd = _mapper.Map<Core.DTO.ProductDTO>(model);
-            //try
-            //{
+            try
+            {
                 await _productService.EditProduct(productToAdd);
                 return RedirectToAction(nameof(Index));
-            //}
-            //catch
-            //{
-            //    return View(model);
-            //}
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(model);
+            }
         }
 
         // GET: ProductController/Delete/5
@@ -104,15 +106,16 @@ namespace PriceParcer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(ProductDeleteViewModel model)
         {
-            //try
-            //{
+            try
+            {
                 await _productService.DeleteProduct(model.Id);
                 return RedirectToAction(nameof(Index));
-            //}
-            //catch
-            //{
-            //    return View(model);
-            //}
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(model);
+            }
         }
     }
 }

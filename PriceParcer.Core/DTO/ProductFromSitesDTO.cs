@@ -11,17 +11,20 @@ namespace PriceParcer.Core.DTO
     {
         public Guid Id { get; set; }
 
-        public ProductDTO Product { get; set; }       
+        public ProductDTO Product { get; set; }
+        public Guid ProductId { get; set; }
 
         public  MarketSiteDTO Site { get; set; }
-        
+        public Guid SiteId { get; set; }
+
         public string? Path { get; set; }
         public bool DoNotParse { get; set; }
 
         public string? ParseSchedule { get; set; }
 
         public DateTime Created { get; set; }
-        public IdentityUser? CreatedByUser { get; set; }       
+        public IdentityUser? CreatedByUser { get; set; }
+        public string? CreatedByUserId { get; set; }
 
         //public virtual List<ProductPrice> Prices { get; set; }
 

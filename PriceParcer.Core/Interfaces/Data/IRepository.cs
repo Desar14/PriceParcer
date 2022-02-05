@@ -20,7 +20,7 @@ namespace PriceParcer.Core
             Expression<Func<TEntity, bool>>? filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             params Expression<Func<TEntity, object>>[] includes);
-        public Task<TEntity?> GetByID(object id);
+        public Task<TEntity?> GetByID(object id, params Expression<Func<TEntity, object>>[] includes);
         public Task<IEnumerable<TEntity>> GetWithRawSql(string query, params object[] parameters);
 
         public Task<TEntity?> FindBy(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes);

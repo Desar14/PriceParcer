@@ -1,6 +1,6 @@
 ﻿namespace PriceParcer.Models
 {
-    public class CreateEditProductViewModel
+    public class ProductCreateEditViewModel
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }
