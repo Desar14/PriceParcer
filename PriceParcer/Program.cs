@@ -36,6 +36,7 @@ namespace PriceParcer
             builder.Services.AddScoped<IProductsService, ProductService>();
             builder.Services.AddScoped<IMarketSitesService, MarketSitesService>();
             builder.Services.AddScoped<IProductsFromSitesService, ProductFromSitesService>();
+            builder.Services.AddScoped<IUserReviewsService, UserReviewsService>();
 
 
 
