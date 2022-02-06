@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PriceParcer.Core.Interfaces;
+using PriceParcer.Models;
 using PriceParcer.Models.UserReview;
 
 namespace PriceParcer.Controllers
@@ -69,6 +70,41 @@ namespace PriceParcer.Controllers
             {
                 await _reviewsService.AddAsync(recordToAdd);
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(model);
+            }
+        }
+
+        // GET: UserReviewsController/Create
+        public async Task<IActionResult> CreateFromProduct(Guid productId)
+        {
+            var model = new UserReviewCreateEditViewModel
+            {
+                Id = Guid.NewGuid(),
+                ReviewDate = DateTime.Now,
+                Hidden = false,
+                UsersList = _userManager.Users.Select(product => _mapper.Map<SelectListItem>(product)).ToList(),
+                ProductId = productId,
+                Product = _mapper.Map<ProductItemListViewModel>(await _productService.GetProductDetailsAsync(productId))
+            };
+
+            return View(model);
+        }
+
+        // POST: UserReviewsController/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateFromProduct(UserReviewCreateEditViewModel model)
+        {
+            var recordToAdd = _mapper.Map<Core.DTO.UserReviewDTO>(model);
+
+            try
+            {
+                await _reviewsService.AddAsync(recordToAdd);
+                return RedirectToAction("Details","Product", new { id = recordToAdd.ProductId });
             }
             catch (Exception ex)
             {

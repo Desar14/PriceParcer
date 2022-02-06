@@ -1,0 +1,54 @@
+﻿@model PriceParcer.Models.UserReview.UserReviewCreateEditViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>UserReviewCreateEditViewModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateFromProduct">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Id" type="hidden" />
+            <input asp-for="ProductId" type="hidden" />
+            <input asp-for="Hidden" type="hidden" />
+            <input asp-for="ReviewDate" type="hidden" />
+            <div class="form-group">
+                <label class="col-sm-2 col-form-label" asp-for="User"></label>
+                <select asp-for="UserId" asp-items="@Model.UsersList"></select>
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ReviewTitle" class="form-label"></label>
+                <input asp-for="ReviewTitle" class="form-control" placeholder="Title of your review">
+                <span asp-validation-for="ReviewTitle" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ReviewText" class="form-label"></label>
+                <textarea  asp-for="ReviewText" class="form-control" style="height: 100px"></textarea>
+                <span asp-validation-for="ReviewText" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ReviewScore" class="control-label"></label>
+                <input asp-for="ReviewScore" type="range" class="form-range" min="0" max="5"/>
+                <span asp-validation-for="ReviewScore" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ReviewDate" class="control-label"></label>
+                <input asp-for="ReviewDate" class="form-control" />
+                <span asp-validation-for="ReviewDate" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Details" asp-controller="Product" asp-route-id="@Model.ProductId">Back to Product</a>
+</div>
+
