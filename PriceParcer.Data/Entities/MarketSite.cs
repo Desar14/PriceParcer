@@ -9,7 +9,9 @@ namespace PriceParcer.Data
         public string? AuthType { get; set; }
         public string? SiteLogin { get; set; }
         public string? SitePassword { get; set; }        
-        public string? ParseType { get; set; }
+        public ParseTypes? ParseType { get; set; }
+        public string? ParsePricePath { get; set; }
+        public string? ParseCurrencyPath { get; set; }
 
         public bool IsAvailable { get; set; }
         public DateTime Created { get; set; }
@@ -18,5 +20,11 @@ namespace PriceParcer.Data
 
         public virtual List<ProductFromSites>? Products { get; set; }
 
+    }
+
+    public enum ParseTypes
+    {
+        Xpath,
+        Other
     }
 }

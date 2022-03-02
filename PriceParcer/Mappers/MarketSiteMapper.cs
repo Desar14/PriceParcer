@@ -29,6 +29,12 @@ namespace PriceParcer.Mappers
                     opt => opt.MapFrom(src => src.Id));
 
             CreateMap<MarketSiteCreateEditViewModel, MarketSiteDTO>();
+
+            CreateMap<ParseTypes, SelectListItem>()
+                .ForMember(dest => dest.Text,
+                    opt => opt.MapFrom(src => src.ToString()))
+                .ForMember(dest => dest.Value,
+                    opt => opt.MapFrom(src => ((int)src)));
         }
     }
 }

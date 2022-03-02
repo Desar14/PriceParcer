@@ -17,14 +17,16 @@ namespace PriceParcer.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IMarketSitesService _marketSiteService;
         private readonly IProductsService _productService;
+        private readonly IProductPricesService _productPricesService;
 
-        public ProductsFromSitesController(IProductsFromSitesService productsFromSitesService, IMapper mapper, UserManager<IdentityUser> userManager, IMarketSitesService marketService, IProductsService productService)
+        public ProductsFromSitesController(IProductsFromSitesService productsFromSitesService, IMapper mapper, UserManager<IdentityUser> userManager, IMarketSitesService marketService, IProductsService productService, IProductPricesService productPricesService)
         {
             _productsFromSitesService = productsFromSitesService;
             _mapper = mapper;
             _userManager = userManager;
             _marketSiteService = marketService;
             _productService = productService;
+            _productPricesService = productPricesService;
         }
 
         // GET: ProductsFromSitesController
@@ -143,6 +145,23 @@ namespace PriceParcer.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
                 return View(model);
+            }
+        }
+
+        public async Task<IActionResult> ParsePrice(Guid id)
+        {
+            try
+            {        
+                var dto = await _productPricesService.ParseProductPriceAsync(id);
+
+                await _productPricesService.AddProductPriceAsync(dto);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View();
             }
         }
     }

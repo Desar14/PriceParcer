@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using PriceParcer.Data;
 
 namespace PriceParcer.Models
 {
@@ -10,7 +11,9 @@ namespace PriceParcer.Models
         public string? AuthType { get; set; }
         public string? SiteLogin { get; set; }
         public string? SitePassword { get; set; }
-        public string? ParseType { get; set; }
+        public ParseTypes? ParseType { get; set; }
+        public string? ParsePricePath { get; set; }
+        public string? ParseCurrencyPath { get; set; }
 
         public bool IsAvailable { get; set; }
         public DateTime Created { get; set; }
@@ -18,5 +21,7 @@ namespace PriceParcer.Models
         public string? CreatedByUserId { get; set; }
 
         public List<SelectListItem> UsersList { get; set; }
+
+        public List<SelectListItem> ParseTypesList { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using PriceParcer.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +15,9 @@ namespace PriceParcer.Core.DTO
         public string? AuthType { get; set; }
         public string? SiteLogin { get; set; }
         public string? SitePassword { get; set; }
-        public string? ParseType { get; set; }
-
+        public ParseTypes? ParseType { get; set; }
+        public string? ParsePricePath { get; set; }
+        public string? ParseCurrencyPath { get; set; }
         public bool IsAvailable { get; set; }
         public DateTime Created { get; set; }
         public IdentityUser? CreatedByUser { get; set; }

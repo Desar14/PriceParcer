@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PriceParcer.Core.Interfaces;
+using PriceParcer.Data;
 using PriceParcer.Models;
 
 namespace PriceParcer.Controllers
@@ -48,7 +49,8 @@ namespace PriceParcer.Controllers
                 Id = Guid.NewGuid(),
                 Created = DateTime.Now,
                 IsAvailable = true,
-                UsersList = _userManager.Users.Select(product => _mapper.Map<SelectListItem>(product)).ToList()
+                UsersList = _userManager.Users.Select(product => _mapper.Map<SelectListItem>(product)).ToList(),
+                ParseTypesList = Enum.GetValues(typeof(ParseTypes)).Cast<ParseTypes>().Select(item => _mapper.Map<SelectListItem>(item)).ToList()
             };
 
             return View(model);
@@ -82,7 +84,10 @@ namespace PriceParcer.Controllers
 
             var model = _mapper.Map<MarketSiteCreateEditViewModel>(siteDetailDTO);
 
-            model.UsersList = _userManager.Users.Select(product => _mapper.Map<SelectListItem>(product)).ToList();
+            model.UsersList = _userManager.Users.ToList()
+                .Select(product => _mapper.Map<IdentityUser, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.CreatedByUserId))).ToList();
+            model.ParseTypesList = Enum.GetValues(typeof(ParseTypes)).Cast<ParseTypes>()
+                .Select(item => _mapper.Map<ParseTypes, SelectListItem>(item, opt => opt.AfterMap((src, dest) => dest.Selected = src == model.ParseType))).ToList();
 
             return View(model);
 
