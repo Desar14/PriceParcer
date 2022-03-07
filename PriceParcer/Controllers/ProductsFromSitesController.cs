@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PriceParcer.Core.Interfaces;
 using PriceParcer.Models.ProductFromSite;
+using PriceParcer.Models.ProductPrice;
 
 namespace PriceParcer.Controllers
 {
@@ -42,8 +43,10 @@ namespace PriceParcer.Controllers
         public async Task<IActionResult> Details(Guid id)
         {
             var productDetailDTO = (await _productsFromSitesService.GetDetailsAsync(id));
-
+            var prices = (await _productPricesService.GetAllProductPricesAsync(id)).Select(priceItem => _mapper.Map<ProductPriceItemListViewModel>(priceItem)).OrderByDescending(price => price.ParseDate).ToList();
+            
             var model = _mapper.Map<ProductFromSiteDetailsViewModel>(productDetailDTO);
+            model.productPrices = prices;
 
             return View(model);
         }
@@ -156,12 +159,12 @@ namespace PriceParcer.Controllers
 
                 await _productPricesService.AddProductPriceAsync(dto);
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = id });
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                return View();
+                return RedirectToAction(nameof(Edit), new { id = id });
             }
         }
     }

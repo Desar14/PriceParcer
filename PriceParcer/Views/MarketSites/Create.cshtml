@@ -42,15 +42,25 @@
                 <select asp-for="ParseType" asp-items="@Model.ParseTypesList" class="form-control" />
                 <span asp-validation-for="ParseType" class="text-danger"></span>
             </div>
-             <div class="form-group">
+            <div class="form-group">
                 <label asp-for="ParsePricePath" class="control-label"></label>
                 <input asp-for="ParsePricePath" class="form-control" />
                 <span asp-validation-for="ParsePricePath" class="text-danger"></span>
             </div>
-             <div class="form-group">
+            <div class="form-group">
                 <label asp-for="ParseCurrencyPath" class="control-label"></label>
                 <input asp-for="ParseCurrencyPath" class="form-control" />
                 <span asp-validation-for="ParseCurrencyPath" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ParsePriceAttributeName" class="control-label"></label>
+                <input asp-for="ParsePriceAttributeName" class="form-control" />
+                <span asp-validation-for="ParsePriceAttributeName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ParseCurrencyAttributeName" class="control-label"></label>
+                <input asp-for="ParseCurrencyAttributeName" class="form-control" />
+                <span asp-validation-for="ParseCurrencyAttributeName" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">

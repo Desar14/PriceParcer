@@ -1,4 +1,6 @@
-﻿namespace PriceParcer.Models.ProductFromSite
+﻿using PriceParcer.Models.ProductPrice;
+
+namespace PriceParcer.Models.ProductFromSite
 {
     public class ProductFromSiteDetailsViewModel
     {
@@ -10,5 +12,7 @@
         public string? ParseSchedule { get; set; }
         public DateTime Created { get; set; }
         public string? CreatedByUserName { get; set; }
+
+        public List<ProductPriceItemListViewModel> productPrices { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using PriceParcer.Core.DTO;
 using PriceParcer.Data;
 using PriceParcer.Models;
+using PriceParcer.Models.ProductPrice;
 
 namespace PriceParcer.Mappers
 {
@@ -14,8 +15,8 @@ namespace PriceParcer.Mappers
 
             CreateMap<ProductPriceDTO, ProductPrice>();
 
+            CreateMap<ProductPriceDTO, ProductPriceItemListViewModel>();
 
-            
         }
     }
 }

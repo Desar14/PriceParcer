@@ -52,6 +52,16 @@
                 <input asp-for="ParseCurrencyPath" class="form-control" />
                 <span asp-validation-for="ParseCurrencyPath" class="text-danger"></span>
             </div>
+             <div class="form-group">
+                <label asp-for="ParsePriceAttributeName" class="control-label"></label>
+                <input asp-for="ParsePriceAttributeName" class="form-control" />
+                <span asp-validation-for="ParsePriceAttributeName" class="text-danger"></span>
+            </div>
+             <div class="form-group">
+                <label asp-for="ParseCurrencyAttributeName" class="control-label"></label>
+                <input asp-for="ParseCurrencyAttributeName" class="form-control" />
+                <span asp-validation-for="ParseCurrencyAttributeName" class="text-danger"></span>
+            </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsAvailable" /> @Html.DisplayNameFor(model => model.IsAvailable)

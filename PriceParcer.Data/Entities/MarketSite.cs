@@ -12,6 +12,8 @@ namespace PriceParcer.Data
         public ParseTypes? ParseType { get; set; }
         public string? ParsePricePath { get; set; }
         public string? ParseCurrencyPath { get; set; }
+        public string? ParsePriceAttributeName { get; set; }
+        public string? ParseCurrencyAttributeName { get; set; }
 
         public bool IsAvailable { get; set; }
         public DateTime Created { get; set; }

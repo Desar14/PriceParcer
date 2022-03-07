@@ -5,6 +5,7 @@ using PriceParcer.Core.Interfaces;
 using PriceParcer.Data;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,52 +71,93 @@ namespace PriceParcer.Domain
             if (productFromSite.Site.ParseType == ParseTypes.Xpath)
             {
                 result = new();
-                
+
                 var html = productFromSite.Path;
 
                 HtmlWeb web = new HtmlWeb();
 
                 var htmlDoc = web.Load(html);
 
-                var priceRawString = htmlDoc.DocumentNode
-                    //.SelectSingleNode("//span[@data-price]").InnerText;
-                    .SelectSingleNode(productFromSite.Site.ParsePricePath).InnerText;
-                // .Attributes["value"].Value;
-
-                if (priceRawString == null)
+                if (htmlDoc == null)
                 {
-                    throw new ArgumentException($"Can't find price in path {productFromSite.Site.ParsePricePath}");
+                    throw new ArgumentException($"Can't load link {productFromSite.Path}");
                 }
+                double priceParsed = GetParsedValueFromHtmlDocument<double>(htmlDoc, productFromSite.Site.ParsePricePath, productFromSite.Site.ParsePriceAttributeName, productFromSite.Path);
 
-                if (!Double.TryParse(priceRawString, out double priceParsed))
-                {
-                    throw new ArgumentException($"Can't parse price {priceRawString}");
-                }
-
-                string? CurrencyRawString = null;
+                string CurrencyRawString;
 
                 try
                 {
-                    CurrencyRawString = htmlDoc.DocumentNode
-                    //.SelectSingleNode("//span[@data-price]").InnerText;
-                    .SelectSingleNode(productFromSite.Site.ParseCurrencyPath).InnerText;
-                    // .Attributes["value"].Value;
+                    CurrencyRawString = GetParsedValueFromHtmlDocument<string>(htmlDoc, productFromSite.Site.ParseCurrencyPath, productFromSite.Site.ParseCurrencyAttributeName, productFromSite.Path);
                 }
                 catch (Exception)
                 {
-
-                   
+                    //todo log
+                    CurrencyRawString = "BYN";
                 }
+
                 result.FullPrice = priceParsed;
                 result.ParseDate = DateTime.Now;
                 result.Id = Guid.NewGuid();
-                result.CurrencyCode = CurrencyRawString == null ? "BYN" : CurrencyRawString;
+                result.CurrencyCode = CurrencyRawString;
                 result.ProductFromSiteId = productFromSitesId;
-            }               
-           
+            }
+
 
             return result;
 
+        }
+
+        private T GetParsedValueFromHtmlDocument<T>(HtmlDocument htmlDoc, string? nodePath, string? attributePath, string link)
+        {
+            
+            var node = htmlDoc.DocumentNode.SelectSingleNode(nodePath);
+
+            string? rawString = null;
+
+            if (node != null)
+            {
+                if (!String.IsNullOrEmpty(attributePath))
+                {
+                    var attribute = node.Attributes.First(p => p.Name == attributePath);
+
+                    if (attribute == null)
+                    {
+                        throw new ArgumentException($"Can't find value in path {nodePath} and attribute {attributePath} on link {link}: attribute not found");
+                    }
+                    else
+                        rawString = attribute.Value;
+                }
+                else
+                    rawString = node.InnerText;
+            }
+            else
+            {
+                throw new ArgumentException($"Can't find value in path {nodePath} on link {link}: path not found");
+            }
+
+            if (String.IsNullOrEmpty(rawString))
+            {
+                throw new ArgumentException($"Can't find value in path {nodePath}");
+            }
+
+            if (typeof(T) == typeof(string))
+            {
+                return (T)Convert.ChangeType(rawString, typeof(T));
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                rawString = rawString.Replace(',', '.');
+                rawString = rawString.Replace(" ","");
+                if (!Double.TryParse(rawString, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValueParsed))
+                {
+                    throw new ArgumentException($"Can't parse price {rawString}");
+                }
+                return (T)Convert.ChangeType(doubleValueParsed, typeof(T));
+
+            }
+            else
+                return default;
         }
 
         public async Task<bool> UpdateProductPriceAsync(ProductPriceDTO productPriceDTO)
