@@ -16,13 +16,15 @@ namespace PriceParser.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IProductsService _productService;
+        private readonly ILogger<UserReviewsController> _logger;
 
-        public UserReviewsController(IUserReviewsService reviewsService, IMapper mapper, UserManager<IdentityUser> userManager, IProductsService productService)
+        public UserReviewsController(IUserReviewsService reviewsService, IMapper mapper, UserManager<IdentityUser> userManager, IProductsService productService, ILogger<UserReviewsController> logger)
         {
             _reviewsService = reviewsService;
             _mapper = mapper;
             _userManager = userManager;
             _productService = productService;
+            _logger = logger;
         }
 
         // GET: UserReviewsController

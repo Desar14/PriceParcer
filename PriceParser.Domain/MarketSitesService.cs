@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using PriceParser.Core.DTO;
 using PriceParser.Core.Interfaces;
 using PriceParser.Data;
@@ -14,13 +15,22 @@ namespace PriceParser.Domain
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ILogger<MarketSitesService> _logger;
 
-        public MarketSitesService(IUnitOfWork unitOfWork, IMapper mapper)
+        public MarketSitesService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<MarketSitesService> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _logger = logger;
         }
-        async Task<bool> IMarketSitesService.AddSite(MarketSiteDTO product)
+
+        public async Task<IEnumerable<MarketSiteDTO>> GetOnlyAvailableSitesAsync()
+        {
+            return (await _unitOfWork.MarketSites.Get(filter: site => site.IsAvailable, includes: site => site.CreatedByUser))
+               .Select(product => _mapper.Map<MarketSiteDTO>(product));
+        }
+
+        public async Task<bool> AddSite(MarketSiteDTO product)
         {
             var entity = _mapper.Map<MarketSite>(product);
 
@@ -31,7 +41,7 @@ namespace PriceParser.Domain
             return result > 0;
         }
 
-        async Task<bool> IMarketSitesService.DeleteSite(Guid id)
+        public async Task<bool> DeleteSite(Guid id)
         {
             await _unitOfWork.MarketSites.Delete(id);
 
@@ -40,7 +50,7 @@ namespace PriceParser.Domain
             return result > 0;
         }
 
-        async Task<bool> IMarketSitesService.EditSite(MarketSiteDTO product)
+        public async Task<bool> EditSite(MarketSiteDTO product)
         {
             var entity = _mapper.Map<MarketSite>(product);
 
@@ -51,13 +61,13 @@ namespace PriceParser.Domain
             return result > 0;
         }
 
-        async Task<IEnumerable<MarketSiteDTO>> IMarketSitesService.GetAllSitesAsync()
+        public async Task<IEnumerable<MarketSiteDTO>> GetAllSitesAsync()
         {
             return (await _unitOfWork.MarketSites.Get(includes: site => site.CreatedByUser))
                 .Select(product => _mapper.Map<MarketSiteDTO>(product));
         }
 
-        async Task<MarketSiteDTO> IMarketSitesService.GetSiteDetailsAsync(Guid id)
+        public async Task<MarketSiteDTO> GetSiteDetailsAsync(Guid id)
         {
             var result = (await _unitOfWork.MarketSites.GetByID(id));            
 

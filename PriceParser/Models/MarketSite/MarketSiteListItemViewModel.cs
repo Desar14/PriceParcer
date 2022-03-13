@@ -9,5 +9,7 @@ namespace PriceParser.Models
 
         public DateTime Created { get; set; }
         public string? CreatedByUserName { get; set; }
+
+        public bool IsAvailable { get; set; }
     }
 }

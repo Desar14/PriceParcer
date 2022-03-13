@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using PriceParser.Core.DTO;
 using PriceParser.Core.Interfaces;
 using PriceParser.Data;
@@ -14,11 +15,13 @@ namespace PriceParser.Domain
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ILogger<ProductFromSitesService> _logger;
 
-        public ProductFromSitesService(IUnitOfWork unitOfWork, IMapper mapper)
+        public ProductFromSitesService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<ProductFromSitesService> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<bool> AddAsync(ProductFromSitesDTO product)
@@ -67,6 +70,12 @@ namespace PriceParser.Domain
         public async Task<IEnumerable<ProductFromSitesDTO>> GetAllBySiteAsync(Guid siteId)
         {
             return (await _unitOfWork.ProductsFromSites.Get(record => record.SiteId == siteId,null, record => record.product, record => record.CreatedByUser))
+                .Select(product => _mapper.Map<ProductFromSitesDTO>(product));
+        }
+
+        public async Task<IEnumerable<ProductFromSitesDTO>> GetBySiteForParsingAsync(Guid siteId)
+        {
+            return (await _unitOfWork.ProductsFromSites.Get(record => record.SiteId == siteId && !record.DoNotParse, null, record => record.product, record => record.CreatedByUser))
                 .Select(product => _mapper.Map<ProductFromSitesDTO>(product));
         }
 

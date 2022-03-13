@@ -14,12 +14,14 @@ namespace PriceParser.Controllers
         private readonly IMarketSitesService _marketService;
         private readonly IMapper _mapper;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ILogger<MarketSitesController> _logger;
 
-        public MarketSitesController(IMarketSitesService marketService, IMapper mapper, UserManager<IdentityUser> userManager)
+        public MarketSitesController(IMarketSitesService marketService, IMapper mapper, UserManager<IdentityUser> userManager, ILogger<MarketSitesController> logger)
         {
             _marketService = marketService;
             _mapper = mapper;
             _userManager = userManager;
+            _logger = logger;
         }
 
         // GET: MarketSitesController

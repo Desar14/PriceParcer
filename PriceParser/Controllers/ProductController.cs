@@ -10,11 +10,13 @@ namespace PriceParser.Controllers
     {
         private readonly IProductsService _productService;
         private readonly IMapper _mapper;
+        private readonly ILogger<ProductController> _logger;
 
-        public ProductController(IProductsService productService, IMapper mapper)
+        public ProductController(IProductsService productService, IMapper mapper, ILogger<ProductController> logger)
         {
             _productService = productService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         // GET: ProductController

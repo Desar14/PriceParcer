@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using PriceParser.Core.DTO;
 using PriceParser.Core.Interfaces;
 using PriceParser.Data;
@@ -14,11 +15,13 @@ namespace PriceParser.Domain
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ILogger<UserReviewsService> _logger;
 
-        public UserReviewsService(IUnitOfWork unitOfWork, IMapper mapper)
+        public UserReviewsService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UserReviewsService> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<bool> AddAsync(UserReviewDTO review)

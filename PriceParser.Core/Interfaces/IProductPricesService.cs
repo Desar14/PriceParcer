@@ -9,13 +9,14 @@ namespace PriceParser.Core.Interfaces
 {
     public interface IProductPricesService
     {
-        Task<ProductPriceDTO> ParseProductPriceAsync(Guid productFromSitesId);
+        
         Task<IEnumerable<ProductPriceDTO>> GetAllProductPricesAsync(Guid productFromSitesId);
         Task<ProductPriceDTO> GetProductPriceDetailsAsync(Guid priceId);
         Task<bool> AddProductPriceAsync(ProductPriceDTO productPriceDTO);
         Task<bool> UpdateProductPriceAsync(ProductPriceDTO productPriceDTO);
         Task<bool> DeleteProductPriceAsync(Guid id);
 
+        Task<bool> AddProductPricesRangeAsync(IEnumerable<ProductPriceDTO> productPriceDTORange);
 
     }
 }

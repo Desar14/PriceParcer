@@ -19,8 +19,10 @@ namespace PriceParser.Controllers
         private readonly IMarketSitesService _marketSiteService;
         private readonly IProductsService _productService;
         private readonly IProductPricesService _productPricesService;
+        private readonly IParsingPricesService _parsingPricesService;
+        private readonly ILogger<ProductsFromSitesController> _logger;
 
-        public ProductsFromSitesController(IProductsFromSitesService productsFromSitesService, IMapper mapper, UserManager<IdentityUser> userManager, IMarketSitesService marketService, IProductsService productService, IProductPricesService productPricesService)
+        public ProductsFromSitesController(IProductsFromSitesService productsFromSitesService, IMapper mapper, UserManager<IdentityUser> userManager, IMarketSitesService marketService, IProductsService productService, IProductPricesService productPricesService, IParsingPricesService parsingPricesService, ILogger<ProductsFromSitesController> logger)
         {
             _productsFromSitesService = productsFromSitesService;
             _mapper = mapper;
@@ -28,6 +30,8 @@ namespace PriceParser.Controllers
             _marketSiteService = marketService;
             _productService = productService;
             _productPricesService = productPricesService;
+            _parsingPricesService = parsingPricesService;
+            _logger = logger;
         }
 
         // GET: ProductsFromSitesController
@@ -155,16 +159,14 @@ namespace PriceParser.Controllers
         {
             try
             {        
-                var dto = await _productPricesService.ParseProductPriceAsync(id);
+                var dto = await _parsingPricesService.ParseSaveProductPriceAsync(id);
 
-                await _productPricesService.AddProductPriceAsync(dto);
-
-                return RedirectToAction(nameof(Details), new { id = id });
+                return RedirectToAction(nameof(Details), new { id });
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                return RedirectToAction(nameof(Edit), new { id = id });
+                return RedirectToAction(nameof(Edit), new { id });
             }
         }
     }

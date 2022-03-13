@@ -13,6 +13,8 @@ namespace PriceParser.Core.Interfaces
 
         Task<IEnumerable<ProductFromSitesDTO>> GetAllBySiteAsync(Guid siteId);
 
+        Task<IEnumerable<ProductFromSitesDTO>> GetBySiteForParsingAsync(Guid siteId);
+
         Task<IEnumerable<ProductFromSitesDTO>> GetAllByProductAsync(Guid productId);
 
         Task<ProductFromSitesDTO> GetDetailsAsync(Guid id);

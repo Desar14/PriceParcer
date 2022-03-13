@@ -6,6 +6,7 @@ using PriceParser.Core.Interfaces;
 using PriceParser.Data;
 using PriceParser.DataAccess;
 using PriceParser.Domain;
+using Serilog;
 
 namespace PriceParser
 {
@@ -14,6 +15,10 @@ namespace PriceParser
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Host.UseSerilog((ctx, lc) => lc
+                .WriteTo.Console()
+                .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day));
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -38,6 +43,7 @@ namespace PriceParser
             builder.Services.AddScoped<IProductsFromSitesService, ProductFromSitesService>();
             builder.Services.AddScoped<IUserReviewsService, UserReviewsService>();
             builder.Services.AddScoped<IProductPricesService, ProductPricesService>();
+            builder.Services.AddScoped<IParsingPricesService, ParcingPricesService>();
 
 
 
