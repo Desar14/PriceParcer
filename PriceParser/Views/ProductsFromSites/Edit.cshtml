@@ -1,0 +1,65 @@
+﻿@model PriceParser.Models.ProductFromSite.ProductFromSiteCreateEditViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>ProductFromSiteCreateEditViewModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 col-form-label" asp-for="Product"></label>
+                <select asp-for="ProductId" asp-items="@Model.ProductsList"></select>
+                <span asp-validation-for="ProductId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 col-form-label" asp-for="Site"></label>
+                <select asp-for="SiteId" asp-items="@Model.SitesList"></select>
+                <span asp-validation-for="SiteId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Path" class="control-label"></label>
+                <input asp-for="Path" class="form-control" />
+                <span asp-validation-for="Path" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="DoNotParse" /> @Html.DisplayNameFor(model => model.DoNotParse)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="ParseSchedule" class="control-label"></label>
+                <input asp-for="ParseSchedule" class="form-control" />
+                <span asp-validation-for="ParseSchedule" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Created" class="control-label"></label>
+                <input asp-for="Created" class="form-control" />
+                <span asp-validation-for="Created" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 col-form-label" asp-for="CreatedByUser"></label>
+                <select asp-for="CreatedByUserId" asp-items="@Model.UsersList"></select>
+                <span asp-validation-for="CreatedByUserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
