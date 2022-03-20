@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Hangfire;
+using Microsoft.AspNetCore.Mvc;
 using PriceParser.Core.Interfaces;
 
 namespace PriceParser.Controllers
@@ -23,7 +24,7 @@ namespace PriceParser.Controllers
         {
             try
             {
-                await _parsingPricesService.ParseSaveAllAvailablePricesAsync();
+                BackgroundJob.Enqueue(() =>  _parsingPricesService.ParseSaveAllAvailablePricesAsync());                
             }
             catch (Exception ex)
             {

@@ -1,3 +1,5 @@
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PriceParser;
@@ -45,28 +47,27 @@ namespace PriceParser
             builder.Services.AddScoped<IProductPricesService, ProductPricesService>();
             builder.Services.AddScoped<IParsingPricesService, ParcingPricesService>();
 
+            // Add Hangfire services.
+            builder.Services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection"), new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true
+                }));
 
+            // Add the processing server as IHostedService
+            builder.Services.AddHangfireServer();
 
 
             var app = builder.Build();
 
-            //apply migrations on every startup
-            using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                //try
-                //{
-                    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                    db.Database.Migrate();
-                //}
-                //catch (Exception ex)
-                //{
-                    //TODO not working now
-                    //var logger = services.GetRequiredService<ILogger>();
-                    //logger.LogError(ex, "An error occurred while migrating the database.");
-                //}
-
-            }
+            
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -92,6 +93,41 @@ namespace PriceParser
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
+
+            app.MapHangfireDashboard();
+
+
+            //apply migrations on every startup
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    db.Database.Migrate();
+                }
+                catch (Exception ex)
+                {
+
+                    var logger = services.GetRequiredService<Microsoft.Extensions.Logging.ILogger>();
+                    logger.LogError(ex, "An error occurred while migrating the database.");
+                }
+                try
+                {
+                    var parsingPricesService = scope.ServiceProvider.GetRequiredService<IParsingPricesService>();
+                    RecurringJob.AddOrUpdate(
+                        "ParsingPricesFromSites",
+                        () => parsingPricesService.ParseSaveAllAvailablePricesAsync(),
+                        Cron.Hourly
+                        );
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<IParsingPricesService>>();
+                    logger.LogError(ex, "An error occurred while adding a recurring job");
+                }
+
+            }
 
             app.Run();
         }
