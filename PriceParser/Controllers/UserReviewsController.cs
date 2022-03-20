@@ -30,35 +30,59 @@ namespace PriceParser.Controllers
         // GET: UserReviewsController
         public async Task<IActionResult> Index()
         {
-            var reviews = (await _reviewsService.GetAllAsync())
-                .Select(product => _mapper.Map<UserReviewItemListViewModel>(product))
-                .OrderByDescending(product => product.ReviewDate).ToList();
-            return View(reviews);
+            try
+            {
+                var reviews = (await _reviewsService.GetAllAsync())
+                        .Select(product => _mapper.Map<UserReviewItemListViewModel>(product))
+                        .OrderByDescending(product => product.ReviewDate).ToList();
+                return View(reviews);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // GET: UserReviewsController/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
-            var reviewDetailDTO = (await _reviewsService.GetDetailsAsync(id));
+            try
+            {
+                var reviewDetailDTO = (await _reviewsService.GetDetailsAsync(id));
 
-            var model = _mapper.Map<UserReviewDetailsViewModel>(reviewDetailDTO);
+                var model = _mapper.Map<UserReviewDetailsViewModel>(reviewDetailDTO);
 
-            return View(model);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // GET: UserReviewsController/Create
         public async Task<IActionResult> Create()
         {
-            var model = new UserReviewCreateEditViewModel
+            try
             {
-                Id = Guid.NewGuid(),
-                ReviewDate = DateTime.Now,
-                Hidden = false,
-                UsersList = _userManager.Users.Select(product => _mapper.Map<SelectListItem>(product)).ToList(),
-                ProductsList = (await _productService.GetAllProductsAsync()).Select(product => _mapper.Map<SelectListItem>(product)).ToList()
-            };
+                var model = new UserReviewCreateEditViewModel
+                {
+                    Id = Guid.NewGuid(),
+                    ReviewDate = DateTime.Now,
+                    Hidden = false,
+                    UsersList = _userManager.Users.Select(product => _mapper.Map<SelectListItem>(product)).ToList(),
+                    ProductsList = (await _productService.GetAllProductsAsync()).Select(product => _mapper.Map<SelectListItem>(product)).ToList()
+                };
 
-            return View(model);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // POST: UserReviewsController/Create
@@ -75,7 +99,8 @@ namespace PriceParser.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                _logger.LogError(ex, "Creating User review");
+                ModelState.AddModelError("", "Something went wrong. Please, try again later or connect with admininstrator.");
                 return View(model);
             }
         }
@@ -83,17 +108,25 @@ namespace PriceParser.Controllers
         // GET: UserReviewsController/Create
         public async Task<IActionResult> CreateFromProduct(Guid productId)
         {
-            var model = new UserReviewCreateEditViewModel
+            try
             {
-                Id = Guid.NewGuid(),
-                ReviewDate = DateTime.Now,
-                Hidden = false,
-                UsersList = _userManager.Users.Select(product => _mapper.Map<SelectListItem>(product)).ToList(),
-                ProductId = productId,
-                Product = _mapper.Map<ProductItemListViewModel>(await _productService.GetProductDetailsAsync(productId))
-            };
+                var model = new UserReviewCreateEditViewModel
+                {
+                    Id = Guid.NewGuid(),
+                    ReviewDate = DateTime.Now,
+                    Hidden = false,
+                    UsersList = _userManager.Users.Select(product => _mapper.Map<SelectListItem>(product)).ToList(),
+                    ProductId = productId,
+                    Product = _mapper.Map<ProductItemListViewModel>(await _productService.GetProductDetailsAsync(productId))
+                };
 
-            return View(model);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // POST: UserReviewsController/Create
@@ -110,7 +143,8 @@ namespace PriceParser.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                _logger.LogError(ex, "Creating User review from product");
+                ModelState.AddModelError("", "Something went wrong. Please, try again later or connect with admininstrator.");
                 return View(model);
             }
         }
@@ -118,16 +152,24 @@ namespace PriceParser.Controllers
         // GET: UserReviewsController/Edit/5
         public async Task<IActionResult> Edit(Guid id)
         {
-            var recordDetailDTO = (await _reviewsService.GetDetailsAsync(id));
+            try
+            {
+                var recordDetailDTO = (await _reviewsService.GetDetailsAsync(id));
 
-            var model = _mapper.Map<UserReviewCreateEditViewModel>(recordDetailDTO);
+                var model = _mapper.Map<UserReviewCreateEditViewModel>(recordDetailDTO);
 
-            model.UsersList = _userManager.Users.ToList()
-                .Select(product => _mapper.Map<IdentityUser, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.UserId))).ToList();
-            model.ProductsList = (await _productService.GetAllProductsAsync())
-                .Select(product => _mapper.Map<Core.DTO.ProductDTO, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.ProductId))).ToList();            
+                model.UsersList = _userManager.Users.ToList()
+                    .Select(product => _mapper.Map<IdentityUser, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.UserId))).ToList();
+                model.ProductsList = (await _productService.GetAllProductsAsync())
+                    .Select(product => _mapper.Map<Core.DTO.ProductDTO, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.ProductId))).ToList();
 
-            return View(model);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // POST: UserReviewsController/Edit/5
@@ -144,7 +186,8 @@ namespace PriceParser.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                _logger.LogError(ex, "Editing User review");
+                ModelState.AddModelError("", "Something went wrong. Please, try again later or connect with admininstrator.");
                 return View(model);
             }
         }
@@ -152,11 +195,19 @@ namespace PriceParser.Controllers
         // GET: UserReviewsController/Delete/5
         public async Task<IActionResult> Delete(Guid id)
         {
-            var recordDetailDTO = (await _reviewsService.GetDetailsAsync(id));
+            try
+            {
+                var recordDetailDTO = (await _reviewsService.GetDetailsAsync(id));
 
-            var model = _mapper.Map<UserReviewDeleteViewModel>(recordDetailDTO);
+                var model = _mapper.Map<UserReviewDeleteViewModel>(recordDetailDTO);
 
-            return View(model);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // POST: UserReviewsController/Delete/5
@@ -171,7 +222,8 @@ namespace PriceParser.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                _logger.LogError(ex, "Deleting User review");
+                ModelState.AddModelError("", "Something went wrong. Please, try again later or connect with admininstrator.");
                 return View(model);
             }
         }

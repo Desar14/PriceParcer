@@ -1,4 +1,5 @@
-﻿using PriceParser.Core;
+﻿using Microsoft.Extensions.Logging;
+using PriceParser.Core;
 using PriceParser.Core.Interfaces;
 using PriceParser.Data;
 using System;
@@ -18,8 +19,9 @@ namespace PriceParser.DataAccess
         private readonly IRepository<ProductFromSites> _productFromSitesRepo;
         private readonly IRepository<ProductPrice> _productPricesRepo;
         private readonly IRepository<UserReview> _userReviewsRepo;
+        private readonly ILogger<UnitOfWork> _logger;
 
-        public UnitOfWork(ApplicationDbContext db, IRepository<MarketSite> marketSitesRepo, IRepository<Product> productRepo, IRepository<ProductFromSites> productFromSitesRepo, IRepository<ProductPrice> productPricesRepo, IRepository<UserReview> userReviewsRepo)
+        public UnitOfWork(ApplicationDbContext db, IRepository<MarketSite> marketSitesRepo, IRepository<Product> productRepo, IRepository<ProductFromSites> productFromSitesRepo, IRepository<ProductPrice> productPricesRepo, IRepository<UserReview> userReviewsRepo, ILogger<UnitOfWork> logger)
         {
             _db = db;
             _marketSitesRepo = marketSitesRepo;
@@ -27,6 +29,7 @@ namespace PriceParser.DataAccess
             _productFromSitesRepo = productFromSitesRepo;
             _productPricesRepo = productPricesRepo;
             _userReviewsRepo = userReviewsRepo;
+            _logger = logger;
         }
 
         public IRepository<MarketSite> MarketSites => _marketSitesRepo;
@@ -41,7 +44,15 @@ namespace PriceParser.DataAccess
 
         public async Task<int> Commit()
         {
-            return await _db.SaveChangesAsync();
+            try
+            {
+                return await _db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unit of work commit error");
+                throw;
+            }            
         }
 
         public void Dispose()

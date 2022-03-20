@@ -22,20 +22,37 @@ namespace PriceParser.Controllers
         // GET: ProductController
         public async Task<IActionResult> Index()
         {
-            var products = (await _productService.GetAllProductsAsync())
-                .Select(product => _mapper.Map<ProductItemListViewModel>(product))
-                .OrderByDescending(product => product.Name).ToList();
-            return View(products);
+
+            try
+            {
+                var products = (await _productService.GetAllProductsAsync())
+                       .Select(product => _mapper.Map<ProductItemListViewModel>(product))
+                       .OrderByDescending(product => product.Name).ToList();
+                return View(products);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // GET: ProductController/Details/5
         public async Task<IActionResult> Details(Guid id)
-        {   
-            var productDetailDTO = (await _productService.GetProductDetailsAsync(id));
-            
-            var model = _mapper.Map<ProductDetailsViewModel>(productDetailDTO);
+        {
+            try
+            {
+                var productDetailDTO = (await _productService.GetProductDetailsAsync(id));
 
-            return View(model);
+                var model = _mapper.Map<ProductDetailsViewModel>(productDetailDTO);
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // GET: ProductController/Create
@@ -58,7 +75,8 @@ namespace PriceParser.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                _logger.LogError(ex, "Creating Product");
+                ModelState.AddModelError("", "Something went wrong. Please, try again later or connect with admininstrator.");
                 return View(model);
             }
         }
@@ -67,11 +85,19 @@ namespace PriceParser.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
 
-            var productDetailDTO = (await _productService.GetProductDetailsAsync(id));
+            try
+            {
+                var productDetailDTO = (await _productService.GetProductDetailsAsync(id));
 
-            var model = _mapper.Map<ProductCreateEditViewModel>(productDetailDTO);
+                var model = _mapper.Map<ProductCreateEditViewModel>(productDetailDTO);
 
-            return View(model);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // POST: ProductController/Edit/5
@@ -87,7 +113,8 @@ namespace PriceParser.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                _logger.LogError(ex, "Editing Product");
+                ModelState.AddModelError("", "Something went wrong. Please, try again later or connect with admininstrator.");
                 return View(model);
             }
         }
@@ -96,11 +123,19 @@ namespace PriceParser.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
 
-            var productDetailDTO = (await _productService.GetProductDetailsAsync(id));
+            try
+            {
+                var productDetailDTO = (await _productService.GetProductDetailsAsync(id));
 
-            var model = _mapper.Map<ProductDeleteViewModel>(productDetailDTO);
+                var model = _mapper.Map<ProductDeleteViewModel>(productDetailDTO);
 
-            return View(model);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // POST: ProductController/Delete/5
@@ -115,7 +150,8 @@ namespace PriceParser.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                _logger.LogError(ex, "Deleting Product");
+                ModelState.AddModelError("", "Something went wrong. Please, try again later or connect with admininstrator.");
                 return View(model);
             }
         }

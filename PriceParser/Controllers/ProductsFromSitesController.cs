@@ -37,38 +37,62 @@ namespace PriceParser.Controllers
         // GET: ProductsFromSitesController
         public async Task<IActionResult> Index()
         {
-            var products = (await _productsFromSitesService.GetAllAsync())
-                .Select(product => _mapper.Map<ProductFromSiteItemListViewModel>(product))
-                .OrderByDescending(product => product.Created).ToList();
-            return View(products);
+            try
+            {
+                var products = (await _productsFromSitesService.GetAllAsync())
+                       .Select(product => _mapper.Map<ProductFromSiteItemListViewModel>(product))
+                       .OrderByDescending(product => product.Created).ToList();
+                return View(products);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // GET: ProductsFromSitesController/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
-            var productDetailDTO = (await _productsFromSitesService.GetDetailsAsync(id));
-            var prices = (await _productPricesService.GetAllProductPricesAsync(id)).Select(priceItem => _mapper.Map<ProductPriceItemListViewModel>(priceItem)).OrderByDescending(price => price.ParseDate).ToList();
-            
-            var model = _mapper.Map<ProductFromSiteDetailsViewModel>(productDetailDTO);
-            model.productPrices = prices;
+            try
+            {
+                var productDetailDTO = (await _productsFromSitesService.GetDetailsAsync(id));
+                var prices = (await _productPricesService.GetAllProductPricesAsync(id)).Select(priceItem => _mapper.Map<ProductPriceItemListViewModel>(priceItem)).OrderByDescending(price => price.ParseDate).ToList();
 
-            return View(model);
+                var model = _mapper.Map<ProductFromSiteDetailsViewModel>(productDetailDTO);
+                model.productPrices = prices;
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // GET: ProductsFromSitesController/Create
         public async Task<IActionResult> Create()
         {
-            var model = new ProductFromSiteCreateEditViewModel
+            try
             {
-                Id = Guid.NewGuid(),
-                Created = DateTime.Now,
-                DoNotParse = false,
-                UsersList = _userManager.Users.Select(product => _mapper.Map<SelectListItem>(product)).ToList(),
-                ProductsList = (await _productService.GetAllProductsAsync()).Select(product => _mapper.Map<SelectListItem>(product)).ToList(),
-                SitesList = (await _marketSiteService.GetAllSitesAsync()).Select(site => _mapper.Map<SelectListItem>(site)).ToList()
-            };
+                var model = new ProductFromSiteCreateEditViewModel
+                {
+                    Id = Guid.NewGuid(),
+                    Created = DateTime.Now,
+                    DoNotParse = false,
+                    UsersList = _userManager.Users.Select(product => _mapper.Map<SelectListItem>(product)).ToList(),
+                    ProductsList = (await _productService.GetAllProductsAsync()).Select(product => _mapper.Map<SelectListItem>(product)).ToList(),
+                    SitesList = (await _marketSiteService.GetAllSitesAsync()).Select(site => _mapper.Map<SelectListItem>(site)).ToList()
+                };
 
-            return View(model);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // POST: ProductsFromSitesController/Create
@@ -83,9 +107,10 @@ namespace PriceParser.Controllers
                 await _productsFromSitesService.AddAsync(recordToAdd);
                 return RedirectToAction(nameof(Index));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                _logger.LogError(ex, "Creating Product from site");
+                ModelState.AddModelError("", "Something went wrong. Please, try again later or connect with admininstrator.");
                 return View(model);
             }
         }
@@ -93,18 +118,26 @@ namespace PriceParser.Controllers
         // GET: ProductsFromSitesController/Edit/5
         public async Task<IActionResult> Edit(Guid id)
         {
-            var recordDetailDTO = (await _productsFromSitesService.GetDetailsAsync(id));
+            try
+            {
+                var recordDetailDTO = (await _productsFromSitesService.GetDetailsAsync(id));
 
-            var model = _mapper.Map<ProductFromSiteCreateEditViewModel>(recordDetailDTO);
+                var model = _mapper.Map<ProductFromSiteCreateEditViewModel>(recordDetailDTO);
 
-            model.UsersList = _userManager.Users.ToList()
-                .Select(product => _mapper.Map<IdentityUser, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.CreatedByUserId))).ToList();
-            model.ProductsList = (await _productService.GetAllProductsAsync())
-                .Select(product => _mapper.Map<Core.DTO.ProductDTO, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.ProductId))).ToList();            
-            model.SitesList = (await _marketSiteService.GetAllSitesAsync())
-                .Select(site => _mapper.Map<Core.DTO.MarketSiteDTO,SelectListItem>(site, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.SiteId))).ToList();
+                model.UsersList = _userManager.Users.ToList()
+                    .Select(product => _mapper.Map<IdentityUser, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.CreatedByUserId))).ToList();
+                model.ProductsList = (await _productService.GetAllProductsAsync())
+                    .Select(product => _mapper.Map<Core.DTO.ProductDTO, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.ProductId))).ToList();
+                model.SitesList = (await _marketSiteService.GetAllSitesAsync())
+                    .Select(site => _mapper.Map<Core.DTO.MarketSiteDTO, SelectListItem>(site, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.SiteId))).ToList();
 
-            return View(model);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // POST: ProductsFromSitesController/Edit/5
@@ -120,9 +153,10 @@ namespace PriceParser.Controllers
                 await _productsFromSitesService.EditAsync(recordToAdd);
                 return RedirectToAction(nameof(Index));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                _logger.LogError(ex, "Editing Product from site");
+                ModelState.AddModelError("", "Something went wrong. Please, try again later or connect with admininstrator.");
                 return View(model);
             }
         }
@@ -131,11 +165,19 @@ namespace PriceParser.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
 
-            var recordDetailDTO = (await _productsFromSitesService.GetDetailsAsync(id));
+            try
+            {
+                var recordDetailDTO = (await _productsFromSitesService.GetDetailsAsync(id));
 
-            var model = _mapper.Map<ProductFromSiteDeleteViewModel>(recordDetailDTO);
+                var model = _mapper.Map<ProductFromSiteDeleteViewModel>(recordDetailDTO);
 
-            return View(model);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // POST: ProductsFromSitesController/Delete/5
@@ -148,9 +190,10 @@ namespace PriceParser.Controllers
                 await _productsFromSitesService.DeleteAsync(model.Id);
                 return RedirectToAction(nameof(Index));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                _logger.LogError(ex, "Deleting Product from site");
+                ModelState.AddModelError("", "Something went wrong. Please, try again later or connect with admininstrator.");
                 return View(model);
             }
         }
@@ -158,15 +201,16 @@ namespace PriceParser.Controllers
         public async Task<IActionResult> ParsePrice(Guid id)
         {
             try
-            {        
+            {
                 var dto = await _parsingPricesService.ParseSaveProductPriceAsync(id);
 
                 return RedirectToAction(nameof(Details), new { id });
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
-                return RedirectToAction(nameof(Edit), new { id });
+                _logger.LogError(ex, $"Parsing Product from site {id}");
+                ModelState.AddModelError("", "Something went wrong. Please, try again later or connect with admininstrator.");
+                return RedirectToAction(nameof(Details), new { id });
             }
         }
     }

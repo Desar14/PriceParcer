@@ -27,35 +27,59 @@ namespace PriceParser.Controllers
         // GET: MarketSitesController
         public async Task<IActionResult> Index()
         {
-            var sites = await _marketService.GetAllSitesAsync();
+            try
+            {
+                var sites = await _marketService.GetAllSitesAsync();
 
-            var model = _mapper.Map<IEnumerable<MarketSiteListItemViewModel>>(sites);
-            
-            return View(model);
+                var model = _mapper.Map<IEnumerable<MarketSiteListItemViewModel>>(sites);
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // GET: MarketSitesController/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
-            var siteDetailDTO = await _marketService.GetSiteDetailsAsync(id);
+            try
+            {
+                var siteDetailDTO = await _marketService.GetSiteDetailsAsync(id);
 
-            var model = _mapper.Map<MarketSiteDetailsViewModel>(siteDetailDTO);
-            return View(model);
+                var model = _mapper.Map<MarketSiteDetailsViewModel>(siteDetailDTO);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // GET: MarketSitesController/Create
         public async Task<IActionResult> Create()
         {
-            var model = new MarketSiteCreateEditViewModel
+            try
             {
-                Id = Guid.NewGuid(),
-                Created = DateTime.Now,
-                IsAvailable = true,
-                UsersList = _userManager.Users.Select(product => _mapper.Map<SelectListItem>(product)).ToList(),
-                ParseTypesList = Enum.GetValues(typeof(ParseTypes)).Cast<ParseTypes>().Select(item => _mapper.Map<SelectListItem>(item)).ToList()
-            };
+                var model = new MarketSiteCreateEditViewModel
+                {
+                    Id = Guid.NewGuid(),
+                    Created = DateTime.Now,
+                    IsAvailable = true,
+                    UsersList = _userManager.Users.Select(product => _mapper.Map<SelectListItem>(product)).ToList(),
+                    ParseTypesList = Enum.GetValues(typeof(ParseTypes)).Cast<ParseTypes>().Select(item => _mapper.Map<SelectListItem>(item)).ToList()
+                };
 
-            return View(model);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // POST: MarketSitesController/Create
@@ -73,7 +97,8 @@ namespace PriceParser.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                _logger.LogError(ex, "Creating MarketSites");
+                ModelState.AddModelError("", "Something went wrong. Please, try again later or connect with admininstrator.");
                 return View(model);
             }
         }
@@ -81,18 +106,24 @@ namespace PriceParser.Controllers
         // GET: MarketSitesController/Edit/5
         public async Task<IActionResult> Edit(Guid id)
         {
+            try
+            {
+                var siteDetailDTO = (await _marketService.GetSiteDetailsAsync(id));
 
-            var siteDetailDTO = (await _marketService.GetSiteDetailsAsync(id));
+                var model = _mapper.Map<MarketSiteCreateEditViewModel>(siteDetailDTO);
 
-            var model = _mapper.Map<MarketSiteCreateEditViewModel>(siteDetailDTO);
+                model.UsersList = _userManager.Users.ToList()
+                    .Select(product => _mapper.Map<IdentityUser, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.CreatedByUserId))).ToList();
+                model.ParseTypesList = Enum.GetValues(typeof(ParseTypes)).Cast<ParseTypes>()
+                    .Select(item => _mapper.Map<ParseTypes, SelectListItem>(item, opt => opt.AfterMap((src, dest) => dest.Selected = src == model.ParseType))).ToList();
 
-            model.UsersList = _userManager.Users.ToList()
-                .Select(product => _mapper.Map<IdentityUser, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.CreatedByUserId))).ToList();
-            model.ParseTypesList = Enum.GetValues(typeof(ParseTypes)).Cast<ParseTypes>()
-                .Select(item => _mapper.Map<ParseTypes, SelectListItem>(item, opt => opt.AfterMap((src, dest) => dest.Selected = src == model.ParseType))).ToList();
-
-            return View(model);
-
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // POST: MarketSitesController/Edit/5
@@ -110,7 +141,8 @@ namespace PriceParser.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                _logger.LogError(ex, "Editing MarketSites");
+                ModelState.AddModelError("", "Something went wrong. Please, try again later or connect with admininstrator.");
                 return View(model);
             }
         }
@@ -118,12 +150,19 @@ namespace PriceParser.Controllers
         // GET: MarketSitesController/Delete/5
         public async Task<IActionResult> Delete(Guid id)
         {
-
-            var siteDetailDTO = (await _marketService.GetSiteDetailsAsync(id));
+            try
+            {
+                var siteDetailDTO = (await _marketService.GetSiteDetailsAsync(id));
 
             var model = _mapper.Map<MarketSiteDeleteViewModel>(siteDetailDTO);
 
             return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                throw;
+            }
         }
 
         // POST: MarketSitesController/Delete/5
@@ -138,7 +177,8 @@ namespace PriceParser.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                _logger.LogError(ex, "Deleting MarketSites");
+                ModelState.AddModelError("", "Something went wrong. Please, try again later or connect with admininstrator.");
                 return View(model);
             }
         }

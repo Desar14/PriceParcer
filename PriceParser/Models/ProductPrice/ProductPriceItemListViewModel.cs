@@ -9,5 +9,6 @@
         public double DiscountPercent { get; set; }
         public string CurrencyCode { get; set; }
         public bool IsOutOfStock { get; set; }
+        public bool ParseError { get; set; }
     }
 }

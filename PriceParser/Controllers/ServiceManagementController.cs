@@ -8,7 +8,7 @@ namespace PriceParser.Controllers
         private readonly IParsingPricesService _parsingPricesService;
         private readonly ILogger<ServiceManagementController> _logger;
 
-        public ServiceManagementController(IParsingPricesService parsingPricesService, ILogger<ProductsFromSitesController> logger)
+        public ServiceManagementController(IParsingPricesService parsingPricesService, ILogger<ServiceManagementController> logger)
         {
             _parsingPricesService = parsingPricesService;
             _logger = logger;
@@ -21,7 +21,14 @@ namespace PriceParser.Controllers
 
         public async Task<IActionResult> ParsePrices()
         {
-            await _parsingPricesService.ParseSaveAllAvailablePricesAsync();
+            try
+            {
+                await _parsingPricesService.ParseSaveAllAvailablePricesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Parsing prices");
+            }            
 
             return RedirectToAction("Index");
 

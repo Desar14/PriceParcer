@@ -15,7 +15,6 @@ namespace PriceParser.Controllers
 
         public IActionResult Index()
         {
-            _logger.LogInformation("test log");
             return View();
         }
 
