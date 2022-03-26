@@ -112,20 +112,7 @@ namespace PriceParser
                     var logger = services.GetRequiredService<Microsoft.Extensions.Logging.ILogger>();
                     logger.LogError(ex, "An error occurred while migrating the database.");
                 }
-                try
-                {
-                    var parsingPricesService = scope.ServiceProvider.GetRequiredService<IParsingPricesService>();
-                    RecurringJob.AddOrUpdate(
-                        "ParsingPricesFromSites",
-                        () => parsingPricesService.ParseSaveAllAvailablePricesAsync(),
-                        Cron.Hourly
-                        );
-                }
-                catch (Exception ex)
-                {
-                    var logger = services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<IParsingPricesService>>();
-                    logger.LogError(ex, "An error occurred while adding a recurring job");
-                }
+                
 
             }
 

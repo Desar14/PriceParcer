@@ -1,6 +1,8 @@
 ﻿using Hangfire;
+using Hangfire.Storage;
 using Microsoft.AspNetCore.Mvc;
 using PriceParser.Core.Interfaces;
+using PriceParser.Models.ServiceManagement;
 
 namespace PriceParser.Controllers
 {
@@ -17,7 +19,22 @@ namespace PriceParser.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var model = new ServiceManagementIndexModel();
+
+            IStorageConnection connection = JobStorage.Current.GetConnection();
+            
+            var jobsById = connection.GetRecurringJobs(new List<string>() { "ParsingPricesFromSites" });
+
+            if (jobsById.Count > 0 && jobsById[0].Job != null)
+            {
+                model.ParsingPricesState = "enabled";
+            }
+            else
+            {
+                model.ParsingPricesState = "disabled";
+            }
+            
+            return View(model);
         }
 
         public async Task<IActionResult> ParsePrices()
@@ -33,6 +50,44 @@ namespace PriceParser.Controllers
 
             return RedirectToAction("Index");
 
+        }
+
+        public async Task<IActionResult> ToggleParsingPricesBackground(string? newState)
+        {
+
+            if (newState == "enable")
+            {
+                try
+                {
+                    RecurringJob.AddOrUpdate(
+                        "ParsingPricesFromSites",
+                        () => _parsingPricesService.ParseSaveAllAvailablePricesAsync(),
+                        Cron.Hourly
+                        );
+                }
+                catch (Exception ex)
+                {
+
+                    _logger.LogError(ex, "An error occurred while adding a recurring job");
+                }
+            }else if (newState == "disable")
+            {
+                try
+                {
+                    RecurringJob.RemoveIfExists(
+                        "ParsingPricesFromSites"
+                        );
+                }
+                catch (Exception ex)
+                {
+
+                    _logger.LogError(ex, "An error occurred while removing a recurring job");
+                }
+            }
+            
+            
+
+            return RedirectToAction("Index");
         }
 
     }

@@ -1,7 +1,20 @@
-﻿@{
+﻿@model PriceParser.Models.ServiceManagement.ServiceManagementIndexModel
+
+@{
     ViewData["Title"] = "Service management area";
 }
 
 <h1>Service management area</h1>
 
 <a asp-controller="ServiceManagement" asp-action="ParsePrices" asp-fragment="" class="btn btn-primary">Parse all prices</a>
+<br />
+@if (Model.ParsingPricesState == "enabled")
+{
+    <a asp-controller="ServiceManagement" asp-action="ToggleParsingPricesBackground" asp-fragment="" asp-route-newState="disable" class="btn btn-primary">Disable automatic parsing</a>
+}
+else
+{
+    <a asp-controller="ServiceManagement" asp-action="ToggleParsingPricesBackground" asp-fragment="" asp-route-newState="enable" class="btn btn-primary">Enable automatic parsing</a>
+}
+<br />
+<a asp-controller="Hangfire" asp-action="" asp-fragment="" asp-route-newState="disable" class="btn btn-primary">Hangfire dashboard</a>
