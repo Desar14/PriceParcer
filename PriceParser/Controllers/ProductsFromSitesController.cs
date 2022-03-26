@@ -213,5 +213,30 @@ namespace PriceParser.Controllers
                 return RedirectToAction(nameof(Details), new { id });
             }
         }
+
+        public async Task<IActionResult> PricesData(Guid id, DateTime? startPeriod, DateTime? endPeriod)
+        {
+            try
+            {
+                var prices = (await _productPricesService.GetAllProductPricesAsync(id, startPeriod, endPeriod))
+                    .GroupBy(item => item.ParseDate.Date, item => item.FullPrice, (date, price) => new
+                    {
+                        Key = date,
+                        Price = price.Average()
+                    }).Select(item => new ProductPriceDataItem()
+                    {
+                        Date = item.Key,
+                        Price = item.Price
+                    })
+                    .ToList();
+
+                return Json(prices);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
     }
 }

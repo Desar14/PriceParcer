@@ -58,6 +58,23 @@ namespace PriceParser.Domain
                 .Select(price => _mapper.Map<ProductPriceDTO>(price));
         }
 
+        public async Task<IEnumerable<ProductPriceDTO>> GetAllProductPricesAsync(Guid productFromSitesId, DateTime? startDate, DateTime? endDate)
+        {
+            if (startDate == null)
+                startDate = DateTime.MinValue;
+
+            if (endDate == null)
+                endDate = DateTime.MaxValue;
+
+
+            return (await _unitOfWork.ProductPricesHistory
+                .Get(filter: price => price.ProductFromSiteId == productFromSitesId 
+                    && price.ParseDate >= startDate 
+                    && price.ParseDate <= endDate, 
+                    includes: price => price.ProductFromSite))
+                .Select(price => _mapper.Map<ProductPriceDTO>(price));
+        }
+
         public async Task<ProductPriceDTO> GetProductPriceDetailsAsync(Guid priceId)
         {
             var result = (await _unitOfWork.ProductPricesHistory.GetByID(priceId, price => price.ProductFromSite));

@@ -32,7 +32,7 @@
             @Html.DisplayNameFor(model => model.Path)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Path)
+            <a href="@Html.DisplayFor(model => model.Path)">@Html.DisplayFor(model => model.Path)</a>
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.DoNotParse)
@@ -60,30 +60,35 @@
         </dd>
     </dl>
 
-    <h7>Prices</h7>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">Parse date</th>
-                <th scope="col">Full price</th>
-                <th scope="col">Discount price</th>
-                <th scope="col">Currency</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.productPrices)
-            {
+    
+    <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapse-raw-prices" role="button" aria-expanded="false" aria-controls="collapse-raw-prices">
+        Raw prices data
+    </a>
+    <div class="collapse" id="collapse-raw-prices">
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <th scope="row">@item.ParseDate</th>
-                    <td>@item.FullPrice</td>
-                    <td>@item.DiscountPrice</td>
-                    <td>@item.CurrencyCode</td>
+                    <th scope="col">Parse date</th>
+                    <th scope="col">Full price</th>
+                    <th scope="col">Discount price</th>
+                    <th scope="col">Currency</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-
+            </thead>
+            <tbody>
+                @foreach (var item in Model.productPrices)
+                {
+                    <tr>
+                        <th scope="row">@item.ParseDate</th>
+                        <td>@item.FullPrice</td>
+                        <td>@item.DiscountPrice</td>
+                        <td>@item.CurrencyCode</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
+<br />
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id" asp-fragment="" class="btn btn-primary">Edit</a>
     <a asp-action="Delete" asp-route-id="@Model.Id" asp-fragment="" class="btn btn-primary">Delete</a>

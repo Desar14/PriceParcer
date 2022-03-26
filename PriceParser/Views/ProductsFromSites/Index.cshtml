@@ -31,6 +31,7 @@
                 @Html.DisplayNameFor(model => model.CreatedByUserName)
             </th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -56,6 +57,9 @@
             </td>
             <td>
                 <a asp-action="Details" asp-route-id="@item.Id" asp-fragment="" class="btn btn-primary">Details</a>
+            </td>
+            <td>
+                <a href="@Html.DisplayFor(modelItem => item.Path)" class="btn btn-primary">Open on site</a>
             </td>
         </tr>
 }
