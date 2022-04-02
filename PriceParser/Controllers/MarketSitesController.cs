@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PriceParser.Core.Interfaces;
-using PriceParser.Data;
+using PriceParser.Data.Entities;
 using PriceParser.Models;
 
 namespace PriceParser.Controllers

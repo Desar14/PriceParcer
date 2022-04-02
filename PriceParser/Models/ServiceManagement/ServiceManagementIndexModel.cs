@@ -2,6 +2,7 @@
 {
     public class ServiceManagementIndexModel
     {
-        public string ParsingPricesState { get; set; }   
+        public string ParsingPricesState { get; set; }
+        public string UpdateRatesState { get; set; }
     }
 }

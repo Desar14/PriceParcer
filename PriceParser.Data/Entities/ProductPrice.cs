@@ -1,6 +1,6 @@
 ﻿using PriceParser.Data.Entities;
 
-namespace PriceParser.Data
+namespace PriceParser.Data.Entities
 {
     public class ProductPrice : BaseEntity
     {
@@ -12,6 +12,8 @@ namespace PriceParser.Data
         public double DiscountPrice { get; set; }
         public double DiscountPercent { get; set; }
         public string CurrencyCode { get; set; }
+        public virtual Currency Currency { get; set; }
+        public Guid CurrencyId { get; set; }
         public bool IsOutOfStock { get; set; }
         public bool ParseError { get; set; }
 

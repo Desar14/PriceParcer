@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using PriceParser.Core.DTO;
-using PriceParser.Data;
+using PriceParser.Data.Entities;
 using PriceParser.Models;
 using PriceParser.Models.UserReview;
 

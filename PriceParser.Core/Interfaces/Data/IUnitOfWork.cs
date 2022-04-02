@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using PriceParser.Data;
+using PriceParser.Core.Interfaces.Data;
+using PriceParser.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace PriceParser.Core.Interfaces
         IRepository<ProductFromSites> ProductsFromSites { get; }
         IRepository<ProductPrice> ProductPricesHistory { get; }
         IRepository<UserReview> UserReviews { get; }
+        IRepository<Currency> Currencies { get; }
+        ICurrencyRatesRepository CurrencyRates { get; }
 
         Task<int> Commit();
     }

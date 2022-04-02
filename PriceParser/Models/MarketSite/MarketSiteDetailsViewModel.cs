@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using PriceParser.Data;
+using PriceParser.Data.Entities;
 
 namespace PriceParser.Models
 {

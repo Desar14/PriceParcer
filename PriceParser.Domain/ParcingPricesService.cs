@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
 using HtmlAgilityPack;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PriceParser.Core.DTO;
 using PriceParser.Core.Interfaces;
-using PriceParser.Data;
-using System;
+using PriceParser.Data.Entities;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PriceParser.Domain
 {
@@ -21,14 +17,18 @@ namespace PriceParser.Domain
         private readonly IProductPricesService _productsPricesService;
         private readonly IMarketSitesService _marketSitesService;
         private readonly ILogger<ParcingPricesService> _logger;
+        private readonly IConfiguration _configuration;
+        private readonly ICurrenciesService _currenciesService;
 
-        public ParcingPricesService(IMapper mapper, IProductsFromSitesService productsFromSitesService, IProductPricesService productsPricesService, IMarketSitesService marketSitesService, ILogger<ParcingPricesService> logger)
+        public ParcingPricesService(IMapper mapper, IProductsFromSitesService productsFromSitesService, IProductPricesService productsPricesService, IMarketSitesService marketSitesService, ILogger<ParcingPricesService> logger, IConfiguration configuration, ICurrenciesService currenciesService)
         {
             _mapper = mapper;
             _productsFromSitesService = productsFromSitesService;
             _productsPricesService = productsPricesService;
             _marketSitesService = marketSitesService;
             _logger = logger;
+            _configuration = configuration;
+            _currenciesService = currenciesService;
         }
 
         public async Task<ProductPriceDTO> ParseProductPriceAsync(Guid productFromSitesId)
@@ -133,6 +133,9 @@ namespace PriceParser.Domain
         public async Task<ProductPriceDTO> ParseProductPriceAsync(ProductFromSitesDTO productFromSite)
         {
 
+            string defaultCurrencyAbbreviation = _configuration["DefaultCurrency"];
+            
+
             ProductPriceDTO result = null;            
 
             if (productFromSite.Site.ParseType == ParseTypes.Xpath)
@@ -160,13 +163,16 @@ namespace PriceParser.Domain
                 catch (Exception)
                 {
                     //todo log
-                    CurrencyRawString = "BYN";
+                    CurrencyRawString = defaultCurrencyAbbreviation;
                 }
+
+
 
                 result.FullPrice = priceParsed;
                 result.ParseDate = DateTime.Now;
                 result.Id = Guid.NewGuid();
                 result.CurrencyCode = CurrencyRawString;
+                result.CurrencyId = (await _currenciesService.GetByAbbreviationAsync(CurrencyRawString)).Id;
                 result.ProductFromSiteId = productFromSite.Id;
             }
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using PriceParser.Data;
+using PriceParser.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

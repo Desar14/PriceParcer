@@ -5,7 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using PriceParser;
 using PriceParser.Core;
 using PriceParser.Core.Interfaces;
-using PriceParser.Data;
+using PriceParser.Core.Interfaces.Data;
+using PriceParser.Data.Entities;
 using PriceParser.DataAccess;
 using PriceParser.Domain;
 using Serilog;
@@ -39,6 +40,8 @@ namespace PriceParser
             builder.Services.AddScoped<IRepository<ProductFromSites>, Repository<ProductFromSites>>();
             builder.Services.AddScoped<IRepository<ProductPrice>, Repository<ProductPrice>>();
             builder.Services.AddScoped<IRepository<UserReview>, Repository<UserReview>>();
+            builder.Services.AddScoped<IRepository<Currency>, Repository<Currency>>();
+            builder.Services.AddScoped<ICurrencyRatesRepository, CurrencyRatesRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductsService, ProductService>();
             builder.Services.AddScoped<IMarketSitesService, MarketSitesService>();
@@ -46,6 +49,7 @@ namespace PriceParser
             builder.Services.AddScoped<IUserReviewsService, UserReviewsService>();
             builder.Services.AddScoped<IProductPricesService, ProductPricesService>();
             builder.Services.AddScoped<IParsingPricesService, ParcingPricesService>();
+            builder.Services.AddScoped<ICurrenciesService, CurrenciesService>();
 
             // Add Hangfire services.
             builder.Services.AddHangfire(configuration => configuration

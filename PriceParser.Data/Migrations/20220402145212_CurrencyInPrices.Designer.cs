@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PriceParser;
 
@@ -11,9 +12,10 @@ using PriceParser;
 namespace PriceParser.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220402145212_CurrencyInPrices")]
+    partial class CurrencyInPrices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -291,9 +293,6 @@ namespace PriceParser.Data.Migrations
 
                     b.Property<int>("Cur_Scale")
                         .HasColumnType("int");
-
-                    b.Property<bool>("UpdateRates")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -601,7 +600,7 @@ namespace PriceParser.Data.Migrations
             modelBuilder.Entity("PriceParser.Data.Entities.CurrencyRate", b =>
                 {
                     b.HasOne("PriceParser.Data.Entities.Currency", "Currency")
-                        .WithMany("Rates")
+                        .WithMany()
                         .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -679,11 +678,6 @@ namespace PriceParser.Data.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("PriceParser.Data.Entities.Currency", b =>
-                {
-                    b.Navigation("Rates");
                 });
 
             modelBuilder.Entity("PriceParser.Data.Entities.MarketSite", b =>

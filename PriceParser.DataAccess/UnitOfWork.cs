@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using PriceParser.Core;
 using PriceParser.Core.Interfaces;
-using PriceParser.Data;
+using PriceParser.Core.Interfaces.Data;
+using PriceParser.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +20,11 @@ namespace PriceParser.DataAccess
         private readonly IRepository<ProductFromSites> _productFromSitesRepo;
         private readonly IRepository<ProductPrice> _productPricesRepo;
         private readonly IRepository<UserReview> _userReviewsRepo;
+        private readonly IRepository<Currency> _currencyRepo;
+        private readonly ICurrencyRatesRepository _currencyRateRepo;
         private readonly ILogger<UnitOfWork> _logger;
 
-        public UnitOfWork(ApplicationDbContext db, IRepository<MarketSite> marketSitesRepo, IRepository<Product> productRepo, IRepository<ProductFromSites> productFromSitesRepo, IRepository<ProductPrice> productPricesRepo, IRepository<UserReview> userReviewsRepo, ILogger<UnitOfWork> logger)
+        public UnitOfWork(ApplicationDbContext db, IRepository<MarketSite> marketSitesRepo, IRepository<Product> productRepo, IRepository<ProductFromSites> productFromSitesRepo, IRepository<ProductPrice> productPricesRepo, IRepository<UserReview> userReviewsRepo, ILogger<UnitOfWork> logger, ICurrencyRatesRepository currencyRateRepo, IRepository<Currency> currencyRepo)
         {
             _db = db;
             _marketSitesRepo = marketSitesRepo;
@@ -30,6 +33,8 @@ namespace PriceParser.DataAccess
             _productPricesRepo = productPricesRepo;
             _userReviewsRepo = userReviewsRepo;
             _logger = logger;
+            _currencyRateRepo = currencyRateRepo;
+            _currencyRepo = currencyRepo;
         }
 
         public IRepository<MarketSite> MarketSites => _marketSitesRepo;
@@ -41,6 +46,10 @@ namespace PriceParser.DataAccess
         public IRepository<ProductPrice> ProductPricesHistory => _productPricesRepo;
 
         public IRepository<UserReview> UserReviews => _userReviewsRepo;
+
+        public IRepository<Currency> Currencies => _currencyRepo;
+
+        public ICurrencyRatesRepository CurrencyRates => _currencyRateRepo;
 
         public async Task<int> Commit()
         {

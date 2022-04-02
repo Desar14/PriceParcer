@@ -17,4 +17,18 @@ else
     <a asp-controller="ServiceManagement" asp-action="ToggleParsingPricesBackground" asp-fragment="" asp-route-newState="enable" class="btn btn-primary">Enable automatic parsing</a>
 }
 <br />
-<a asp-controller="Hangfire" asp-action="" asp-fragment="" asp-route-newState="disable" class="btn btn-primary">Hangfire dashboard</a>
+<a asp-controller="Hangfire" asp-action="" asp-fragment="" class="btn btn-primary">Hangfire dashboard</a>
+<br />
+<a asp-controller="ServiceManagement" asp-action="UpdateCurrencyList" asp-fragment=""class="btn btn-primary">Update currencies list</a>
+<br />
+<a asp-controller="ServiceManagement" asp-action="UpdateRates" asp-fragment="" class="btn btn-primary">Update rates</a>
+<br />
+@if (Model.UpdateRatesState == "enabled")
+{
+    <a asp-controller="ServiceManagement" asp-action="ToggleUpdateRatesBackground" asp-fragment="" asp-route-newState="disable" class="btn btn-primary">Disable automatic rate updating</a>
+}
+else
+{
+    <a asp-controller="ServiceManagement" asp-action="ToggleUpdateRatesBackground" asp-fragment="" asp-route-newState="enable" class="btn btn-primary">Enable automatic rate updating</a>
+}
+<br />

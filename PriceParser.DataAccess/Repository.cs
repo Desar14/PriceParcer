@@ -219,5 +219,10 @@ namespace PriceParser.DataAccess
             _dbContext.Dispose();
             GC.SuppressFinalize(this);
         }
+
+        public async Task<IQueryable<T>> GetQueryable()
+        {
+            return _dbSet;
+        }
     }
 }

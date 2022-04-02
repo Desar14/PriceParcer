@@ -1,0 +1,90 @@
+﻿@model PriceParser.Models.CurrencyDetailsViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>CurrencyDetailsViewModel</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Code)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Code)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Abbreviation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Abbreviation)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Scale)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Scale)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Periodicity)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Periodicity)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.UpdateRates)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.UpdateRates)
+        </dd>
+    </dl>
+</div>
+
+<a class="btn btn-primary" data-bs-toggle="collapse" href="#collapse-rates" role="button" aria-expanded="false" aria-controls="collapse-rates">
+        Currency rates
+    </a>
+    <div class="collapse" id="collapse-rates">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Scale</th>
+                    <th scope="col">Rate</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Rates)
+                {
+                    <tr>
+                        <th scope="row">@item.Date</th>
+                        <td>@item.Scale</td>
+                        <td>@item.OfficialRate</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+<div>
+    <a asp-action="UpdateRates" asp-route-currencyId="@Model.Id">Update rates</a>
+    <br />
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    <br />
+    <a asp-action="Index">Back to List</a>
+</div>

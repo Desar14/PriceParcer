@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using PriceParser.Core.DTO;
 using PriceParser.Core.Interfaces;
-using PriceParser.Data;
+using PriceParser.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

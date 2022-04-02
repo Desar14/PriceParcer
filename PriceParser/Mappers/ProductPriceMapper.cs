@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using PriceParser.Core.DTO;
-using PriceParser.Data;
-using PriceParser.Models;
+using PriceParser.Data.Entities;
 using PriceParser.Models.ProductPrice;
 
 namespace PriceParser.Mappers

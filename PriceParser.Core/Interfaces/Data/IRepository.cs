@@ -23,6 +23,8 @@ namespace PriceParser.Core
         public Task<TEntity?> GetByID(object id, params Expression<Func<TEntity, object>>[] includes);
         public Task<IEnumerable<TEntity>> GetWithRawSql(string query, params object[] parameters);
 
+        public Task<IQueryable<TEntity>> GetQueryable();
+
         public Task<TEntity?> FindBy(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes);
 
         public Task PatchAsync(Guid id, List<PatchModel> patchDtos);

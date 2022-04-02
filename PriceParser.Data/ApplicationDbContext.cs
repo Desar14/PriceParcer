@@ -1,6 +1,7 @@
 ﻿using PriceParser.Data;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using PriceParser.Data.Entities;
 
 namespace PriceParser
 {
@@ -12,6 +13,8 @@ namespace PriceParser
         public DbSet<ProductFromSites> ProductsFromSites { get; set; }
         public DbSet<ProductPrice> ProductPricesHistory { get; set; }
         public DbSet<UserReview> UserReviews { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
+        public DbSet<CurrencyRate> CurrencyRates { get; set; }
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
