@@ -1,4 +1,5 @@
 ﻿using PriceParser.Core.DTO;
+using PriceParser.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,10 @@ namespace PriceParser.Core.Interfaces
         Task<bool> EditProduct(ProductDTO product);
 
         Task<bool> DeleteProduct(Guid id);
+
+        Task<bool> UpdateAggregatedData(Guid Id);
+        Task<bool> UpdateAggregatedData(Product product);
+        Task<bool> UpdateAggregatedData();
 
     }
 }

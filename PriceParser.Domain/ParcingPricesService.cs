@@ -15,12 +15,13 @@ namespace PriceParser.Domain
         private readonly IMapper _mapper;
         private readonly IProductsFromSitesService _productsFromSitesService;
         private readonly IProductPricesService _productsPricesService;
+        private readonly IProductsService _productsService;
         private readonly IMarketSitesService _marketSitesService;
         private readonly ILogger<ParcingPricesService> _logger;
         private readonly IConfiguration _configuration;
         private readonly ICurrenciesService _currenciesService;
 
-        public ParcingPricesService(IMapper mapper, IProductsFromSitesService productsFromSitesService, IProductPricesService productsPricesService, IMarketSitesService marketSitesService, ILogger<ParcingPricesService> logger, IConfiguration configuration, ICurrenciesService currenciesService)
+        public ParcingPricesService(IMapper mapper, IProductsFromSitesService productsFromSitesService, IProductPricesService productsPricesService, IMarketSitesService marketSitesService, ILogger<ParcingPricesService> logger, IConfiguration configuration, ICurrenciesService currenciesService, IProductsService productsService)
         {
             _mapper = mapper;
             _productsFromSitesService = productsFromSitesService;
@@ -29,6 +30,7 @@ namespace PriceParser.Domain
             _logger = logger;
             _configuration = configuration;
             _currenciesService = currenciesService;
+            _productsService = productsService;
         }
 
         public async Task<ProductPriceDTO> ParseProductPriceAsync(Guid productFromSitesId)
@@ -118,7 +120,20 @@ namespace PriceParser.Domain
                 }                
             });
 
+            foreach (var item in parsedPrices)
+            {
+                item.CurrencyId = (await _currenciesService.GetByAbbreviationAsync(item.CurrencyCode)).Id;
+            }
+
             await _productsPricesService.AddProductPricesRangeAsync(parsedPrices);
+
+            
+            var products = dataToParse.Values.SelectMany(x => x.Select(x=>x.ProductId)).Distinct();
+            
+            foreach (var item in products)
+            {
+                await _productsService.UpdateAggregatedData(item);
+            }
 
             return true;
         }
@@ -126,6 +141,10 @@ namespace PriceParser.Domain
         public async Task<bool> ParseSaveProductPriceAsync(Guid productFromSitesId)
         {
             var dto = await ParseProductPriceAsync(productFromSitesId);
+
+            var productsFromSite = await _productsFromSitesService.GetDetailsAsync(productFromSitesId);
+
+            await _productsService.UpdateAggregatedData(productsFromSite.ProductId);
 
             return await _productsPricesService.AddProductPriceAsync(dto);
         }
@@ -172,7 +191,7 @@ namespace PriceParser.Domain
                 result.ParseDate = DateTime.Now;
                 result.Id = Guid.NewGuid();
                 result.CurrencyCode = CurrencyRawString;
-                result.CurrencyId = (await _currenciesService.GetByAbbreviationAsync(CurrencyRawString)).Id;
+                //result.CurrencyId = (await _currenciesService.GetByAbbreviationAsync(CurrencyRawString)).Id;
                 result.ProductFromSiteId = productFromSite.Id;
             }
 
