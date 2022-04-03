@@ -90,6 +90,17 @@ namespace PriceParser.Domain
                 .Select(price => _mapper.Map<ProductPriceDTO>(price));
         }
 
+        public async Task<ProductPriceDTO> GetLastProductPriceAsync(Guid productFromSitesId)
+        {
+            var result = (await _unitOfWork.ProductPricesHistory.GetQueryable())
+                .Where(price => price.ProductFromSiteId == productFromSitesId)
+                .OrderByDescending(x=> x.ParseDate)
+                .Take(1)
+                .FirstOrDefault();
+
+            return _mapper.Map<ProductPriceDTO>(result);
+        }
+
         public async Task<ProductPriceDTO> GetProductPriceDetailsAsync(Guid priceId)
         {
             var result = (await _unitOfWork.ProductPricesHistory.GetByID(priceId, price => price.ProductFromSite));

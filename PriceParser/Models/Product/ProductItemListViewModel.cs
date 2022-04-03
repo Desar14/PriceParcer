@@ -8,6 +8,7 @@
         public string Category { get; set; }
         public double BestPriceNow { get; set; }
         public float AverageScore { get; set; }
+        public string? CurrencyCode { get; set; }
 
         public ProductItemListViewModel()
         {

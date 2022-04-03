@@ -9,20 +9,21 @@ namespace PriceParser.Controllers
     public class ProductController : Controller
     {
         private readonly IProductsService _productService;
+        private readonly IProductPricesService _productPricesService;
         private readonly IMapper _mapper;
         private readonly ILogger<ProductController> _logger;
 
-        public ProductController(IProductsService productService, IMapper mapper, ILogger<ProductController> logger)
+        public ProductController(IProductsService productService, IMapper mapper, ILogger<ProductController> logger, IProductPricesService productPricesService)
         {
             _productService = productService;
             _mapper = mapper;
             _logger = logger;
+            _productPricesService = productPricesService;
         }
 
         // GET: ProductController
         public async Task<IActionResult> Index()
         {
-
             try
             {
                 var products = (await _productService.GetAllProductsAsync())
@@ -45,6 +46,12 @@ namespace PriceParser.Controllers
                 var productDetailDTO = (await _productService.GetProductDetailsAsync(id));
 
                 var model = _mapper.Map<ProductDetailsViewModel>(productDetailDTO);
+
+                model.marketSites.ForEach(async site =>
+                {
+                    site.Price = (await _productPricesService.GetLastProductPriceAsync(site.Id)).FullPrice;
+                    site.CurrencyCode = (await _productPricesService.GetLastProductPriceAsync(site.Id)).CurrencyCode;
+                });
 
                 return View(model);
             }
