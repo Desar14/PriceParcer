@@ -14,11 +14,11 @@ namespace PriceParser.Core.Interfaces
         Task<IEnumerable<ProductPriceDTO>> GetAllProductPricesAsync(Guid productFromSitesId, DateTime? startDate, DateTime? endDate);
         Task<ProductPriceDTO> GetLastProductPriceAsync(Guid productFromSitesId);
         Task<ProductPriceDTO> GetProductPriceDetailsAsync(Guid priceId);
-        Task<bool> AddProductPriceAsync(ProductPriceDTO productPriceDTO);
-        Task<bool> UpdateProductPriceAsync(ProductPriceDTO productPriceDTO);
-        Task<bool> DeleteProductPriceAsync(Guid id);
 
+        Task<bool> AddProductPriceAsync(ProductPriceDTO productPriceDTO);
         Task<bool> AddProductPricesRangeAsync(IEnumerable<ProductPriceDTO> productPriceDTORange);
 
+        Task<bool> UpdateProductPriceAsync(ProductPriceDTO productPriceDTO);
+        Task<bool> DeleteProductPriceAsync(Guid id);        
     }
 }

@@ -49,8 +49,9 @@ namespace PriceParser.Controllers
 
                 model.marketSites.ForEach(async site =>
                 {
-                    site.Price = (await _productPricesService.GetLastProductPriceAsync(site.Id)).FullPrice;
-                    site.CurrencyCode = (await _productPricesService.GetLastProductPriceAsync(site.Id)).CurrencyCode;
+                    var lastPrice = await _productPricesService.GetLastProductPriceAsync(site.Id);
+                    site.Price = lastPrice.FullPrice;
+                    site.CurrencyCode = lastPrice.CurrencyCode;
                 });
 
                 return View(model);
@@ -77,7 +78,7 @@ namespace PriceParser.Controllers
             var productToAdd = _mapper.Map<Core.DTO.ProductDTO>(model);
             try
             {
-                await _productService.AddProduct(productToAdd);
+                await _productService.AddProductAsync(productToAdd);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -115,7 +116,7 @@ namespace PriceParser.Controllers
             var productToAdd = _mapper.Map<Core.DTO.ProductDTO>(model);
             try
             {
-                await _productService.EditProduct(productToAdd);
+                await _productService.EditProductAsync(productToAdd);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -152,7 +153,7 @@ namespace PriceParser.Controllers
         {
             try
             {
-                await _productService.DeleteProduct(model.Id);
+                await _productService.DeleteProductAsync(model.Id);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)

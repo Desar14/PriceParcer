@@ -39,7 +39,7 @@ namespace PriceParser.Domain
             return _mapper.Map<ProductDTO>(result);
         }
 
-        public async Task<bool> UpdateAggregatedPricesData(Guid Id)
+        public async Task<bool> UpdateAggregatedPricesDataAsync(Guid Id)
         {
             var aggOverallData = (await _unitOfWork.ProductPricesHistory.GetQueryable())
                 .Where(x => x.ProductFromSite.ProductId == Id && x.FullPrice != 0)
@@ -91,17 +91,17 @@ namespace PriceParser.Domain
             return result > 0;
         }
 
-        public Task<bool> UpdateAggregatedPricesData(Product product)
+        public Task<bool> UpdateAggregatedPricesDataAsync(Product product)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateAggregatedPricesData()
+        public Task<bool> UpdateAggregatedPricesDataAsync()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> AddProduct(ProductDTO product)
+        public async Task<bool> AddProductAsync(ProductDTO product)
         {
             var entity = _mapper.Map<Product>(product);
 
@@ -112,7 +112,7 @@ namespace PriceParser.Domain
             return result > 0;
         }
 
-        public async Task<bool> DeleteProduct(Guid id)
+        public async Task<bool> DeleteProductAsync(Guid id)
         {
             await _unitOfWork.Products.Delete(id);
 
@@ -121,7 +121,7 @@ namespace PriceParser.Domain
             return result > 0;
         }
 
-        public async Task<bool> EditProduct(ProductDTO product)
+        public async Task<bool> EditProductAsync(ProductDTO product)
         {
             var entity = _mapper.Map<Product>(product);
 
@@ -132,7 +132,7 @@ namespace PriceParser.Domain
             return result > 0;
         }
 
-        public async Task<bool> UpdateAggregatedReviewRateData(Guid Id)
+        public async Task<bool> UpdateAggregatedReviewRateDataAsync(Guid Id)
         {
             var aggReviewRateAverage = (await _unitOfWork.UserReviews.GetQueryable())
                 .Where(x => x.ProductId == Id)
@@ -152,12 +152,12 @@ namespace PriceParser.Domain
             return result > 0;
         }
 
-        public Task<bool> UpdateAggregatedReviewRateData(Product product)
+        public Task<bool> UpdateAggregatedReviewRateDataAsync(Product product)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateAggregatedReviewRateData()
+        public Task<bool> UpdateAggregatedReviewRateDataAsync()
         {
             throw new NotImplementedException();
         }

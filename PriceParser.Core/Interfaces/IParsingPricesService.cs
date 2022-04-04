@@ -15,6 +15,5 @@ namespace PriceParser.Core.Interfaces
         Task<bool> ParseSaveProductPriceAsync(Guid productFromSitesId);
         Task<bool> ParseSaveAllAvailablePricesAsync();
 
-
     }
 }

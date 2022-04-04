@@ -10,9 +10,7 @@ namespace PriceParser.Core.Interfaces
     public interface IUserReviewsService
     {
         Task<IEnumerable<UserReviewDTO>> GetAllAsync();
-
         Task<IEnumerable<UserReviewDTO>> GetAllByProductAsync(Guid productId);
-
         Task<UserReviewDTO> GetDetailsAsync(Guid id);
 
         Task<bool> AddAsync(UserReviewDTO review);

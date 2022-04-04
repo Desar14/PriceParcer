@@ -34,7 +34,7 @@ namespace PriceParser.Domain
 
             var result = await _unitOfWork.Commit();
 
-            await _productService.UpdateAggregatedReviewRateData(entity.ProductId);
+            await _productService.UpdateAggregatedReviewRateDataAsync(entity.ProductId);
 
             return result > 0;
         }
@@ -54,7 +54,7 @@ namespace PriceParser.Domain
 
             var result = await _unitOfWork.Commit();
 
-            await _productService.UpdateAggregatedReviewRateData(productId);
+            await _productService.UpdateAggregatedReviewRateDataAsync(productId);
 
             return result > 0;
         }
@@ -67,7 +67,7 @@ namespace PriceParser.Domain
 
             var result = await _unitOfWork.Commit();
 
-            await _productService.UpdateAggregatedReviewRateData(entity.ProductId);
+            await _productService.UpdateAggregatedReviewRateDataAsync(entity.ProductId);
 
             return result > 0;
         }
