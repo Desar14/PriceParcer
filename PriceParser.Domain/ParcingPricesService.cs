@@ -132,7 +132,7 @@ namespace PriceParser.Domain
             
             foreach (var item in products)
             {
-                await _productsService.UpdateAggregatedData(item);
+                await _productsService.UpdateAggregatedPricesData(item);
             }
 
             return true;
@@ -144,7 +144,7 @@ namespace PriceParser.Domain
 
             var productsFromSite = await _productsFromSitesService.GetDetailsAsync(productFromSitesId);
 
-            await _productsService.UpdateAggregatedData(productsFromSite.ProductId);
+            await _productsService.UpdateAggregatedPricesData(productsFromSite.ProductId);
 
             return await _productsPricesService.AddProductPriceAsync(dto);
         }

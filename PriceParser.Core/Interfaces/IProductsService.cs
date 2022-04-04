@@ -19,9 +19,13 @@ namespace PriceParser.Core.Interfaces
 
         Task<bool> DeleteProduct(Guid id);
 
-        Task<bool> UpdateAggregatedData(Guid Id);
-        Task<bool> UpdateAggregatedData(Product product);
-        Task<bool> UpdateAggregatedData();
+        Task<bool> UpdateAggregatedPricesData(Guid Id);
+        Task<bool> UpdateAggregatedPricesData(Product product);
+        Task<bool> UpdateAggregatedPricesData();
+
+        Task<bool> UpdateAggregatedReviewRateData(Guid Id);
+        Task<bool> UpdateAggregatedReviewRateData(Product product);
+        Task<bool> UpdateAggregatedReviewRateData();
 
     }
 }

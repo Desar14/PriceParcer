@@ -39,9 +39,9 @@ namespace PriceParser.Domain
             return _mapper.Map<ProductDTO>(result);
         }
 
-        public async Task<bool> UpdateAggregatedData(Guid Id)
+        public async Task<bool> UpdateAggregatedPricesData(Guid Id)
         {
-            var aggOverAllData = (await _unitOfWork.ProductPricesHistory.GetQueryable())
+            var aggOverallData = (await _unitOfWork.ProductPricesHistory.GetQueryable())
                 .Where(x => x.ProductFromSite.ProductId == Id && x.FullPrice != 0)
                 .GroupBy(x => 1)
                 .Select(x => new
@@ -57,8 +57,10 @@ namespace PriceParser.Domain
                     ProdFromSiteId = prodId,
                     MaxDate = date.Max()
                 })
-                .Join(await _unitOfWork.ProductPricesHistory.GetQueryable(), maxDates => new { q1 = maxDates.ProdFromSiteId, q2 = maxDates.MaxDate },
-                        rawTable => new { q1 = rawTable.ProductFromSiteId, q2 = rawTable.ParseDate }, (maxDates, rawTable) => new 
+                .Join(await _unitOfWork.ProductPricesHistory.GetQueryable(), 
+                        maxDates => new { q1 = maxDates.ProdFromSiteId, q2 = maxDates.MaxDate },
+                        rawTable => new { q1 = rawTable.ProductFromSiteId, q2 = rawTable.ParseDate }, 
+                        (maxDates, rawTable) => new 
                         {
                             ProdFromSiteId = maxDates.ProdFromSiteId,
                             CurrentPrice = rawTable.FullPrice
@@ -70,19 +72,14 @@ namespace PriceParser.Domain
                     BestPrice = x.Min(x => x.CurrentPrice)
                 }).FirstOrDefault();
 
-            var aggReviewRateAverage = (await _unitOfWork.UserReviews.GetQueryable())
-                .Where(x => x.ProductId == Id)
-                .Select(x => x.ReviewScore).DefaultIfEmpty().Average();
-
             var productEntity = (await _unitOfWork.Products.FindBy(x=> x.Id.Equals(Id)));
 
             if (productEntity != null)
             {
-                productEntity.AveragePriceOverall = aggOverAllData.AveragePrice;
-                productEntity.BestPriceOverall = aggOverAllData.BestPrice;
+                productEntity.AveragePriceOverall = aggOverallData.AveragePrice;
+                productEntity.BestPriceOverall = aggOverallData.BestPrice;
                 productEntity.AveragePriceNow = aggNowData.AveragePrice;
-                productEntity.BestPriceNow = aggNowData.BestPrice;
-                productEntity.AverageScore = (float)aggReviewRateAverage;
+                productEntity.BestPriceNow = aggNowData.BestPrice;                
 
                 productEntity.LastAggregate = DateTime.Now;
 
@@ -94,12 +91,12 @@ namespace PriceParser.Domain
             return result > 0;
         }
 
-        public Task<bool> UpdateAggregatedData(Product product)
+        public Task<bool> UpdateAggregatedPricesData(Product product)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateAggregatedData()
+        public Task<bool> UpdateAggregatedPricesData()
         {
             throw new NotImplementedException();
         }
@@ -133,6 +130,36 @@ namespace PriceParser.Domain
             var result = await _unitOfWork.Commit();
 
             return result > 0;
+        }
+
+        public async Task<bool> UpdateAggregatedReviewRateData(Guid Id)
+        {
+            var aggReviewRateAverage = (await _unitOfWork.UserReviews.GetQueryable())
+                .Where(x => x.ProductId == Id)
+                .Select(x => x.ReviewScore).DefaultIfEmpty().Average();
+
+            var productEntity = (await _unitOfWork.Products.FindBy(x => x.Id.Equals(Id)));
+
+            if (productEntity != null)
+            {
+                productEntity.AverageScore = (float)aggReviewRateAverage;
+
+                await _unitOfWork.Products.Update(productEntity);
+            }
+
+            var result = await _unitOfWork.Commit();
+
+            return result > 0;
+        }
+
+        public Task<bool> UpdateAggregatedReviewRateData(Product product)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateAggregatedReviewRateData()
+        {
+            throw new NotImplementedException();
         }
     }
 }

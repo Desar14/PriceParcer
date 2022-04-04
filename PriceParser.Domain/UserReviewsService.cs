@@ -16,12 +16,14 @@ namespace PriceParser.Domain
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<UserReviewsService> _logger;
+        private readonly IProductsService _productService;
 
-        public UserReviewsService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UserReviewsService> logger)
+        public UserReviewsService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UserReviewsService> logger, IProductsService productService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
+            _productService = productService;
         }
 
         public async Task<bool> AddAsync(UserReviewDTO review)
@@ -32,14 +34,27 @@ namespace PriceParser.Domain
 
             var result = await _unitOfWork.Commit();
 
+            await _productService.UpdateAggregatedReviewRateData(entity.ProductId);
+
             return result > 0;
         }
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            await _unitOfWork.UserReviews.Delete(id);
+            var entity = await _unitOfWork.UserReviews.FindBy(x => x.Id == id);
+
+            if (entity == null)
+            {
+                return false;
+            }
+
+            var productId = entity.ProductId;
+
+            _unitOfWork.UserReviews.Delete(entity);
 
             var result = await _unitOfWork.Commit();
+
+            await _productService.UpdateAggregatedReviewRateData(productId);
 
             return result > 0;
         }
@@ -51,6 +66,8 @@ namespace PriceParser.Domain
             await _unitOfWork.UserReviews.Update(entity);
 
             var result = await _unitOfWork.Commit();
+
+            await _productService.UpdateAggregatedReviewRateData(entity.ProductId);
 
             return result > 0;
         }

@@ -28,12 +28,22 @@
             </div>
             <div class="mb-3">
                 <label asp-for="ReviewText" class="form-label"></label>
-                <textarea  asp-for="ReviewText" class="form-control" style="height: 100px"></textarea>
+                <textarea asp-for="ReviewText" class="form-control" style="height: 100px"></textarea>
                 <span asp-validation-for="ReviewText" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="ReviewScore" class="control-label"></label>
-                <input asp-for="ReviewScore" type="range" class="form-range" min="0" max="5"/>
+                <select asp-for="ReviewScore" class="star-rating">
+                    <option value="">Select a rating</option>
+                    <option value="5">Excellent</option>
+                    <option value="4">Very Good</option>
+                    <option value="3">Average</option>
+                    <option value="2">Poor</option>
+                    <option value="1">Terrible</option>
+                </select>
+
+                
+                @*<input asp-for="ReviewScore" type="range" class="form-range" min="0" max="5" />*@
                 <span asp-validation-for="ReviewScore" class="text-danger"></span>
             </div>
             <div class="mb-3">
@@ -52,3 +62,11 @@
     <a asp-action="Details" asp-controller="Product" asp-route-id="@Model.ProductId">Back to Product</a>
 </div>
 
+
+@section Scripts
+{
+<script src="~/js/star-rating.js"></script>
+<script>
+    var stars = new StarRating('.star-rating');
+</script>
+}

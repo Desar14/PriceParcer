@@ -36,22 +36,25 @@ namespace PriceParser.Domain
         {
             var entityRange = productPriceDTORange.Select(x => _mapper.Map<ProductPrice>(x));
 
-            var tempvar = (await _unitOfWork.ProductPricesHistory.GetQueryable())
+            var lastPricesPerProdFromSiteId = (await _unitOfWork.ProductPricesHistory.GetQueryable())
                 .Where(x => x.FullPrice != 0)
                 .GroupBy(x => x.ProductFromSiteId, x => x.ParseDate, (prodId, date) => new
                 {
                     ProdFromSiteId = prodId,
                     MaxDate = date.Max()
                 })
-                .Join(await _unitOfWork.ProductPricesHistory.GetQueryable(), maxDates => new { q1 = maxDates.ProdFromSiteId, q2 = maxDates.MaxDate },
-                        rawTable => new { q1 = rawTable.ProductFromSiteId, q2 = rawTable.ParseDate }, (maxDates, rawTable) => new
+                .Join(await _unitOfWork.ProductPricesHistory.GetQueryable(), 
+                    maxDates => new { q1 = maxDates.ProdFromSiteId, q2 = maxDates.MaxDate },
+                    rawTable => new { q1 = rawTable.ProductFromSiteId, q2 = rawTable.ParseDate }, 
+                    (maxDates, rawTable) => new
                         {
                             ProdFromSiteId = maxDates.ProdFromSiteId,
                             CurrentPrice = rawTable.FullPrice
                         });
-            //todo exclude exciting records
-            
-            await _unitOfWork.ProductPricesHistory.AddRange(entityRange);
+
+            var entityRangeFiltered = entityRange.Where(x => !lastPricesPerProdFromSiteId.Any(y => x.ProductFromSiteId == y.ProdFromSiteId && x.FullPrice == y.CurrentPrice));
+
+            await _unitOfWork.ProductPricesHistory.AddRange(entityRangeFiltered);
 
             var result = await _unitOfWork.Commit();
 
