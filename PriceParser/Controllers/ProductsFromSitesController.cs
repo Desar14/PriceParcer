@@ -218,17 +218,7 @@ namespace PriceParser.Controllers
         {
             try
             {
-                var prices = (await _productPricesService.GetAllProductPricesAsync(id, startPeriod, endPeriod))
-                    .GroupBy(item => item.ParseDate.Date, item => item.FullPrice, (date, price) => new
-                    {
-                        Key = date,
-                        Price = price.Average()
-                    }).Select(item => new ProductPriceDataItem()
-                    {
-                        Date = item.Key,
-                        Price = item.Price
-                    })
-                    .ToList();
+                var prices = (await _productPricesService.GetAllProductFromSitePricesAsync(id, startPeriod, endPeriod, true)).Select(x=> _mapper.Map<ProductPriceDataItem>(x));
 
                 return Json(prices);
             }

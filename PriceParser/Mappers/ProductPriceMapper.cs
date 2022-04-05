@@ -17,7 +17,9 @@ namespace PriceParser.Mappers
 
             CreateMap<ProductPriceDTO, ProductPriceDataItem>()
                 .ForMember(dest => dest.Date,
-                    opt => opt.MapFrom(src => src.ParseDate.Date));
+                    opt => opt.MapFrom(src => src.ParseDate.Date))
+                .ForMember(dest => dest.Price,
+                    opt => opt.MapFrom(src => src.FullPrice));
 
         }
     }

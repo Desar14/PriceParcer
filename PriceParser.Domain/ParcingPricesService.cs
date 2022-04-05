@@ -155,7 +155,7 @@ namespace PriceParser.Domain
             string defaultCurrencyAbbreviation = _configuration["DefaultCurrency"];
             
 
-            ProductPriceDTO result = null;            
+            ProductPriceDTO result = new();            
 
             if (productFromSite.Site.ParseType == ParseTypes.Xpath)
             {
@@ -171,7 +171,18 @@ namespace PriceParser.Domain
                 {
                     throw new ArgumentException($"Can't load link {productFromSite.Path}");
                 }
-                double priceParsed = GetParsedValueFromHtmlDocument<double>(htmlDoc, productFromSite.Site.ParsePricePath, productFromSite.Site.ParsePriceAttributeName, productFromSite.Path);
+
+                double priceParsed = 0;
+                try
+                {
+                    priceParsed = GetParsedValueFromHtmlDocument<double>(htmlDoc, productFromSite.Site.ParsePricePath, productFromSite.Site.ParsePriceAttributeName, productFromSite.Path);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex,"Price not found");
+                    result.ParseError = true;
+                }
+                
 
                 string CurrencyRawString;
 
@@ -179,9 +190,9 @@ namespace PriceParser.Domain
                 {
                     CurrencyRawString = GetParsedValueFromHtmlDocument<string>(htmlDoc, productFromSite.Site.ParseCurrencyPath, productFromSite.Site.ParseCurrencyAttributeName, productFromSite.Path);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    //todo log
+                    _logger.LogWarning(ex, "Currency not found");
                     CurrencyRawString = defaultCurrencyAbbreviation;
                 }
 

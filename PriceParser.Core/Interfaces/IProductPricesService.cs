@@ -11,7 +11,8 @@ namespace PriceParser.Core.Interfaces
     {
         
         Task<IEnumerable<ProductPriceDTO>> GetAllProductPricesAsync(Guid productFromSitesId);
-        Task<IEnumerable<ProductPriceDTO>> GetAllProductPricesAsync(Guid productFromSitesId, DateTime? startDate, DateTime? endDate);
+        Task<IEnumerable<ProductPriceDTO>> GetAllProductFromSitePricesAsync(Guid productFromSitesId, DateTime? startDate, DateTime? endDate, bool perEveryDay = false);
+        Task<IEnumerable<ProductPriceDTO>> GetAllProductPricesAsync(Guid productId, DateTime? startDate, DateTime? endDate, bool perEveryDay = false);
         Task<ProductPriceDTO> GetLastProductPriceAsync(Guid productFromSitesId);
         Task<ProductPriceDTO> GetProductPriceDetailsAsync(Guid priceId);
 
