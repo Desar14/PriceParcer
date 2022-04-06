@@ -60,7 +60,17 @@
         </dd>
     </dl>
 
+    <input type="hidden" value="@Model.Id" id="entityId"/>
+    <input type="date" id="startPeriod" name="chart-start"
+       value="@DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd")"
+       min="@DateTime.Now.AddMonths(-6).ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" onchange="reloadChart()">
+    <input type="date" id="endPeriod" name="chart-end"
+       value="@DateTime.Now.ToString("yyyy-MM-dd")"
+       min="@DateTime.Now.AddMonths(-6).ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" onchange="reloadChart()">
+    @*<a class="btn btn-primary" id="reloadChartButton" onclick="reloadChart()">Reload chart</a>*@
     
+    <div id="pricesChart"></div>
+    <br />
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapse-raw-prices" role="button" aria-expanded="false" aria-controls="collapse-raw-prices">
         Raw prices data
     </a>
@@ -98,3 +108,8 @@
     <a asp-action="ParsePrice" asp-route-id="@Model.Id" class="btn btn-primary">Parse current price</a>
 
 </div>
+
+@section Scripts
+{
+
+}
