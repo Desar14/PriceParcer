@@ -17,4 +17,8 @@
     <ProjectReference Include="..\PriceParser.Core\PriceParser.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Utils\" />
+  </ItemGroup>
+
 </Project>

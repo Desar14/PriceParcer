@@ -88,7 +88,7 @@ namespace PriceParser.DataAccess
 
 
 
-        public virtual async Task<IEnumerable<T>> Get(Expression<Func<T, bool>>? filter = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, params Expression<Func<T, object>>[] includes)
+        public virtual async Task<IQueryable<T>> Get(Expression<Func<T, bool>>? filter = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, params Expression<Func<T, object>>[] includes)
         {
             try
             {
@@ -107,11 +107,11 @@ namespace PriceParser.DataAccess
 
                 if (orderBy != null)
                 {
-                    return await orderBy(query).ToListAsync();
+                    return orderBy(query);
                 }
                 else
                 {
-                    return await query.ToListAsync();
+                    return query;
                 }
             }
             catch (Exception ex)

@@ -76,7 +76,7 @@ namespace PriceParser.Domain
         public async Task<IEnumerable<ProductFromSitesDTO>> GetBySiteForParsingAsync(Guid siteId)
         {
             return (await _unitOfWork.ProductsFromSites.Get(record => record.SiteId == siteId && !record.DoNotParse, null, record => record.product, record => record.CreatedByUser))
-                .Select(product => _mapper.Map<ProductFromSitesDTO>(product));
+                .Select(product => _mapper.Map<ProductFromSitesDTO>(product)).ToList();
         }
 
         public async Task<ProductFromSitesDTO> GetDetailsAsync(Guid id)

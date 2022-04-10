@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PriceParser.Core.Interfaces;
 using PriceParser.Models;
+using PriceParser.Models.ProductPrice;
 
 namespace PriceParser.Controllers
 {
@@ -10,15 +11,17 @@ namespace PriceParser.Controllers
     {
         private readonly IProductsService _productService;
         private readonly IProductPricesService _productPricesService;
+        private readonly ICurrenciesService _currenciesService;
         private readonly IMapper _mapper;
         private readonly ILogger<ProductController> _logger;
 
-        public ProductController(IProductsService productService, IMapper mapper, ILogger<ProductController> logger, IProductPricesService productPricesService)
+        public ProductController(IProductsService productService, IMapper mapper, ILogger<ProductController> logger, IProductPricesService productPricesService, ICurrenciesService currenciesService)
         {
             _productService = productService;
             _mapper = mapper;
             _logger = logger;
             _productPricesService = productPricesService;
+            _currenciesService = currenciesService;
         }
 
         // GET: ProductController
@@ -161,6 +164,33 @@ namespace PriceParser.Controllers
                 _logger.LogError(ex, "Deleting Product");
                 ModelState.AddModelError("", "Something went wrong. Please, try again later or connect with admininstrator.");
                 return View(model);
+            }
+        }
+
+        public async Task<IActionResult> PricesData(Guid id, DateTime? startPeriod, DateTime? endPeriod, Guid? currencyId)
+        {
+            try
+            {
+                var prices = await _productPricesService.GetAllProductPricesPerSiteAsync(id, startPeriod, endPeriod, true);
+
+                var currency = await _currenciesService.GetDetailsAsync(currencyId?? Guid.Empty);
+
+                if (currencyId != null && currency != null)
+                {
+                    foreach (var item in prices)
+                    {
+                        item.Prices = (await _currenciesService.ConvertAtTheRate(item.Prices, currencyId.Value)).ToList();
+                    }                    
+                }
+
+                var result = prices.Select(x => _mapper.Map<ProductPricesPerSiteDataItemModel>(x, opt => opt.AfterMap((src, dest) => dest.CurrencyCode = currency?.Cur_Abbreviation)));               
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "");
+                return StatusCode(500, new { error = ex.Message });
             }
         }
     }

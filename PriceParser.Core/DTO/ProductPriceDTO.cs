@@ -11,7 +11,6 @@ namespace PriceParser.Core.DTO
         public Guid Id { get; set; }
 
         public Guid ProductFromSiteId { get; set; }
-
         public DateTime ParseDate { get; set; }
         public double FullPrice { get; set; }
         public double DiscountPrice { get; set; }

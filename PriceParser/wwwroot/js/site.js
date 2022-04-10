@@ -4,24 +4,30 @@
 // Write your JavaScript code.
 
 google.charts.load('current', { 'packages': ['line'] });
-google.charts.setOnLoadCallback(reloadChart);
+//google.charts.setOnLoadCallback(reloadChart);
 
 async function reloadChart() {
 
-    var startPeriod = document.getElementById('startPeriod');
-    console.log(startPeriod.value);
-
+    var startPeriod = document.getElementById('startPeriod'); 
     var endPeriod = document.getElementById('endPeriod');
-    console.log(endPeriod.value);
-
     var entityId = document.getElementById('entityId');
-    console.log(entityId.value);
+    var entityType = document.getElementById('entityType');
+    var chartElement = document.getElementById('pricesChart');
 
-    if (startPeriod.value === "" || endPeriod.value === "" || entityId.value === "") {
+    if (startPeriod === null || endPeriod === null || entityId === null || entityType === null) {
         return;
     }
 
-    let url = `/ProductsFromSites/PricesData?id=${entityId.value}&startPeriod=${startPeriod.value}&endPeriod=${endPeriod.value}`;
+    console.log(entityId.value);
+    console.log(endPeriod.value);
+    console.log(startPeriod.value);
+    console.log(entityType.value);
+
+    if (startPeriod.value === "" || endPeriod.value === "" || entityId.value === "" || entityType.value === "") {
+        return;
+    }
+
+    let url = `/${entityType.value}/PricesData?id=${entityId.value}&startPeriod=${startPeriod.value}&endPeriod=${endPeriod.value}`;
 
     console.log(url);
 
@@ -30,29 +36,56 @@ async function reloadChart() {
             return response.json();
         });
 
-    var labelsRange = [];
+    var dates = [];
 
-    for (var i in chartData)
-        labelsRange.push(chartData[i].date);
+    for (var i in chartData) {
 
-    var dataRange = [];
+        for (var j in chartData[i].prices) {
+            let dateEl = chartData[i].prices[j].date;
 
-    for (var i in chartData)
-        dataRange.push(chartData[i].price);
+            if (!dates.includes(dateEl)) {
+                dates.push(dateEl);
+            }
+        }           
+    }
 
+    dates.sort((a, b) => new Date(a + '+0300') - new Date(b + '+0300'));
 
     var data = new google.visualization.DataTable();
     data.addColumn('datetime', 'Day');
-    data.addColumn('number', 'Price');
-    /*data.addColumn('number', 'The Avengers');
-    data.addColumn('number', 'Transformers: Age of Extinction');*/
+
+    for (var i = 0; i < chartData.length; i++) {
+        data.addColumn('number', chartData[i].site_name);
+    }
 
     var dataArray = [];
 
+    for (var dateIndex in dates) {
 
-    for (var i in chartData) {
-        dataArray.push([new Date(chartData[i].date+'+0300'), chartData[i].price]);
-    }
+        var dataArrayElement = [];
+        dataArrayElement.push(new Date(dates[dateIndex] + '+0300'));
+
+        for (var i in chartData) {
+
+            let priceEl = chartData[i].prices.find(item => item.date == dates[dateIndex]);
+
+            if (priceEl != undefined) {
+                dataArrayElement.push(priceEl.price);
+            }
+            else {
+                dataArrayElement.push(0);
+            }
+
+        }
+
+        dataArray.push(dataArrayElement);
+
+    }   
+
+
+    //for (var i in chartData) {
+    //    dataArray.push([new Date(chartData[i].date+'+0300'), chartData[i].price]);
+    //}
 
     data.addRows(dataArray);
     //data.addRows([
@@ -81,6 +114,10 @@ async function reloadChart() {
         height: 500,
         hAxis: {
             format: 'dd.MM.yyyy'
+        },
+        vAxis: {
+            format: '####.##',
+            title: 'BYN'
         }
     };
 
@@ -88,7 +125,7 @@ async function reloadChart() {
         { prefix: 'BYN ', negativeColor: 'red', negativeParens: true });
     formatter.format(data, 1);
 
-    var chart = new google.charts.Line(document.getElementById('pricesChart'));
+    var chart = new google.charts.Line(chartElement);
 
     chart.draw(data, google.charts.Line.convertOptions(options));
 }

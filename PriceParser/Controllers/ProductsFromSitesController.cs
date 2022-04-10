@@ -20,9 +20,10 @@ namespace PriceParser.Controllers
         private readonly IProductsService _productService;
         private readonly IProductPricesService _productPricesService;
         private readonly IParsingPricesService _parsingPricesService;
+        private readonly ICurrenciesService _currenciesService;
         private readonly ILogger<ProductsFromSitesController> _logger;
 
-        public ProductsFromSitesController(IProductsFromSitesService productsFromSitesService, IMapper mapper, UserManager<IdentityUser> userManager, IMarketSitesService marketService, IProductsService productService, IProductPricesService productPricesService, IParsingPricesService parsingPricesService, ILogger<ProductsFromSitesController> logger)
+        public ProductsFromSitesController(IProductsFromSitesService productsFromSitesService, IMapper mapper, UserManager<IdentityUser> userManager, IMarketSitesService marketService, IProductsService productService, IProductPricesService productPricesService, IParsingPricesService parsingPricesService, ILogger<ProductsFromSitesController> logger, ICurrenciesService currenciesService)
         {
             _productsFromSitesService = productsFromSitesService;
             _mapper = mapper;
@@ -32,6 +33,7 @@ namespace PriceParser.Controllers
             _productPricesService = productPricesService;
             _parsingPricesService = parsingPricesService;
             _logger = logger;
+            _currenciesService = currenciesService;
         }
 
         // GET: ProductsFromSitesController
@@ -214,13 +216,25 @@ namespace PriceParser.Controllers
             }
         }
 
-        public async Task<IActionResult> PricesData(Guid id, DateTime? startPeriod, DateTime? endPeriod)
+        public async Task<IActionResult> PricesData(Guid id, DateTime? startPeriod, DateTime? endPeriod, Guid? currencyId)
         {
             try
             {
-                var prices = (await _productPricesService.GetAllProductFromSitePricesAsync(id, startPeriod, endPeriod, true)).Select(x=> _mapper.Map<ProductPriceDataItem>(x));
+                var prices = await _productPricesService.GetAllProductFromSitePricesAsync(id, startPeriod, endPeriod, true);
+                
+                var currency = await _currenciesService.GetDetailsAsync(currencyId ?? Guid.Empty);
 
-                return Json(prices);
+                if (currencyId != null && currency != null)
+                {
+                    foreach (var item in prices)
+                    {
+                        item.Prices = (await _currenciesService.ConvertAtTheRate(item.Prices, currencyId.Value)).ToList();
+                    }
+                }
+
+                var result = prices.Select(x => _mapper.Map<ProductPricesPerSiteDataItemModel>(x, opt => opt.AfterMap((src, dest) => dest.CurrencyCode = currency?.Cur_Abbreviation)));
+
+                return Json(result);
             }
             catch (Exception ex)
             {

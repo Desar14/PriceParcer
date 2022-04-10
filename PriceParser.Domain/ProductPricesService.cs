@@ -11,15 +11,15 @@ namespace PriceParser.Domain
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IProductsService _productsService;
+        private readonly IProductsFromSitesService _productFromSitesService;
         private readonly ILogger<ProductPricesService> _logger;
 
-        public ProductPricesService(IUnitOfWork unitOfWork, IMapper mapper, IProductsService productsService, ILogger<ProductPricesService> logger)
+        public ProductPricesService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<ProductPricesService> logger, IProductsFromSitesService productFromSitesService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _productsService = productsService;
             _logger = logger;
+            _productFromSitesService = productFromSitesService;
         }
 
         public async Task<bool> AddProductPriceAsync(ProductPriceDTO productPriceDTO)
@@ -44,14 +44,14 @@ namespace PriceParser.Domain
                     ProdFromSiteId = prodId,
                     MaxDate = date.Max()
                 })
-                .Join(await _unitOfWork.ProductPricesHistory.GetQueryable(), 
+                .Join(await _unitOfWork.ProductPricesHistory.GetQueryable(),
                     maxDates => new { q1 = maxDates.ProdFromSiteId, q2 = maxDates.MaxDate },
-                    rawTable => new { q1 = rawTable.ProductFromSiteId, q2 = rawTable.ParseDate }, 
+                    rawTable => new { q1 = rawTable.ProductFromSiteId, q2 = rawTable.ParseDate },
                     (maxDates, rawTable) => new
-                        {
-                            ProdFromSiteId = maxDates.ProdFromSiteId,
-                            CurrentPrice = rawTable.FullPrice
-                        });
+                    {
+                        maxDates.ProdFromSiteId,
+                        CurrentPrice = rawTable.FullPrice
+                    });
 
             var entityRangeFiltered = entityRange.Where(x => !lastPricesPerProdFromSiteId.Any(y => x.ProductFromSiteId == y.ProdFromSiteId && x.FullPrice == y.CurrentPrice));
 
@@ -77,16 +77,29 @@ namespace PriceParser.Domain
                 .Select(price => _mapper.Map<ProductPriceDTO>(price));
         }
 
-        public async Task<IEnumerable<ProductPriceDTO>> GetAllProductFromSitePricesAsync(Guid productFromSitesId, DateTime? startDate, DateTime? endDate, bool perEveryDay = false)
+        public async Task<IEnumerable<ProductFromSitesDTO>> GetAllProductFromSitePricesAsync(Guid productFromSitesId, DateTime? startDate, DateTime? endDate, bool perEveryDay = false)
         {
-            return await GetPricesAsync(default, productFromSitesId, startDate, endDate, perEveryDay);
+
+            var prices = await GetPricesAsync(default, productFromSitesId, startDate, endDate, perEveryDay);
+
+            var result = new List<ProductFromSitesDTO>()
+            {
+                new ProductFromSitesDTO()
+                {
+                    Id = productFromSitesId,
+                    Site = new() { Name = "Average" },
+                    Prices = prices.ToList()
+                }
+            };
+
+            return result;
         }
 
         public async Task<ProductPriceDTO> GetLastProductPriceAsync(Guid productFromSitesId)
         {
             var result = (await _unitOfWork.ProductPricesHistory.GetQueryable())
                 .Where(price => price.ProductFromSiteId == productFromSitesId)
-                .OrderByDescending(x=> x.ParseDate)
+                .OrderByDescending(x => x.ParseDate)
                 .Take(1)
                 .FirstOrDefault();
 
@@ -112,9 +125,48 @@ namespace PriceParser.Domain
             return result > 0;
         }
 
-        public async Task<IEnumerable<ProductPriceDTO>> GetAllProductPricesAsync(Guid productId, DateTime? startDate, DateTime? endDate, bool perEveryDay = false)
+        public async Task<IEnumerable<ProductFromSitesDTO>> GetAllProductPricesAsync(Guid productId, DateTime? startDate, DateTime? endDate, bool perEveryDay = false)
         {
-            return await GetPricesAsync(productId, default, startDate, endDate, perEveryDay);
+            var prices = await GetPricesAsync(productId, default, startDate, endDate, perEveryDay);
+
+            var averageData = prices
+                .GroupBy(
+                g => new
+                {
+                    ParseDate = g.ParseDate.Date,
+                    g.DiscountPrice,
+                    g.DiscountPercent,
+                    g.CurrencyCode,
+                    g.CurrencyId,
+                    g.IsOutOfStock,
+                    g.ParseError
+                },
+                c => c.FullPrice,
+                (g, c) => new ProductPriceDTO()
+                {
+                    Id = Guid.Empty,
+                    ProductFromSiteId = Guid.Empty,
+                    ParseDate = g.ParseDate,
+                    FullPrice = c.Average(),
+                    DiscountPrice = g.DiscountPrice,
+                    DiscountPercent = g.DiscountPercent,
+                    CurrencyCode = g.CurrencyCode,
+                    CurrencyId = g.CurrencyId,
+                    IsOutOfStock = g.IsOutOfStock,
+                    ParseError = g.ParseError
+                }
+                );
+
+            var result = new List<ProductFromSitesDTO>()
+            {
+                new ProductFromSitesDTO()
+                {
+                    Site = new() { Name = "Average" },
+                    Prices = averageData.ToList()
+                }
+            };
+
+            return result;
         }
 
         async Task<IEnumerable<ProductPriceDTO>> GetPricesAsync(Guid productId, Guid productFromSiteId, DateTime? startDate, DateTime? endDate, bool perEveryDay = false)
@@ -157,18 +209,19 @@ namespace PriceParser.Domain
             else
                 throw new ArgumentException("Incorrect id arguments!");
 
-            
+
 
             var prices = (await _unitOfWork.ProductPricesHistory
                 .Get(filter: filter,
                     includes: price => price.ProductFromSite))
                 .Select(price => _mapper.Map<ProductPriceDTO>(price));
 
+
+
             if (perEveryDay && startDate != null && endDate != null)
             {
-                prices = MakePricesPerEveryDay(prices, startDate.Value, endDate.Value);
+                return MakePricesPerEveryDay(prices, startDate.Value, endDate.Value);
             }
-
             return prices;
         }
 
@@ -184,11 +237,46 @@ namespace PriceParser.Domain
                 dates.Add(i);
             }
 
-            var groupedPricesInDay = productPrices.GroupBy(
-                g => _mapper.Map<ProductPriceDTO>(g, opt => opt.AfterMap((src, dest) => dest.ParseDate = dest.ParseDate.Date)), 
-                c => c.FullPrice, 
-                (g, c) => _mapper.Map<ProductPriceDTO>(g, opt => opt.AfterMap((src, dest) => dest.FullPrice = c.Average()))
+            //just an awful code, but looks like group by needs anonymous types, and automapper can't work with them
+            var groupedPricesInDay = productPrices
+                .GroupBy(
+                g => new
+                {
+                    g.ProductFromSiteId,
+                    ParseDate = g.ParseDate.Date,
+                    g.DiscountPrice,
+                    g.DiscountPercent,
+                    g.CurrencyCode,
+                    g.CurrencyId,
+                    g.IsOutOfStock,
+                    g.ParseError
+                },
+                c => c.FullPrice,
+                (g, c) => new ProductPriceDTO()
+                {
+                    Id = Guid.Empty,
+                    ProductFromSiteId = g.ProductFromSiteId,
+                    ParseDate = g.ParseDate,
+                    FullPrice = c.Average(),
+                    DiscountPrice = g.DiscountPrice,
+                    DiscountPercent = g.DiscountPercent,
+                    CurrencyCode = g.CurrencyCode,
+                    CurrencyId = g.CurrencyId,
+                    IsOutOfStock = g.IsOutOfStock,
+                    ParseError = g.ParseError
+                }
                 );
+
+            //var groupedPricesInDay1 = productPrices
+            //    .GroupBy(
+            //    g => _mapper.Map<ProductPriceDTO>(g, opt => 
+            //        opt.AfterMap((src, dest) => {
+            //            dest.ParseDate = dest.ParseDate.Date;
+            //            dest.Id = Guid.Empty;
+            //        })              
+            //        ),
+            //    c => c.FullPrice,
+            //    (g, c) => _mapper.Map<ProductPriceDTO>(g, opt => opt.AfterMap((src, dest) => dest.FullPrice = c.Average())));
 
             var datesForJoining = groupedPricesInDay
                 .Join(dates, t1 => 1, t2 => 1, (t1, t2) => new
@@ -197,9 +285,9 @@ namespace PriceParser.Domain
                     t1.ParseDate,
                     ResultDate = t2
                 })
-                .Where(x=> x.ResultDate >= x.ParseDate)
-                .GroupBy(g => new { g.ProductFromSiteId, g.ResultDate }, c=> c.ParseDate,
-                (g,c) => new
+                .Where(x => x.ResultDate >= x.ParseDate)
+                .GroupBy(g => new { g.ProductFromSiteId, g.ResultDate }, c => c.ParseDate,
+                (g, c) => new
                 {
                     g.ProductFromSiteId,
                     g.ResultDate,
@@ -210,9 +298,46 @@ namespace PriceParser.Domain
             var result = datesForJoining.Join(groupedPricesInDay,
                 t1 => new { t1.ProductFromSiteId, t1.ParseDate },
                 t2 => new { t2.ProductFromSiteId, t2.ParseDate },
-                (t1, t2) => _mapper.Map<ProductPriceDTO>(t2, opt => opt.AfterMap((src, dest) => dest.ParseDate = t1.ResultDate)));                
+                (t1, t2) => new ProductPriceDTO()
+                {
+                    Id = Guid.Empty,
+                    ProductFromSiteId = t2.ProductFromSiteId,
+                    ParseDate = t1.ResultDate,
+                    FullPrice = t2.FullPrice,
+                    DiscountPrice = t2.DiscountPrice,
+                    DiscountPercent = t2.DiscountPercent,
+                    CurrencyCode = t2.CurrencyCode,
+                    CurrencyId = t2.CurrencyId,
+                    IsOutOfStock = t2.IsOutOfStock,
+                    ParseError = t2.ParseError
+                });            
 
             return result;
+        }
+
+        public async Task<IEnumerable<ProductFromSitesDTO>> GetAllProductPricesPerSiteAsync(Guid productId, DateTime? startDate, DateTime? endDate, bool perEveryDay = false)
+        {
+            var prices = await GetPricesAsync(productId, default, startDate, endDate, perEveryDay);
+
+            var agg = prices.GroupBy(x => x.ProductFromSiteId).Select(x => new ProductFromSitesDTO
+            {
+                Id = x.Key,
+                Prices = x.ToList()
+            }).Join(
+                await (_unitOfWork.ProductsFromSites.Get(x => x.ProductId == productId, null, x => x.Site)),
+                x => x.Id,
+                y => y.Id,
+                (x, y) => _mapper.Map<ProductFromSitesDTO>(y, opt => opt.AfterMap((src, dest) => dest.Prices = x.Prices))
+                ).ToList();
+
+            var averageData = await GetAllProductPricesAsync(productId, startDate, endDate, perEveryDay);
+
+            if (averageData.Any())
+            {
+                agg.AddRange(averageData);
+            }            
+
+            return agg;
         }
     }
 }

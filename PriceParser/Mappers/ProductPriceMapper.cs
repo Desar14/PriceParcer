@@ -12,15 +12,14 @@ namespace PriceParser.Mappers
             CreateMap<ProductPrice, ProductPriceDTO>();
 
             CreateMap<ProductPriceDTO, ProductPrice>();
-
             CreateMap<ProductPriceDTO, ProductPriceItemListViewModel>();
-
             CreateMap<ProductPriceDTO, ProductPriceDataItem>()
                 .ForMember(dest => dest.Date,
-                    opt => opt.MapFrom(src => src.ParseDate.Date))
+                    opt => opt.MapFrom(src => src.ParseDate))
                 .ForMember(dest => dest.Price,
                     opt => opt.MapFrom(src => src.FullPrice));
 
+            
         }
     }
 }

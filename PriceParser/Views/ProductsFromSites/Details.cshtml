@@ -61,6 +61,7 @@
     </dl>
 
     <input type="hidden" value="@Model.Id" id="entityId"/>
+    <input type="hidden" value="ProductsFromSites" id="entityType" />
     <input type="date" id="startPeriod" name="chart-start"
        value="@DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd")"
        min="@DateTime.Now.AddMonths(-6).ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" onchange="reloadChart()">
@@ -68,8 +69,8 @@
        value="@DateTime.Now.ToString("yyyy-MM-dd")"
        min="@DateTime.Now.AddMonths(-6).ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" onchange="reloadChart()">
     @*<a class="btn btn-primary" id="reloadChartButton" onclick="reloadChart()">Reload chart</a>*@
-    
-    <div id="pricesChart"></div>
+    <br />
+    <div id="pricesChart" style="padding: .5rem 0;"></div>
     <br />
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapse-raw-prices" role="button" aria-expanded="false" aria-controls="collapse-raw-prices">
         Raw prices data
@@ -111,5 +112,7 @@
 
 @section Scripts
 {
-
+    <script>
+    google.charts.setOnLoadCallback(reloadChart);
+    </script>    
 }

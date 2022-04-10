@@ -27,5 +27,7 @@ namespace PriceParser.Core.Interfaces
         Task<bool> UpdateRatesAsync();
         Task<bool> UpdateRatesAsync(Guid CurrencyId);
         Task<bool> UpdateRatesAsync(Currency currency);
+
+        Task<IEnumerable<ProductPriceDTO>> ConvertAtTheRate(IEnumerable<ProductPriceDTO> prices, Guid newCurrencyId, Guid? oldCurrency = null);
     }
 }

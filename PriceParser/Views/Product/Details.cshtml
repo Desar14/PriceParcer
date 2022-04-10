@@ -48,7 +48,20 @@
                     <p class="text-start" style="padding: .5rem 1rem;"><h6>@Model.Description</h6></p>
                 </div>
                 <div class="tab-pane fade" id="price-stats" role="tabpanel" aria-labelledby="price-stats-tab">
-                    <p class="text-start" style="padding: .5rem 1rem;"><h6>not implemented yet</h6></p>
+                    <br />
+
+                    <input type="hidden" value="@Model.Id" id="entityId" />
+                    <input type="hidden" value="Product" id="entityType" />
+                    <input type="date" id="startPeriod" name="chart-start"
+                           value="@DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd")"
+                           min="@DateTime.Now.AddMonths(-6).ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" onchange="reloadChart()">
+                    <input type="date" id="endPeriod" name="chart-end"
+                           value="@DateTime.Now.ToString("yyyy-MM-dd")"
+                           min="@DateTime.Now.AddMonths(-6).ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" onchange="reloadChart()">
+                    @*<a class="btn btn-primary" id="reloadChartButton" onclick="reloadChart()">Reload chart</a>*@
+                    <br />
+                    <div id="pricesChart" style="padding: .5rem 0;"></div>
+
                 </div>
                 <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                     @if (Model.userReviews.Count == 0)
@@ -70,10 +83,10 @@
                                                 <span></span>
                                             </div>
                                             <div class="col col-lg-3">
-                                                Rate: 
+                                                Rate:
                                                 @for (var i = 0; i < 5; i++)
                                                 {
-                                                    if(i < @item.ReviewScore)
+                                                    if (i < @item.ReviewScore)
                                                     {
                                                         <img src="~/img/star-full.svg" style="height: 20px; width: 20px">
                                                     }
@@ -108,3 +121,11 @@
     </div>
 </div>
 
+@section Scripts{
+<script>
+    var tabEl = document.querySelector("button[id='price-stats-tab']");
+    
+    tabEl.addEventListener('shown.bs.tab', reloadChart);
+</script>
+
+}

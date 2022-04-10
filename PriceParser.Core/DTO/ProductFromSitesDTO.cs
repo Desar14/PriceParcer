@@ -25,5 +25,7 @@ namespace PriceParser.Core.DTO
         public DateTime Created { get; set; }
         public IdentityUser? CreatedByUser { get; set; }
         public string? CreatedByUserId { get; set; }
+
+        public List<ProductPriceDTO> Prices { get; set; } = new();
     }
 }

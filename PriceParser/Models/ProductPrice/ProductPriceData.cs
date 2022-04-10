@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace PriceParser.Models.ProductPrice
 {
-        public class ProductPriceDataItem
+    public class ProductPriceDataItem
     {
         [JsonPropertyName("date")]
         public DateTime Date { get; set; }

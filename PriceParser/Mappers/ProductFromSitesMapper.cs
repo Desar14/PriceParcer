@@ -3,6 +3,7 @@ using PriceParser.Core.DTO;
 using PriceParser.Data.Entities;
 using PriceParser.Models;
 using PriceParser.Models.ProductFromSite;
+using PriceParser.Models.ProductPrice;
 
 namespace PriceParser.Mappers
 {
@@ -36,6 +37,11 @@ namespace PriceParser.Mappers
 
             CreateMap<ProductFromSitesDTO, ProductFromSiteCreateEditViewModel>();
             CreateMap<ProductFromSitesDTO, ProductFromSiteDeleteViewModel>();
+            CreateMap<ProductFromSitesDTO, ProductPricesPerSiteDataItemModel>()
+                .ForMember(dest => dest.SiteName,
+                        opt => opt.MapFrom(src => src.Site.Name))
+                .ForMember(dest => dest.ProductFromSiteId,
+                        opt => opt.MapFrom(src => src.Id));
 
             CreateMap<ProductFromSiteCreateEditViewModel, ProductFromSitesDTO>();
 

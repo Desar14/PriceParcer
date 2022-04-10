@@ -93,6 +93,33 @@ namespace PriceParser.Domain
             return await _unitOfWork.Commit() > 0;
         }
 
+        public async Task<IEnumerable<ProductPriceDTO>> ConvertAtTheRate(IEnumerable<ProductPriceDTO> prices, Guid newCurrencyId, Guid? oldCurrency = null)
+        {
+
+            var currencyRates = await _unitOfWork.CurrencyRates.Get(currRate => currRate.CurrencyId == newCurrencyId, null, currRate => currRate.Currency);
+
+
+            var result = prices.Join(
+                currencyRates,
+                t1 => new {t1.ParseDate.Date },
+                t2 => new {t2.Date.Date },
+                (t1, t2) => new ProductPriceDTO()
+                {
+                    Id = t1.Id,
+                    ProductFromSiteId = t1.ProductFromSiteId,
+                    ParseDate = t1.ParseDate,
+                    FullPrice = Math.Round(t1.FullPrice/(double)(t2.Cur_OfficialRate ?? 1) * t2.Cur_Scale, 2),
+                    DiscountPrice = t1.DiscountPrice,
+                    DiscountPercent = t1.DiscountPercent,
+                    CurrencyCode = t2.Currency.Cur_Abbreviation,
+                    CurrencyId = t2.CurrencyId,
+                    IsOutOfStock = t1.IsOutOfStock,
+                    ParseError = t1.ParseError
+                });
+
+            return result;
+        }
+
         public async Task<bool> DeleteAsync(Guid id)
         {
             await _unitOfWork.Currencies.Delete(id);
