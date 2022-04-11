@@ -1,0 +1,38 @@
+﻿@model ChartPartialViewModel
+
+<input type="hidden" value="@Model.EntityId" id="entityId" />
+<input type="hidden" value="@Model.EntityType" id="entityType" />
+<input type="date" id="startPeriod" name="chart-start"
+       value="@DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd")"
+       min="@DateTime.Now.AddMonths(-6).ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" onchange="reloadChart()">
+<input type="date" id="endPeriod" name="chart-end"
+       value="@DateTime.Now.ToString("yyyy-MM-dd")"
+       min="@DateTime.Now.AddMonths(-6).ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" onchange="reloadChart()">
+
+<select id="currency" asp-items="@Model.Currencies" onchange="reloadChart()"></select>
+
+@*<a class="btn btn-primary" id="reloadChartButton" onclick="reloadChart()">Reload chart</a>*@
+<br />
+<div id="pricesChart" style="padding: .5rem 0;"></div>
+<br />
+
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="~/js/prices-chart.js" asp-append-version="true"></script>
+@if (@Model.EntityType == "Product")
+{
+    <script>
+        var tabEl = document.querySelector("button[id='price-stats-tab']");
+
+        tabEl.addEventListener('shown.bs.tab', reloadChart);
+    </script>
+}
+else if (@Model.EntityType == "ProductsFromSites")
+{
+    <script>
+        google.charts.setOnLoadCallback(reloadChart);
+    </script>
+}
+
+

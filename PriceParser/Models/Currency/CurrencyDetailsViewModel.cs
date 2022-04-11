@@ -11,6 +11,7 @@ namespace PriceParser.Models
         public int Scale { get; set; }
         public int Periodicity { get; set; }
         public bool UpdateRates { get; set; }
+        public bool AvailableForUsers { get; set; }
         public IEnumerable<CurrencyRateListItemModel> Rates { get; set; }
     }
 }

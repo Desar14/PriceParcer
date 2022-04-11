@@ -1,4 +1,5 @@
-﻿using PriceParser.Models.ProductPrice;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using PriceParser.Models.ProductPrice;
 
 namespace PriceParser.Models.ProductFromSite
 {
@@ -14,5 +15,6 @@ namespace PriceParser.Models.ProductFromSite
         public string? CreatedByUserName { get; set; }
 
         public List<ProductPriceItemListViewModel> productPrices { get; set; }
+        public List<SelectListItem> Currencies { get; set; }
     }
 }

@@ -18,5 +18,6 @@ namespace PriceParser.Core.DTO
         public int Cur_Periodicity { get; set; }
 
         public bool UpdateRates { get; set; }
+        public bool AvailableForUsers { get; set; }
     }
 }

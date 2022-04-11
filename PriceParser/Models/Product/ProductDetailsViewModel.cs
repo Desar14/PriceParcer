@@ -1,4 +1,6 @@
-﻿namespace PriceParser.Models
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace PriceParser.Models
 {
     public class ProductDetailsViewModel
     {
@@ -19,6 +21,8 @@
 
         public List<MarketSiteInProductViewModel> marketSites { get; set; } 
 
-        public List<UserReviewInProductViewModel> userReviews { get; set; } 
+        public List<UserReviewInProductViewModel> userReviews { get; set; }
+        
+        public List<SelectListItem> Currencies { get; set; }
     }
 }

@@ -166,7 +166,14 @@ namespace PriceParser.Domain
                 .Select(record => _mapper.Map<CurrencyRatesDTO>(record));
         }
 
-        public async Task<bool> ToggleUpdateRatesAsync(Guid Id, bool newState)
+        public async Task<IEnumerable<CurrencyDTO>> GetUsableAsync()
+        {
+            var currList = (await _unitOfWork.Currencies.Get(curr => curr.AvailableForUsers == true)).Select(record => _mapper.Map<CurrencyDTO>(record));
+
+            return currList;
+        }
+
+        public async Task<bool> ToggleUpdateRatesAsync(Guid Id, bool newStateUpdateRates, bool newStateAvailable)
         {
 
             var patchModel = new List<PatchModel>();
@@ -174,7 +181,13 @@ namespace PriceParser.Domain
             patchModel.Add(new PatchModel()
             {
                 PropertyName = "UpdateRates",
-                PropertyValue = newState
+                PropertyValue = newStateUpdateRates
+            });
+
+            patchModel.Add(new PatchModel()
+            {
+                PropertyName = "AvailableForUsers",
+                PropertyValue = newStateAvailable
             });
 
             await _unitOfWork.Currencies.PatchAsync(Id, patchModel);
@@ -212,6 +225,7 @@ namespace PriceParser.Domain
         public async Task<bool> UpdateRatesAsync(Currency currency)
         {
             HttpResponseMessage response;
+            var defaultCurrAbbr = _configuration["DefaultCurrency"];
 
             if (!int.TryParse(_configuration["CurrencyRatesMinimumHistoryDays"], out int minimumHistory))
                 minimumHistory = 40;
@@ -227,6 +241,25 @@ namespace PriceParser.Domain
             {
                 return true;
             }
+
+            if (currency.Cur_Abbreviation == defaultCurrAbbr)
+            {
+                List<CurrencyRate>? defaultCurrList = new();
+                for (DateTime i = lastDate; i <= DateTime.Now.Date; i = i.AddDays(1))
+                {
+                    defaultCurrList.Add(new CurrencyRate()
+                    {
+                        Date = i.Date,
+                        CurrencyId = currency.Id,
+                        Cur_OfficialRate = 1,
+                        Cur_Scale = 1,
+                        Id = Guid.NewGuid()
+                    });
+                }
+                await _unitOfWork.CurrencyRates.AddRange(defaultCurrList);
+                return await _unitOfWork.Commit() > 0;
+            }
+            
 
             string url = $"https://www.nbrb.by/api/exrates/rates/dynamics/{currency.Cur_ID}";
             var param = new Dictionary<string, string>

@@ -26,6 +26,7 @@ namespace PriceParser.Data.Entities
         public DateTime Cur_DateStart { get; set; }
         public DateTime Cur_DateEnd { get; set; }
         public bool UpdateRates { get; set; }
+        public bool AvailableForUsers { get; set; }
 
         public virtual List<CurrencyRate> Rates { get; set; }
     }    

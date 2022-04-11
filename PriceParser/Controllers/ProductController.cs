@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using PriceParser.Core.Interfaces;
 using PriceParser.Models;
 using PriceParser.Models.ProductPrice;
@@ -56,6 +57,9 @@ namespace PriceParser.Controllers
                     site.Price = lastPrice.FullPrice;
                     site.CurrencyCode = lastPrice.CurrencyCode;
                 });
+
+                model.Currencies = (await _currenciesService.GetUsableAsync())
+                    .Select(curr => _mapper.Map<Core.DTO.CurrencyDTO, SelectListItem>(curr, opt => opt.AfterMap((src, dest) => dest.Selected = src.Cur_Abbreviation == "BYN"))).ToList();
 
                 return View(model);
             }

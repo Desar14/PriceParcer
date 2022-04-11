@@ -9,5 +9,6 @@
         public int Scale { get; set; }
         public int Periodicity { get; set; }
         public bool UpdateRates { get; set; }
+        public bool AvailableForUsers { get; set; }
     }
 }

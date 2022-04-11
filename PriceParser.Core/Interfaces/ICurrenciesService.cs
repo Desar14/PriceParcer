@@ -11,6 +11,7 @@ namespace PriceParser.Core.Interfaces
     public interface ICurrenciesService
     {
         Task<IEnumerable<CurrencyDTO>> GetAllAsync();
+        Task<IEnumerable<CurrencyDTO>> GetUsableAsync();
         Task<CurrencyDTO> GetDetailsAsync(Guid id);
         Task<CurrencyDTO> GetByAbbreviationAsync(string abbr);
 
@@ -18,7 +19,7 @@ namespace PriceParser.Core.Interfaces
         Task<bool> AddFromNBRBAsync();
 
         Task<bool> EditAsync(CurrencyDTO currencyDTO);
-        Task<bool> ToggleUpdateRatesAsync(Guid Id, bool newState);
+        Task<bool> ToggleUpdateRatesAsync(Guid Id, bool newStateUpdateRates, bool newStateAvailable);
 
         Task<bool> DeleteAsync(Guid id);
 

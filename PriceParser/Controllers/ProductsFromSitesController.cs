@@ -64,6 +64,9 @@ namespace PriceParser.Controllers
                 var model = _mapper.Map<ProductFromSiteDetailsViewModel>(productDetailDTO);
                 model.productPrices = prices;
 
+                model.Currencies = (await _currenciesService.GetUsableAsync())
+                    .Select(curr => _mapper.Map<Core.DTO.CurrencyDTO, SelectListItem>(curr, opt => opt.AfterMap((src, dest) => dest.Selected = src.Cur_Abbreviation == "BYN"))).ToList();
+
                 return View(model);
             }
             catch (Exception ex)

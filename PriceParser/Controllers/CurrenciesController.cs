@@ -116,7 +116,7 @@ namespace PriceParser.Controllers
         {
             try
             {
-                await _currenciesService.ToggleUpdateRatesAsync(model.Id,model.UpdateRates);
+                await _currenciesService.ToggleUpdateRatesAsync(model.Id,model.UpdateRates, model.AvailableForUsers);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
