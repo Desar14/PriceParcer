@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using PriceParser.Data.Entities;
 
 namespace PriceParser.Models.ProductFromSite
 {
@@ -18,8 +19,8 @@ namespace PriceParser.Models.ProductFromSite
         public string? ParseSchedule { get; set; }
 
         public DateTime Created { get; set; }
-        public virtual IdentityUser? CreatedByUser { get; set; }
-        public string? CreatedByUserId { get; set; }
+        public virtual ApplicationUser? CreatedByUser { get; set; }
+        public Guid? CreatedByUserId { get; set; }
 
         public List<SelectListItem> UsersList { get; set; }
         public List<SelectListItem> ProductsList { get; set; }

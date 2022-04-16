@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using PriceParser.Data.Entities;
 
 namespace PriceParser.Mappers
 {
@@ -8,7 +9,7 @@ namespace PriceParser.Mappers
     {
         public UserMapper()
         {
-            CreateMap<IdentityUser, SelectListItem>()
+            CreateMap<ApplicationUser, SelectListItem>()
                 .ForMember(dest => dest.Text,
                     opt => opt.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.Value,

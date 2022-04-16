@@ -18,8 +18,8 @@ namespace PriceParser.Models
         public string? ParseCurrencyAttributeName { get; set; }
         public bool IsAvailable { get; set; }
         public DateTime Created { get; set; }
-        public IdentityUser? CreatedByUser { get; set; }
-        public string? CreatedByUserId { get; set; }
+        public ApplicationUser? CreatedByUser { get; set; }
+        public Guid? CreatedByUserId { get; set; }
 
         public List<SelectListItem> UsersList { get; set; }
 

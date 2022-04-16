@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PriceParser.Core.Interfaces;
+using PriceParser.Data.Entities;
 using PriceParser.Models;
 using PriceParser.Models.UserReview;
 
@@ -14,11 +15,11 @@ namespace PriceParser.Controllers
 
         private readonly IUserReviewsService _reviewsService;
         private readonly IMapper _mapper;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IProductsService _productService;
         private readonly ILogger<UserReviewsController> _logger;
 
-        public UserReviewsController(IUserReviewsService reviewsService, IMapper mapper, UserManager<IdentityUser> userManager, IProductsService productService, ILogger<UserReviewsController> logger)
+        public UserReviewsController(IUserReviewsService reviewsService, IMapper mapper, UserManager<ApplicationUser> userManager, IProductsService productService, ILogger<UserReviewsController> logger)
         {
             _reviewsService = reviewsService;
             _mapper = mapper;
@@ -159,7 +160,7 @@ namespace PriceParser.Controllers
                 var model = _mapper.Map<UserReviewCreateEditViewModel>(recordDetailDTO);
 
                 model.UsersList = _userManager.Users.ToList()
-                    .Select(product => _mapper.Map<IdentityUser, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.UserId))).ToList();
+                    .Select(product => _mapper.Map<ApplicationUser, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.UserId))).ToList();
                 model.ProductsList = (await _productService.GetAllProductsAsync())
                     .Select(product => _mapper.Map<Core.DTO.ProductDTO, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.ProductId))).ToList();
 

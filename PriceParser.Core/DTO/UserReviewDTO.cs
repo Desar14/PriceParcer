@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using PriceParser.Data;
+using PriceParser.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace PriceParser.Core.DTO
     public class UserReviewDTO
     {
         public Guid Id { get; set; }
-        public IdentityUser User { get; set; }
+        public ApplicationUser User { get; set; }
         public string UserId { get; set; }
         public ProductDTO Product { get; set; }
         public Guid ProductId { get; set; }

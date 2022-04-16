@@ -13,10 +13,10 @@ namespace PriceParser.Controllers
     {
         private readonly IMarketSitesService _marketService;
         private readonly IMapper _mapper;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<MarketSitesController> _logger;
 
-        public MarketSitesController(IMarketSitesService marketService, IMapper mapper, UserManager<IdentityUser> userManager, ILogger<MarketSitesController> logger)
+        public MarketSitesController(IMarketSitesService marketService, IMapper mapper, UserManager<ApplicationUser> userManager, ILogger<MarketSitesController> logger)
         {
             _marketService = marketService;
             _mapper = mapper;
@@ -113,7 +113,7 @@ namespace PriceParser.Controllers
                 var model = _mapper.Map<MarketSiteCreateEditViewModel>(siteDetailDTO);
 
                 model.UsersList = _userManager.Users.ToList()
-                    .Select(product => _mapper.Map<IdentityUser, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.CreatedByUserId))).ToList();
+                    .Select(product => _mapper.Map<ApplicationUser, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.CreatedByUserId))).ToList();
                 model.ParseTypesList = Enum.GetValues(typeof(ParseTypes)).Cast<ParseTypes>()
                     .Select(item => _mapper.Map<ParseTypes, SelectListItem>(item, opt => opt.AfterMap((src, dest) => dest.Selected = src == model.ParseType))).ToList();
 

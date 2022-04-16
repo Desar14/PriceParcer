@@ -17,8 +17,8 @@ namespace PriceParser.Data.Entities
 
         public bool IsAvailable { get; set; }
         public DateTime Created { get; set; }
-        public virtual IdentityUser? CreatedByUser { get; set; }
-        public string? CreatedByUserId { get; set; }
+        public virtual ApplicationUser? CreatedByUser { get; set; }
+        public Guid? CreatedByUserId { get; set; }
 
         public virtual List<ProductFromSites>? Products { get; set; }
 

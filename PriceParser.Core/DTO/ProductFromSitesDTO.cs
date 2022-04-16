@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using PriceParser.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace PriceParser.Core.DTO
         public string? ParseSchedule { get; set; }
 
         public DateTime Created { get; set; }
-        public IdentityUser? CreatedByUser { get; set; }
+        public ApplicationUser? CreatedByUser { get; set; }
         public string? CreatedByUserId { get; set; }
 
         public List<ProductPriceDTO> Prices { get; set; } = new();

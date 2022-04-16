@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PriceParser.Core.Interfaces;
+using PriceParser.Data.Entities;
 using PriceParser.Models.ProductFromSite;
 using PriceParser.Models.ProductPrice;
 
@@ -15,7 +16,7 @@ namespace PriceParser.Controllers
 
         private readonly IProductsFromSitesService _productsFromSitesService;
         private readonly IMapper _mapper;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMarketSitesService _marketSiteService;
         private readonly IProductsService _productService;
         private readonly IProductPricesService _productPricesService;
@@ -23,7 +24,7 @@ namespace PriceParser.Controllers
         private readonly ICurrenciesService _currenciesService;
         private readonly ILogger<ProductsFromSitesController> _logger;
 
-        public ProductsFromSitesController(IProductsFromSitesService productsFromSitesService, IMapper mapper, UserManager<IdentityUser> userManager, IMarketSitesService marketService, IProductsService productService, IProductPricesService productPricesService, IParsingPricesService parsingPricesService, ILogger<ProductsFromSitesController> logger, ICurrenciesService currenciesService)
+        public ProductsFromSitesController(IProductsFromSitesService productsFromSitesService, IMapper mapper, UserManager<ApplicationUser> userManager, IMarketSitesService marketService, IProductsService productService, IProductPricesService productPricesService, IParsingPricesService parsingPricesService, ILogger<ProductsFromSitesController> logger, ICurrenciesService currenciesService)
         {
             _productsFromSitesService = productsFromSitesService;
             _mapper = mapper;
@@ -130,7 +131,7 @@ namespace PriceParser.Controllers
                 var model = _mapper.Map<ProductFromSiteCreateEditViewModel>(recordDetailDTO);
 
                 model.UsersList = _userManager.Users.ToList()
-                    .Select(product => _mapper.Map<IdentityUser, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.CreatedByUserId))).ToList();
+                    .Select(product => _mapper.Map<ApplicationUser, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.CreatedByUserId))).ToList();
                 model.ProductsList = (await _productService.GetAllProductsAsync())
                     .Select(product => _mapper.Map<Core.DTO.ProductDTO, SelectListItem>(product, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == model.ProductId))).ToList();
                 model.SitesList = (await _marketSiteService.GetAllSitesAsync())

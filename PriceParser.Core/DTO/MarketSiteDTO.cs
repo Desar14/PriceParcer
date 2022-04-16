@@ -22,7 +22,7 @@ namespace PriceParser.Core.DTO
         public string? ParseCurrencyAttributeName { get; set; }
         public bool IsAvailable { get; set; }
         public DateTime Created { get; set; }
-        public IdentityUser? CreatedByUser { get; set; }
+        public ApplicationUser? CreatedByUser { get; set; }
 
         public string? CreatedByUserId { get; set; }
 
