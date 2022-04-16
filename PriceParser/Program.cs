@@ -9,7 +9,9 @@ using PriceParser.Core.Interfaces.Data;
 using PriceParser.Data.Entities;
 using PriceParser.DataAccess;
 using PriceParser.Domain;
+using PriceParser.Domain.Utils;
 using Serilog;
+using Twilio;
 
 namespace PriceParser
 {
@@ -18,6 +20,8 @@ namespace PriceParser
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Configuration.AddJsonFile("appsettings_private.json");
 
             builder.Host.UseSerilog((ctx, lc) => lc
                 .WriteTo.Console()
@@ -100,6 +104,9 @@ namespace PriceParser
             // Add the processing server as IHostedService
             builder.Services.AddHangfireServer();
 
+            TwilioClient.Init(builder.Configuration["IdentitySecrets:SMS_SID"], builder.Configuration["IdentitySecrets:SMS_Token"]);
+
+            builder.Services.Configure<TwilioVerifySettings>(builder.Configuration.GetSection("IdentitySecrets"));
 
             var app = builder.Build();
 

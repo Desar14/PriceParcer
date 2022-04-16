@@ -199,7 +199,7 @@ namespace PriceParser.Domain
         public async Task<bool> UpdateRatesAsync()
         {
 
-            var currList = (await _unitOfWork.Currencies.Get(curr => curr.UpdateRates == true));
+            var currList = (await _unitOfWork.Currencies.Get(curr => curr.UpdateRates == true)).ToList();
 
             foreach (var item in currList)
             {

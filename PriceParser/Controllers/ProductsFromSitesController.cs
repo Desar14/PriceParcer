@@ -61,12 +61,24 @@ namespace PriceParser.Controllers
             {
                 var productDetailDTO = (await _productsFromSitesService.GetDetailsAsync(id));
                 var prices = (await _productPricesService.GetAllProductPricesAsync(id)).Select(priceItem => _mapper.Map<ProductPriceItemListViewModel>(priceItem)).OrderByDescending(price => price.ParseDate).ToList();
+                var currentUser = await _userManager.GetUserAsync(User);
 
                 var model = _mapper.Map<ProductFromSiteDetailsViewModel>(productDetailDTO);
                 model.productPrices = prices;
 
                 model.Currencies = (await _currenciesService.GetUsableAsync())
-                    .Select(curr => _mapper.Map<Core.DTO.CurrencyDTO, SelectListItem>(curr, opt => opt.AfterMap((src, dest) => dest.Selected = src.Cur_Abbreviation == "BYN"))).ToList();
+                    .Select(curr => _mapper.Map<Core.DTO.CurrencyDTO, SelectListItem>(curr,
+                        opt => opt.AfterMap((src, dest) => {
+                            if (currentUser?.UserCurrencyId == null)
+                            {
+                                dest.Selected = src.Cur_Abbreviation == "BYN";
+                            }
+                            else
+                            {
+                                dest.Selected = currentUser.UserCurrencyId == src.Id;
+                            }
+                        }
+                     ))).ToList();
 
                 return View(model);
             }

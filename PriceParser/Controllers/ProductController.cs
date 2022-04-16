@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PriceParser.Core.Interfaces;
+using PriceParser.Data.Entities;
 using PriceParser.Models;
 using PriceParser.Models.ProductPrice;
 
@@ -15,14 +17,16 @@ namespace PriceParser.Controllers
         private readonly ICurrenciesService _currenciesService;
         private readonly IMapper _mapper;
         private readonly ILogger<ProductController> _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ProductController(IProductsService productService, IMapper mapper, ILogger<ProductController> logger, IProductPricesService productPricesService, ICurrenciesService currenciesService)
+        public ProductController(IProductsService productService, IMapper mapper, ILogger<ProductController> logger, IProductPricesService productPricesService, ICurrenciesService currenciesService, UserManager<ApplicationUser> userManager)
         {
             _productService = productService;
             _mapper = mapper;
             _logger = logger;
             _productPricesService = productPricesService;
             _currenciesService = currenciesService;
+            _userManager = userManager;
         }
 
         // GET: ProductController
@@ -47,6 +51,8 @@ namespace PriceParser.Controllers
         {
             try
             {
+                var currentUser = await _userManager.GetUserAsync(User);
+
                 var productDetailDTO = (await _productService.GetProductDetailsAsync(id));
 
                 var model = _mapper.Map<ProductDetailsViewModel>(productDetailDTO);
@@ -59,7 +65,18 @@ namespace PriceParser.Controllers
                 });
 
                 model.Currencies = (await _currenciesService.GetUsableAsync())
-                    .Select(curr => _mapper.Map<Core.DTO.CurrencyDTO, SelectListItem>(curr, opt => opt.AfterMap((src, dest) => dest.Selected = src.Cur_Abbreviation == "BYN"))).ToList();
+                    .Select(curr => _mapper.Map<Core.DTO.CurrencyDTO, SelectListItem>(curr, 
+                        opt => opt.AfterMap((src, dest) => {
+                            if (currentUser?.UserCurrencyId == null)
+                            {
+                                dest.Selected = src.Cur_Abbreviation == "BYN";
+                            }
+                            else
+                            {
+                                dest.Selected = currentUser.UserCurrencyId == src.Id;
+                            }                             
+                        }
+                     ))).ToList();
 
                 return View(model);
             }

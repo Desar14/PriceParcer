@@ -6,9 +6,12 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using PriceParser.Core.Interfaces;
 using PriceParser.Data.Entities;
 
 namespace PriceParser.Areas.Identity.Pages.Account.Manage
@@ -17,13 +20,17 @@ namespace PriceParser.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ICurrenciesService _currService;
+        private readonly IMapper _mapper;
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager, ICurrenciesService currService, IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _currService = currService;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -45,7 +52,9 @@ namespace PriceParser.Areas.Identity.Pages.Account.Manage
         /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
+        public List<SelectListItem> CurrencySelectList { get; set; }
 
+        public bool IsPhoneConfirmed { get; set; }
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -59,6 +68,10 @@ namespace PriceParser.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+            [Display(Name = "Default currency")]
+            public Guid? UserCurrencyId { get; set; }
+
+
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -66,11 +79,15 @@ namespace PriceParser.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
+            var currSelectList = (await _currService.GetUsableAsync())
+                    .Select(curr => _mapper.Map<Core.DTO.CurrencyDTO, SelectListItem>(curr, opt => opt.AfterMap((src, dest) => dest.Selected = src.Id == user.UserCurrencyId))).ToList();
+            CurrencySelectList = currSelectList;
             Username = userName;
-
+            IsPhoneConfirmed = await _userManager.IsPhoneNumberConfirmedAsync(user);
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                UserCurrencyId = user.UserCurrencyId
             };
         }
 
@@ -111,9 +128,20 @@ namespace PriceParser.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            if (Input.UserCurrencyId != user.UserCurrencyId)
+            {
+                user.UserCurrencyId = Input.UserCurrencyId;
+                await _userManager.UpdateAsync(user);
+            }
+
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostConfirmPhoneAsync()
+        {
+            return RedirectToPage("/Identity/Account/VerifyPhone");
         }
     }
 }
