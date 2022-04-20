@@ -1,5 +1,5 @@
-﻿@page
-@model IndexModel
+﻿
+@model PriceParser.Models.Account.Manage.IndexModel
 @{
     ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
@@ -42,7 +42,7 @@
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
 
-        <a id="phone-verification" asp-page="./VerifyPhone" class="btn btn-link">Confirm phone</a>
+        <a id="phone-verification" asp-action="VerifyPhone" class="btn btn-link">Confirm phone</a>
     </div>
 </div>
 
