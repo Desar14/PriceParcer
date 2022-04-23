@@ -1,6 +1,7 @@
 using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using PriceParser;
 using PriceParser.Core;
@@ -69,6 +70,12 @@ namespace PriceParser
                 options.SlidingExpiration = true;
             });
 
+            //Phone and Email verification services
+            TwilioClient.Init(builder.Configuration["IdentitySecrets:SMS_SID"], builder.Configuration["IdentitySecrets:SMS_Token"]);
+            builder.Services.Configure<TwilioVerifySettings>(builder.Configuration.GetSection("IdentitySecrets"));
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddScoped<IRepository<Product>, Repository<Product>>();
@@ -86,6 +93,7 @@ namespace PriceParser
             builder.Services.AddScoped<IProductPricesService, ProductPricesService>();
             builder.Services.AddScoped<IParsingPricesService, ParcingPricesService>();
             builder.Services.AddScoped<ICurrenciesService, CurrenciesService>();
+            
 
             // Add Hangfire services.
             builder.Services.AddHangfire(configuration => configuration
@@ -102,15 +110,9 @@ namespace PriceParser
                 }));
 
             // Add the processing server as IHostedService
-            builder.Services.AddHangfireServer();
+            builder.Services.AddHangfireServer();            
 
-            TwilioClient.Init(builder.Configuration["IdentitySecrets:SMS_SID"], builder.Configuration["IdentitySecrets:SMS_Token"]);
-
-            builder.Services.Configure<TwilioVerifySettings>(builder.Configuration.GetSection("IdentitySecrets"));
-
-            var app = builder.Build();
-
-            
+            var app = builder.Build();            
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -154,9 +156,7 @@ namespace PriceParser
 
                     var logger = services.GetRequiredService<Microsoft.Extensions.Logging.ILogger>();
                     logger.LogError(ex, "An error occurred while migrating the database.");
-                }
-                
-
+                }     
             }
 
             app.Run();

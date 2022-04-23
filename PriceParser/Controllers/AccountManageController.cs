@@ -91,6 +91,7 @@ namespace PriceParser.Controllers
 
             await _signInManager.RefreshSignInAsync(user);
             model.StatusMessage = "Your profile has been updated";
+            LoadAsync(user, model);
             return View(model);
         }
 

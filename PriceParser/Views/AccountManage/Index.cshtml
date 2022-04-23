@@ -39,10 +39,13 @@
                 <label asp-for="Input.UserCurrencyId"></label>                
                 <span asp-validation-for="Input.UserCurrencyId" class="text-danger"></span>
             </div>
+            <input asp-for="CurrencySelectList" type="hidden" />
+            <input asp-for="Username" type="hidden" />
+            <input asp-for="Input.PhoneNumber" type="hidden" />
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
 
-        <a id="phone-verification" asp-action="VerifyPhone" class="btn btn-link">Confirm phone</a>
+        <a id="phone-verification" asp-controller="Account" asp-action="VerifyPhone" class="btn btn-link">Confirm phone</a>
     </div>
 </div>
 

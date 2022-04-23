@@ -1,5 +1,5 @@
-﻿@page
-@model RegisterModel
+﻿
+@model PriceParser.Models.Account.RegisterModel
 @{
     ViewData["Title"] = "Register";
 }
@@ -11,6 +11,8 @@
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h2>Create a new account.</h2>
             <hr />
+            <input asp-for="ExternalLogins" type="hidden" />
+            <input asp-for="ReturnUrl" type="hidden" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-floating">
                 <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />

@@ -1,5 +1,5 @@
-﻿@page
-@model ConfirmPhoneModel
+﻿
+@model PriceParser.Models.Account.ConfirmPhoneModel
 @{
    ViewData["Title"] = "Confirm Phone number";
 }
@@ -13,7 +13,7 @@
                Enter the code you receive to confirm your phone number.
            </p>
            <div asp-validation-summary="All" class="text-danger"></div>
-
+           <input asp-for="PhoneNumber" type="hidden"/>
            <div class="form-group">
                <label asp-for="VerificationCode"></label>
                <input asp-for="VerificationCode" class="form-control" type="number" />
