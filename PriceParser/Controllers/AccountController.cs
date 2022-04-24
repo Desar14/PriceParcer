@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -7,12 +8,14 @@ using Microsoft.Extensions.Options;
 using PriceParser.Data.Entities;
 using PriceParser.Domain.Utils;
 using PriceParser.Models.Account;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using Twilio.Rest.Verify.V2.Service;
 
 namespace PriceParser.Controllers
 {
+    [Authorize]
     public class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -38,7 +41,7 @@ namespace PriceParser.Controllers
             _emailSender = emailSender;
             _settings = settings.Value;
         }
-
+        [AllowAnonymous]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
             var model = new LoginModel();
@@ -56,10 +59,11 @@ namespace PriceParser.Controllers
         }
         
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginModel model, string? returnUrl = null)
         {
                         
-            returnUrl ??= Url.Content("~/");
+            returnUrl ??= Url.Action("Index","Home");
 
             model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             
@@ -78,12 +82,12 @@ namespace PriceParser.Controllers
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = model.Input.RememberMe });
+                    return RedirectToAction("LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = model.Input.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
+                    return RedirectToAction("Lockout");
                 }
                 else
                 {
@@ -109,7 +113,7 @@ namespace PriceParser.Controllers
             {
                 // This needs to be a redirect so that the browser performs a new
                 // request and the identity for the user gets updated.
-                return RedirectToPage("/Home");
+                return RedirectToAction("Index","Home");
             }
         }
 
@@ -119,7 +123,7 @@ namespace PriceParser.Controllers
 
             if (email == null)
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index","AccountManage");
             }
             returnUrl = returnUrl ?? Url.Content("~/");
 
@@ -148,14 +152,14 @@ namespace PriceParser.Controllers
 
             return View(model);
         }
-
+        [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
             var model = new ConfirmEmailModel();
 
             if (userId == null || code == null)
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "AccountManage");
             }
 
             var user = await _userManager.FindByIdAsync(userId);
@@ -323,15 +327,414 @@ namespace PriceParser.Controllers
             return View();
         }
 
-
-        private async Task<string> LoadPhoneNumber()
+        [AllowAnonymous]
+        public async Task<IActionResult> ResendEmailConfirmation()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var model = new ResendEmailConfirmationModel();
+            return View(model);
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResendEmailConfirmation(ResendEmailConfirmationModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Input.Email);
             if (user == null)
             {
-                throw new Exception($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                ModelState.AddModelError(string.Empty, "User email not found");
+                return View(model);
             }
-            return user.PhoneNumber;
+
+            var userId = await _userManager.GetUserIdAsync(user);
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var callbackUrl = Url.Action(
+                "ConfirmEmail",
+                controller: "Account",
+                values: new { userId = userId, code = code },
+                protocol: Request.Scheme);
+            await _emailSender.SendEmailAsync(
+                model.Input.Email,
+                "Confirm your email",
+                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+            return View(model);
+        }
+
+        public async Task<IActionResult> AccessDenied()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> ConfirmEmailChange(string userId, string email, string code)
+        {
+            var model = new ConfirmEmailChangeModel();
+
+            if (userId == null || email == null || code == null)
+            {
+                return RedirectToAction("Index", "AccountManage");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{userId}'.");
+            }
+
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            var result = await _userManager.ChangeEmailAsync(user, email, code);
+            if (!result.Succeeded)
+            {
+                model.StatusMessage = "Error changing email.";
+                return View(model);
+            }
+
+            // In our UI email and user name are one and the same, so when we update the email
+            // we need to update the user name.
+            var setUserNameResult = await _userManager.SetUserNameAsync(user, email);
+            if (!setUserNameResult.Succeeded)
+            {
+                model.StatusMessage = "Error changing user name.";
+                return View(model);
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+            model.StatusMessage = "Thank you for confirming your email change.";
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Input.Email);
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                {
+                    // Don't reveal that the user does not exist or is not confirmed
+                    return RedirectToAction("ForgotPasswordConfirmation");
+                }
+
+                // For more information on how to enable account confirmation and password reset please
+                // visit https://go.microsoft.com/fwlink/?LinkID=532713
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = Url.Action(
+                    "ResetPassword",
+                    controller: "Account",
+                    values: new { code },
+                    protocol: Request.Scheme);
+
+                await _emailSender.SendEmailAsync(
+                    model.Input.Email,
+                    "Reset Password",
+                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                return RedirectToAction("ForgotPasswordConfirmation");
+            }
+
+            return View(model);
+        }
+        
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Lockout()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> ResetPassword(string? code = null)
+        {
+            var model = new ResetPasswordModel();
+            
+            if (code == null)
+            {
+                return BadRequest("A code must be supplied for password reset.");
+            }
+            else
+            {
+                model.Input = new ResetPasswordModel.InputModel
+                {
+                    Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code))
+                };
+                return View(model);
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Input.Email);
+            if (user == null)
+            {
+                // Don't reveal that the user does not exist
+                return RedirectToAction(nameof(ResetPasswordConfirmation));
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Input.Code, model.Input.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction(nameof(ResetPasswordConfirmation));
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPasswordConfirmation()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> LoginWithRecoveryCode(string? returnUrl = null)
+        {
+            var model = new LoginWithRecoveryCodeModel();
+            // Ensure the user has gone through the username & password screen first
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user == null)
+            {
+                throw new InvalidOperationException($"Unable to load two-factor authentication user.");
+            }
+            returnUrl = returnUrl ?? Url.Content("~/");
+            model.ReturnUrl = returnUrl;
+
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> LoginWithRecoveryCode(LoginWithRecoveryCodeModel model, string? returnUrl = null)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user == null)
+            {
+                throw new InvalidOperationException($"Unable to load two-factor authentication user.");
+            }
+
+            var recoveryCode = model.Input.RecoveryCode.Replace(" ", string.Empty);
+
+            var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
+
+            var userId = await _userManager.GetUserIdAsync(user);
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User with ID '{UserId}' logged in with a recovery code.", userId);
+                return LocalRedirect(returnUrl ?? Url.Content("~/"));
+            }
+            if (result.IsLockedOut)
+            {
+                _logger.LogWarning("User account locked out.");
+                return RedirectToAction("Lockout");
+            }
+            else
+            {
+                _logger.LogWarning("Invalid recovery code entered for user with ID '{UserId}' ", userId);
+                ModelState.AddModelError(string.Empty, "Invalid recovery code entered.");
+                return View(model);
+            }
+        }
+
+        public async Task<IActionResult> LoginWith2fa(bool rememberMe, string? returnUrl = null)
+        {
+            // Ensure the user has gone through the username & password screen first
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+
+            var model = new LoginWith2faModel();
+
+            returnUrl = returnUrl ?? Url.Content("~/");
+
+            if (user == null)
+            {
+                throw new InvalidOperationException($"Unable to load two-factor authentication user.");
+            }
+
+            model.ReturnUrl = returnUrl;
+            model.RememberMe = rememberMe;
+
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> LoginWith2fa(LoginWith2faModel model, bool rememberMe, string? returnUrl = null)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            returnUrl = returnUrl ?? Url.Content("~/");
+
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user == null)
+            {
+                throw new InvalidOperationException($"Unable to load two-factor authentication user.");
+            }
+
+            var authenticatorCode = model.Input.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
+
+            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, model.Input.RememberMachine);
+
+            var userId = await _userManager.GetUserIdAsync(user);
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User with ID '{UserId}' logged in with 2fa.", user.Id);
+                return LocalRedirect(returnUrl);
+            }
+            else if (result.IsLockedOut)
+            {
+                _logger.LogWarning("User with ID '{UserId}' account locked out.", user.Id);
+                return RedirectToAction(nameof(Lockout));
+            }
+            else
+            {
+                _logger.LogWarning("Invalid authenticator code entered for user with ID '{UserId}'.", user.Id);
+                ModelState.AddModelError(string.Empty, "Invalid authenticator code.");
+                return View(model);
+            }
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalLogin() => RedirectToAction("Login");
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult ExternalLogin(string provider, string returnUrl = null)
+        {
+            // Request a redirect to the external login provider.
+            var redirectUrl = Url.Action("ExternalLoginCallback", controller: "Account", values: new { returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            return new ChallengeResult(provider, properties);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
+        {
+            var model = new ExternalLoginModel();
+            returnUrl = returnUrl ?? Url.Content("~/");
+            if (remoteError != null)
+            {
+                model.ErrorMessage = $"Error from external provider: {remoteError}";
+                return RedirectToAction(nameof(Login), new { ReturnUrl = returnUrl });
+            }
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                model.ErrorMessage = "Error loading external login information.";
+                return RedirectToAction(nameof(Login), new { ReturnUrl = returnUrl });
+            }
+
+            // Sign in the user with this external login provider if the user already has a login.
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
+                return LocalRedirect(returnUrl);
+            }
+            if (result.IsLockedOut)
+            {
+                return RedirectToAction(nameof(Lockout));
+            }
+            else
+            {
+                // If the user does not have an account, then ask the user to create an account.
+                model.ReturnUrl = returnUrl;
+                model.ProviderDisplayName = info.ProviderDisplayName;
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+                {
+                    model.Input = new ExternalLoginModel.InputModel
+                    {
+                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+                    };
+                }
+                return View(model);
+            }
+        }
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginModel model, string? returnUrl = null)
+        {
+            returnUrl = returnUrl ?? Url.Content("~/");
+            // Get the information about the user from the external login provider
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                model.ErrorMessage = "Error loading external login information during confirmation.";
+                return RedirectToAction(nameof(Login), new { ReturnUrl = returnUrl });
+            }
+
+            if (ModelState.IsValid)
+            {
+                var user = CreateUser();
+
+                await _userStore.SetUserNameAsync(user, model.Input.Email, CancellationToken.None);
+                await _emailStore.SetEmailAsync(user, model.Input.Email, CancellationToken.None);
+
+                var result = await _userManager.CreateAsync(user);
+                if (result.Succeeded)
+                {
+                    result = await _userManager.AddLoginAsync(user, info);
+                    if (result.Succeeded)
+                    {
+                        _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+
+                        var userId = await _userManager.GetUserIdAsync(user);
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                        var callbackUrl = Url.Action(
+                            "ConfirmEmail",
+                            controller: "Account",
+                            values: new { userId = userId, code = code },
+                            protocol: Request.Scheme);
+
+                        await _emailSender.SendEmailAsync(model.Input.Email, "Confirm your email",
+                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                        // If account confirmation is required, we need to show the link if we don't have a real email sender
+                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                        {
+                            return RedirectToAction(nameof(RegisterConfirmation), new { Email = model.Input.Email });
+                        }
+
+                        await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
+                        return LocalRedirect(returnUrl);
+                    }
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            model.ProviderDisplayName = info.ProviderDisplayName;
+            model.ReturnUrl = returnUrl;
+            return View(model);
         }
 
         private ApplicationUser CreateUser()
@@ -344,10 +747,18 @@ namespace PriceParser.Controllers
             {
                 throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
                     $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+                    $"override the external login page in /Areas/Identity/Pages/Account/ExternalLogin.cshtml");
             }
         }
-
+        private async Task<string> LoadPhoneNumber()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new Exception($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+            return user.PhoneNumber;
+        }
         private IUserEmailStore<ApplicationUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
@@ -356,6 +767,5 @@ namespace PriceParser.Controllers
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }
-
     }
 }

@@ -30,9 +30,9 @@
                 <div class="form-floating">
                     <input asp-for="Input.PhoneNumber" class="form-control" />
                     <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-                    
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>                    
                 </div>             
+                <a id="phone-verification" asp-controller="Account" asp-action="VerifyPhone" class="btn btn-primary btn-sm">Confirm phone</a>
             }
             <div class="form-floating">
                 <select asp-for="Input.UserCurrencyId" asp-items="Model.CurrencySelectList" class="form-control" aria-label="@Html.DisplayNameFor(m => m.Input.UserCurrencyId)"></select>
@@ -44,8 +44,6 @@
             <input asp-for="Input.PhoneNumber" type="hidden" />
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
-
-        <a id="phone-verification" asp-controller="Account" asp-action="VerifyPhone" class="btn btn-link">Confirm phone</a>
     </div>
 </div>
 
