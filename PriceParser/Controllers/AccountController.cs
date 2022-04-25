@@ -58,6 +58,8 @@ namespace PriceParser.Controllers
             model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             model.ReturnUrl = returnUrl;
+            
+            model.ErrorMessage = ErrorMessage;
 
             return View(model);
         }
@@ -644,13 +646,13 @@ namespace PriceParser.Controllers
             returnUrl = returnUrl ?? Url.Content("~/");
             if (remoteError != null)
             {
-                model.ErrorMessage = $"Error from external provider: {remoteError}";
+                ErrorMessage = $"Error from external provider: {remoteError}";
                 return RedirectToAction(nameof(Login), new { ReturnUrl = returnUrl });
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                model.ErrorMessage = "Error loading external login information.";
+                ErrorMessage = "Error loading external login information.";
                 return RedirectToAction(nameof(Login), new { ReturnUrl = returnUrl });
             }
 
@@ -677,7 +679,7 @@ namespace PriceParser.Controllers
                         Email = info.Principal.FindFirstValue(ClaimTypes.Email)
                     };
                 }
-                return View(model);
+                return View(nameof(ExternalLogin), model);
             }
         }
         [AllowAnonymous]
@@ -689,7 +691,7 @@ namespace PriceParser.Controllers
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                model.ErrorMessage = "Error loading external login information during confirmation.";
+                ErrorMessage = "Error loading external login information during confirmation.";
                 return RedirectToAction(nameof(Login), new { ReturnUrl = returnUrl });
             }
 
@@ -738,7 +740,7 @@ namespace PriceParser.Controllers
 
             model.ProviderDisplayName = info.ProviderDisplayName;
             model.ReturnUrl = returnUrl;
-            return View(model);
+            return View(nameof(ExternalLogin), model);
         }
 
         private ApplicationUser CreateUser()

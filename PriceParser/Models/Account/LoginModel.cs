@@ -10,7 +10,10 @@ namespace PriceParser.Models.Account
         public InputModel Input { get; set; }
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
         public string ReturnUrl { get; set; }
-        
+
+        [TempData]
+        public string ErrorMessage { get; set; }
+
         public class InputModel
         {
 

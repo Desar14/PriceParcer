@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc;
 
 namespace PriceParser.Models.Account.Manage
 {
@@ -15,5 +16,7 @@ namespace PriceParser.Models.Account.Manage
 
         [TempData]
         public string StatusMessage { get; set; }
+
+        public ITrackingConsentFeature? trackingConsentFeature { get; set; }
     }
 }

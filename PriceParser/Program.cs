@@ -74,7 +74,11 @@ namespace PriceParser
             TwilioClient.Init(builder.Configuration["IdentitySecrets:SMS_SID"], builder.Configuration["IdentitySecrets:SMS_Token"]);
             builder.Services.Configure<TwilioVerifySettings>(builder.Configuration.GetSection("IdentitySecrets"));
             builder.Services.AddTransient<IEmailSender, EmailSender>();
-
+            builder.Services.AddAuthentication().AddGoogle(googleOptions =>
+            {
+                googleOptions.ClientId = builder.Configuration["IdentitySecrets:Google:ClientId"];
+                googleOptions.ClientSecret = builder.Configuration["IdentitySecrets:Google:ClientSecret"];
+            });
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

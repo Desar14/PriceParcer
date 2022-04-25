@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace PriceParser.Models.Account
@@ -12,7 +13,7 @@ namespace PriceParser.Models.Account
 
         public string ReturnUrl { get; set; }
 
-        [TempData]
+        [TempData, ValidateNever]
         public string ErrorMessage { get; set; }
 
         public class InputModel

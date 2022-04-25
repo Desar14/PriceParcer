@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using PriceParser.Core.Interfaces;
 using PriceParser.Data.Entities;
 using PriceParser.Models.Account.Manage;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace PriceParser.Controllers
 {
@@ -541,9 +542,11 @@ namespace PriceParser.Controllers
         }
 
         public async Task<IActionResult> TwoFactorAuthentication()
-        {
+        { 
             var model = new TwoFactorAuthenticationModel();
-            
+
+            model.trackingConsentFeature = HttpContext.Features.Get<ITrackingConsentFeature>();
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -674,7 +677,7 @@ namespace PriceParser.Controllers
 
             return View(model);
         }
-
+        [HttpPost]
         public async Task<IActionResult> SetPassword(SetPasswordModel model)
         {
             if (!ModelState.IsValid)
@@ -742,7 +745,7 @@ namespace PriceParser.Controllers
             return string.Format(
                 CultureInfo.InvariantCulture,
                 AuthenticatorUriFormat,
-                _urlEncoder.Encode("Microsoft.AspNetCore.Identity.UI"),
+                _urlEncoder.Encode("PriceParser"),
                 _urlEncoder.Encode(email),
                 unformattedKey);
         }
