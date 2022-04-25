@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using PriceParser.Models;
 
 namespace PriceParser.Controllers
 {
+    [Authorize]
     public class MarketSitesController : Controller
     {
         private readonly IMarketSitesService _marketService;
@@ -23,7 +25,7 @@ namespace PriceParser.Controllers
             _userManager = userManager;
             _logger = logger;
         }
-
+        [AllowAnonymous]
         // GET: MarketSitesController
         public async Task<IActionResult> Index()
         {

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using PriceParser.Models.ProductPrice;
 
 namespace PriceParser.Controllers
 {
+    [Authorize]
     public class ProductsFromSitesController : Controller
     {
 
@@ -53,7 +55,7 @@ namespace PriceParser.Controllers
                 throw;
             }
         }
-
+        [AllowAnonymous]
         // GET: ProductsFromSitesController/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
@@ -215,7 +217,7 @@ namespace PriceParser.Controllers
                 return View(model);
             }
         }
-
+        
         public async Task<IActionResult> ParsePrice(Guid id)
         {
             try
@@ -231,7 +233,7 @@ namespace PriceParser.Controllers
                 return RedirectToAction(nameof(Details), new { id });
             }
         }
-
+        [AllowAnonymous]
         public async Task<IActionResult> PricesData(Guid id, DateTime? startPeriod, DateTime? endPeriod, Guid? currencyId)
         {
             try

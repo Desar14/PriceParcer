@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using PriceParser.Models.ProductPrice;
 
 namespace PriceParser.Controllers
 {
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly IProductsService _productService;
@@ -28,7 +30,7 @@ namespace PriceParser.Controllers
             _currenciesService = currenciesService;
             _userManager = userManager;
         }
-
+        [AllowAnonymous]
         // GET: ProductController
         public async Task<IActionResult> Index()
         {
@@ -45,7 +47,7 @@ namespace PriceParser.Controllers
                 throw;
             }
         }
-
+        [AllowAnonymous]
         // GET: ProductController/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
@@ -87,12 +89,13 @@ namespace PriceParser.Controllers
             }
         }
 
+        
         // GET: ProductController/Create
         public ActionResult Create()
         {
             return View();
         }
-
+        
         // POST: ProductController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -187,7 +190,7 @@ namespace PriceParser.Controllers
                 return View(model);
             }
         }
-
+        [AllowAnonymous]
         public async Task<IActionResult> PricesData(Guid id, DateTime? startPeriod, DateTime? endPeriod, Guid? currencyId)
         {
             try

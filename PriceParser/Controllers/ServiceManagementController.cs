@@ -1,11 +1,13 @@
 ﻿using Hangfire;
 using Hangfire.Storage;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PriceParser.Core.Interfaces;
 using PriceParser.Models.ServiceManagement;
 
 namespace PriceParser.Controllers
 {
+    [Authorize]
     public class ServiceManagementController : Controller
     {
         private readonly IParsingPricesService _parsingPricesService;

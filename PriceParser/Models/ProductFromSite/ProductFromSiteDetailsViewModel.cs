@@ -8,6 +8,7 @@ namespace PriceParser.Models.ProductFromSite
         public Guid Id { get; set; }
         public string? ProductName { get; set; }
         public string? SiteName { get; set; }
+        public Guid SiteId { get; set; }
         public string? Path { get; set; }
         public bool DoNotParse { get; set; }
         public string? ParseSchedule { get; set; }

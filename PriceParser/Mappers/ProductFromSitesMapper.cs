@@ -30,6 +30,8 @@ namespace PriceParser.Mappers
             CreateMap<ProductFromSitesDTO, ProductFromSiteDetailsViewModel>()
                     .ForMember(dest => dest.SiteName,
                         opt => opt.MapFrom(src => src.Site.Name))
+                    .ForMember(dest => dest.SiteId,
+                        opt => opt.MapFrom(src => src.Site.Id))
                     .ForMember(dest => dest.ProductName,
                         opt => opt.MapFrom(src => src.Product.Name))
                     .ForMember(dest => dest.CreatedByUserName,

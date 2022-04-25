@@ -26,6 +26,10 @@ namespace PriceParser.Controllers
         private readonly IEmailSender _emailSender;
         private readonly TwilioVerifySettings _settings;
 
+        [TempData]
+        public string StatusMessage { get; set; }
+        [TempData]
+        public string ErrorMessage { get; set; }
         public AccountController(SignInManager<ApplicationUser> signInManager,
                                  UserManager<ApplicationUser> userManager,
                                  ILogger<AccountController> logger,

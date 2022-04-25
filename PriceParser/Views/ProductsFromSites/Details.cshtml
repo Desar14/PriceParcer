@@ -7,32 +7,16 @@
 <h1>Details</h1>
 
 <div>
-    <h4>ProductFromSiteDetailsViewModel</h4>
+    <h4>@Html.DisplayFor(model => model.ProductName)</h4>
     <hr />
     <dl class="row">
+        @if (User.Identity.IsAuthenticated)
+        {
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Id)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ProductName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ProductName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SiteName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SiteName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Path)
-        </dt>
-        <dd class="col-sm-10">
-            <a href="@Html.DisplayFor(model => model.Path)">@Html.DisplayFor(model => model.Path)</a>
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.DoNotParse)
@@ -46,6 +30,21 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ParseSchedule)
         </dd>
+        }
+        
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SiteName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SiteName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Path)
+        </dt>
+        <dd class="col-sm-10">
+            <a href="@Html.DisplayFor(model => model.Path)">@Html.DisplayFor(model => model.Path)</a>
+        </dd>
+        
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Created)
         </dt>
@@ -61,7 +60,10 @@
     </dl>
 
     @await Html.PartialAsync("_ChartsPartial", new ChartPartialViewModel(){ Currencies = Model.Currencies, EntityId = Model.Id, EntityType = "ProductsFromSites"})
-
+</div>
+<div>
+    @if (User.Identity.IsAuthenticated)
+    {
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapse-raw-prices" role="button" aria-expanded="false" aria-controls="collapse-raw-prices">
         Raw prices data
     </a>
@@ -88,14 +90,16 @@
             </tbody>
         </table>
     </div>
-</div>
-<br />
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" asp-fragment="" class="btn btn-primary">Edit</a>
-    <a asp-action="Delete" asp-route-id="@Model.Id" asp-fragment="" class="btn btn-primary">Delete</a>
-    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+
     <br />
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" asp-fragment="" class="btn btn-primary">Edit</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" asp-fragment="" class="btn btn-primary">Delete</a>
+        <a asp-action="Index" class="btn btn-primary">Back to List</a>
+        <br />
 
-    <a asp-action="ParsePrice" asp-route-id="@Model.Id" class="btn btn-primary">Parse current price</a>
+        <a asp-action="ParsePrice" asp-route-id="@Model.Id" class="btn btn-primary">Parse current price</a>
 
+    </div>
+    }
 </div>

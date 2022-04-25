@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using PriceParser.Models.UserReview;
 
 namespace PriceParser.Controllers
 {
+    [Authorize]
     public class UserReviewsController : Controller
     {
 
@@ -111,11 +113,15 @@ namespace PriceParser.Controllers
         {
             try
             {
+                var user = await _userManager.GetUserAsync(User);
+
                 var model = new UserReviewCreateEditViewModel
                 {
                     Id = Guid.NewGuid(),
                     ReviewDate = DateTime.Now,
                     Hidden = false,
+                    UserId = user.Id,
+                    User = user,
                     UsersList = _userManager.Users.Select(product => _mapper.Map<SelectListItem>(product)).ToList(),
                     ProductId = productId,
                     Product = _mapper.Map<ProductItemListViewModel>(await _productService.GetProductDetailsAsync(productId))

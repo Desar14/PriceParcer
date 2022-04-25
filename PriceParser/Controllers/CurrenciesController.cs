@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PriceParser.Core.Interfaces;
@@ -7,6 +8,7 @@ using PriceParser.Models.Currency;
 
 namespace PriceParser.Controllers
 {
+    [Authorize]
     public class CurrenciesController : Controller
     {
 
@@ -20,7 +22,7 @@ namespace PriceParser.Controllers
             _currenciesService = currenciesService;
             _mapper = mapper;
         }
-
+        [AllowAnonymous]
         // GET: CurrenciesController
         public async Task<IActionResult> Index()
         {
