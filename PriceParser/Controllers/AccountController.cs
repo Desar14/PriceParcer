@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
+using PriceParser.Data;
 using PriceParser.Data.Entities;
 using PriceParser.Domain.Utils;
 using PriceParser.Models.Account;
@@ -20,6 +21,7 @@ namespace PriceParser.Controllers
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly ILogger<AccountController> _logger;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
@@ -35,7 +37,7 @@ namespace PriceParser.Controllers
                                  ILogger<AccountController> logger,
                                  IUserStore<ApplicationUser> userStore,
                                  IEmailSender emailSender,
-                                 IOptions<TwilioVerifySettings> settings)
+                                 IOptions<TwilioVerifySettings> settings, RoleManager<IdentityRole<Guid>> roleManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -44,6 +46,7 @@ namespace PriceParser.Controllers
             _emailStore = GetEmailStore();
             _emailSender = emailSender;
             _settings = settings.Value;
+            _roleManager = roleManager;
         }
         [AllowAnonymous]
         public async Task<IActionResult> Login(string returnUrl = null)
@@ -201,6 +204,8 @@ namespace PriceParser.Controllers
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+                var firstUser = !_userManager.Users.Any();
+                               
 
                 await _userStore.SetUserNameAsync(user, model.Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, model.Input.Email, CancellationToken.None);
@@ -209,6 +214,12 @@ namespace PriceParser.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    await _userManager.AddToRoleAsync(user, UserRoles.User);
+                    if (firstUser)
+                    {
+                        await _userManager.AddToRoleAsync(user, UserRoles.Admin);
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -698,7 +709,7 @@ namespace PriceParser.Controllers
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-
+                var firstUser = _userManager.Users.Any();
                 await _userStore.SetUserNameAsync(user, model.Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, model.Input.Email, CancellationToken.None);
 
@@ -709,6 +720,12 @@ namespace PriceParser.Controllers
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+
+                        await _userManager.AddToRoleAsync(user, UserRoles.User);
+                        if (firstUser)
+                        {
+                            await _userManager.AddToRoleAsync(user, UserRoles.Admin);
+                        }
 
                         var userId = await _userManager.GetUserIdAsync(user);
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

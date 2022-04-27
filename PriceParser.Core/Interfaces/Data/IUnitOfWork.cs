@@ -18,6 +18,7 @@ namespace PriceParser.Core.Interfaces
         IRepository<UserReview> UserReviews { get; }
         IRepository<Currency> Currencies { get; }
         ICurrencyRatesRepository CurrencyRates { get; }
+        IRepository<RefreshToken> RefreshTokens { get; }
 
         Task<int> Commit();
     }

@@ -1,0 +1,61 @@
+﻿@using PriceParser.Models.Account.Manage
+@model ManageUserRolesViewModel
+@{
+    ViewData["Title"] = "Manage roles";
+    ViewData["ActivePage"] = ManageNavPages.ManageUserRoles;
+}
+
+<partial name="_StatusMessage" for="StatusMessage" />
+<form asp-action="ManageUserRoles">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Users[0].UserId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Users[0].UserName)
+                </th>
+                <th>Roles</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Users.Count(); i++)
+            {
+                var item = Model.Users[i];
+
+                <tr>
+                    <td>
+                        @Html.HiddenFor(m => m.Users[i].UserId);
+                        @Html.DisplayFor(m => m.Users[i].UserId);
+                    </td>
+                    <td>
+                        @Html.HiddenFor(m => m.Users[i].UserName)
+                        @Html.DisplayFor(m => m.Users[i].UserName)
+                    </td>
+                    <td>
+
+                        @for (int j = 0; j < item.Roles.Count(); j++)
+                        {
+                            <div class="form-check form-switch">
+                                @Html.CheckBoxFor(m => m.Users[i].Roles[j].Selected, new{@class = "form-check-input"})
+                                <label class="form-check-label" for="flexSwitchCheckDefault">@Model.Users[i].Roles[j].Text</label>
+                            </div>
+                            @Html.HiddenFor(m => m.Users[i].Roles[j].Value);
+                            @Html.HiddenFor(m => m.Users[i].Roles[j].Text);                          
+                            
+                        }
+
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+</form>
+
+

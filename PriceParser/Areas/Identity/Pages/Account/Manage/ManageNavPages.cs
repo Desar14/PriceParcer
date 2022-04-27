@@ -61,6 +61,8 @@ namespace  PriceParser.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
 
+        public static string ManageUserRoles => "ManageUserRoles";
+
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -109,6 +111,8 @@ namespace  PriceParser.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public static string TwoFactorAuthenticationNavClass(ViewContext viewContext) => PageNavClass(viewContext, TwoFactorAuthentication);
 
+        public static string ManageUserRolesNavClass(ViewContext viewContext) => PageNavClass(viewContext, ManageUserRoles);
+        
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.

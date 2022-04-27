@@ -90,6 +90,10 @@ async function reloadChart() {
         dataArray.push(dataArrayElement);
     }
 
+    if (dataArray.length == 0) {
+        return;
+    }
+
     data.addRows(dataArray);
 
     var options = {

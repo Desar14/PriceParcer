@@ -21,10 +21,20 @@ namespace PriceParser.DataAccess
         private readonly IRepository<ProductPrice> _productPricesRepo;
         private readonly IRepository<UserReview> _userReviewsRepo;
         private readonly IRepository<Currency> _currencyRepo;
+        private readonly IRepository<RefreshToken> _refreshTokenRepo;
         private readonly ICurrencyRatesRepository _currencyRateRepo;
         private readonly ILogger<UnitOfWork> _logger;
 
-        public UnitOfWork(ApplicationDbContext db, IRepository<MarketSite> marketSitesRepo, IRepository<Product> productRepo, IRepository<ProductFromSites> productFromSitesRepo, IRepository<ProductPrice> productPricesRepo, IRepository<UserReview> userReviewsRepo, ILogger<UnitOfWork> logger, ICurrencyRatesRepository currencyRateRepo, IRepository<Currency> currencyRepo)
+        public UnitOfWork(ApplicationDbContext db,
+                          IRepository<MarketSite> marketSitesRepo,
+                          IRepository<Product> productRepo,
+                          IRepository<ProductFromSites> productFromSitesRepo,
+                          IRepository<ProductPrice> productPricesRepo,
+                          IRepository<UserReview> userReviewsRepo,
+                          ILogger<UnitOfWork> logger,
+                          ICurrencyRatesRepository currencyRateRepo,
+                          IRepository<Currency> currencyRepo,
+                          IRepository<RefreshToken> refreshTokenRepo)
         {
             _db = db;
             _marketSitesRepo = marketSitesRepo;
@@ -35,6 +45,7 @@ namespace PriceParser.DataAccess
             _logger = logger;
             _currencyRateRepo = currencyRateRepo;
             _currencyRepo = currencyRepo;
+            _refreshTokenRepo = refreshTokenRepo;
         }
 
         public IRepository<MarketSite> MarketSites => _marketSitesRepo;
@@ -50,6 +61,8 @@ namespace PriceParser.DataAccess
         public IRepository<Currency> Currencies => _currencyRepo;
 
         public ICurrencyRatesRepository CurrencyRates => _currencyRateRepo;
+
+        public IRepository<RefreshToken> RefreshTokens => _refreshTokenRepo;
 
         public async Task<int> Commit()
         {

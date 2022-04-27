@@ -17,6 +17,7 @@ using PriceParser.Core.Interfaces;
 using PriceParser.Data.Entities;
 using PriceParser.Models.Account.Manage;
 using Microsoft.AspNetCore.Http.Features;
+using PriceParser.Data;
 
 namespace PriceParser.Controllers
 {
@@ -26,6 +27,7 @@ namespace PriceParser.Controllers
 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly ICurrenciesService _currService;
         private readonly IMapper _mapper;
         private readonly ILogger<AccountManageController> _logger;
@@ -704,6 +706,66 @@ namespace PriceParser.Controllers
             await _signInManager.RefreshSignInAsync(user);
             model.StatusMessage = "Your password has been set.";
 
+            return View(model);
+        }
+        
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> ManageUserRoles(Guid? userId)
+        {
+            var model = new ManageUserRolesViewModel();
+            model.Users = new();
+            var usersCollection = _userManager.Users;
+            if (userId != null)
+            {
+                usersCollection = usersCollection.Where(x => x.Id == userId);
+            }
+
+            foreach (var user in _userManager.Users)
+            {
+                var userRoles = await _userManager.GetRolesAsync(user);
+
+                var modelItem = new ManageUserRolesItemViewModel();
+                modelItem.UserName = user.UserName;
+                modelItem.UserId = user.Id;
+                modelItem.Roles = new ();
+                foreach (var roleName in UserRoles.RolesList())
+                {
+                    
+                    modelItem.Roles.Add(new()
+                    {
+                        Text = roleName,
+                        Value = roleName,
+                        Selected = userRoles.Contains(roleName)
+                    });
+                }
+
+                model.Users.Add(modelItem);
+            }
+            return View(model);
+        }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpPost]
+        public async Task<IActionResult> ManageUserRoles(ManageUserRolesViewModel model)
+        {
+            foreach (var item in model.Users)
+            {
+                var user = await _userManager.FindByIdAsync(item.UserId.ToString());
+                if (user == null)
+                {
+                    continue;
+                }
+
+                var newRoles = item.Roles.Where(x => x.Selected).Select(x => x.Value).ToList();
+                var currentRoles = await _userManager.GetRolesAsync(user);
+
+                var resultDelete = await _userManager.RemoveFromRolesAsync(user,
+                    currentRoles.Where(x => !newRoles.Contains(x)));
+
+                var resultAdd = await _userManager.AddToRolesAsync(user,
+                    newRoles.Where(x => !currentRoles.Contains(x)));                
+            }
+            model.StatusMessage = "Roles changed";
             return View(model);
         }
 

@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /PriceParser/appsettings_private.json
+/PriceParser.Api/appsettings_private.json

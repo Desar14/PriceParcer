@@ -7,11 +7,13 @@ using PriceParser;
 using PriceParser.Core;
 using PriceParser.Core.Interfaces;
 using PriceParser.Core.Interfaces.Data;
+using PriceParser.Data;
 using PriceParser.Data.Entities;
 using PriceParser.DataAccess;
 using PriceParser.Domain;
 using PriceParser.Domain.Utils;
 using Serilog;
+using System.Reflection;
 using Twilio;
 
 namespace PriceParser
@@ -35,6 +37,7 @@ namespace PriceParser
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
@@ -43,8 +46,8 @@ namespace PriceParser
                 // Password settings.
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 6;
                 options.Password.RequiredUniqueChars = 1;
 
@@ -65,8 +68,8 @@ namespace PriceParser
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 
-                options.LoginPath = "/Identity/Account/Login";
-                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
 
@@ -89,6 +92,7 @@ namespace PriceParser
             builder.Services.AddScoped<IRepository<UserReview>, Repository<UserReview>>();
             builder.Services.AddScoped<IRepository<Currency>, Repository<Currency>>();
             builder.Services.AddScoped<ICurrencyRatesRepository, CurrencyRatesRepository>();
+            builder.Services.AddScoped<IRepository<RefreshToken>, Repository<RefreshToken>>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductsService, ProductService>();
             builder.Services.AddScoped<IMarketSitesService, MarketSitesService>();
@@ -97,7 +101,7 @@ namespace PriceParser
             builder.Services.AddScoped<IProductPricesService, ProductPricesService>();
             builder.Services.AddScoped<IParsingPricesService, ParcingPricesService>();
             builder.Services.AddScoped<ICurrenciesService, CurrenciesService>();
-            
+
 
             // Add Hangfire services.
             builder.Services.AddHangfire(configuration => configuration
@@ -114,9 +118,9 @@ namespace PriceParser
                 }));
 
             // Add the processing server as IHostedService
-            builder.Services.AddHangfireServer();            
+            builder.Services.AddHangfireServer();
 
-            var app = builder.Build();            
+            var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -160,7 +164,23 @@ namespace PriceParser
 
                     var logger = services.GetRequiredService<Microsoft.Extensions.Logging.ILogger>();
                     logger.LogError(ex, "An error occurred while migrating the database.");
-                }     
+                }
+
+                try
+                {
+                    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+                    var obj = new UserRoles();
+                    foreach (var roleName in UserRoles.RolesList())
+                    {
+                        await roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    var logger = services.GetRequiredService<Microsoft.Extensions.Logging.ILogger>();
+                    logger.LogError(ex, "An error occurred while creating roles.");
+                }
             }
 
             app.Run();

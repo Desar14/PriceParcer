@@ -16,6 +16,7 @@ namespace PriceParser
         public DbSet<UserReview> UserReviews { get; set; }
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<CurrencyRate> CurrencyRates { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

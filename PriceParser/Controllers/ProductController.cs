@@ -61,7 +61,7 @@ namespace PriceParser.Controllers
 
                 model.marketSites.ForEach(async site =>
                 {
-                    var lastPrice = await _productPricesService.GetLastProductPriceAsync(site.Id);
+                    var lastPrice = await _productPricesService.GetLastProductPriceAsync(site.Id) ?? new();
                     site.Price = lastPrice.FullPrice;
                     site.CurrencyCode = lastPrice.CurrencyCode;
                 });
