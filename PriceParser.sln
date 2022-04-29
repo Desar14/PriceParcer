@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PriceParser.DataAccess", "P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PriceParser.Domain", "PriceParser.Domain\PriceParser.Domain.csproj", "{B0467755-5F54-451C-835F-197879F2139D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceParser.Api", "PriceParser.Api\PriceParser.Api.csproj", "{0E7AB79F-EE77-40CC-97EB-0E82765835DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PriceParser.Api", "PriceParser.Api\PriceParser.Api.csproj", "{0E7AB79F-EE77-40CC-97EB-0E82765835DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceParser.CQS", "PriceParser.CQS\PriceParser.CQS.csproj", "{1860709A-B3CB-44C6-9B68-2FB9BC7E1D84}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{0E7AB79F-EE77-40CC-97EB-0E82765835DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E7AB79F-EE77-40CC-97EB-0E82765835DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E7AB79F-EE77-40CC-97EB-0E82765835DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1860709A-B3CB-44C6-9B68-2FB9BC7E1D84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1860709A-B3CB-44C6-9B68-2FB9BC7E1D84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1860709A-B3CB-44C6-9B68-2FB9BC7E1D84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1860709A-B3CB-44C6-9B68-2FB9BC7E1D84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +60,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{1DFCCFFD-5453-4DBC-8DC8-1FA06F14528F} = {489AC955-AAB5-4BE8-9A94-F14384F11566}
 		{18F6042C-0E42-4793-B3BE-304FEA3839D1} = {489AC955-AAB5-4BE8-9A94-F14384F11566}
+		{1860709A-B3CB-44C6-9B68-2FB9BC7E1D84} = {489AC955-AAB5-4BE8-9A94-F14384F11566}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C74895EA-614D-4894-8993-29EEE20985D5}

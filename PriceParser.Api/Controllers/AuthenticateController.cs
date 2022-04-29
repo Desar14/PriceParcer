@@ -18,8 +18,8 @@ namespace PriceParser.Api.Controllers
 
         public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<Guid>> roleManager, IUserJWTService userService)
         {
-            this._userManager = userManager;
-            this._roleManager = roleManager;
+            _userManager = userManager;
+            _roleManager = roleManager;
             _userService = userService;
         }
 
@@ -36,7 +36,7 @@ namespace PriceParser.Api.Controllers
                 if (response == null)
                     return BadRequest();
 
-                //setTokenCookie(response.RefreshToken);
+                SetTokenCookie(response.RefreshToken);
 
                 return Ok(new
                 {
@@ -198,6 +198,16 @@ namespace PriceParser.Api.Controllers
         public IActionResult GetAvailableRoles()
         {
             return Ok(_roleManager.Roles);
+        }
+
+        private void SetTokenCookie(string refreshToken)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTimeOffset.UtcNow.AddDays(1)
+            };
+            Response.Cookies.Append("refresh-token", refreshToken, cookieOptions);
         }
 
         private string IpAddress()
