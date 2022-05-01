@@ -43,13 +43,13 @@ namespace PriceParser.Domain
             return await ParseProductPriceAsync(productFromSite);
         }
 
-        private static T GetParsedValueFromHtmlDocument<T>(HtmlDocument htmlDoc, string? nodePath, string? attributePath, string link)
+        private static T GetParsedValueFromHtmlDocument<T>(HtmlDocument htmlDoc, string? nodePath, string? attributePath, string link, out bool OutOfStock)
         {
 
             var node = htmlDoc.DocumentNode.SelectSingleNode(nodePath);
 
             string? rawString = null;
-
+            OutOfStock = false;
             if (node != null)
             {
                 if (!String.IsNullOrEmpty(attributePath))
@@ -79,6 +79,11 @@ namespace PriceParser.Domain
             if (typeof(T) == typeof(string))
             {
                 return (T)Convert.ChangeType(rawString, typeof(T));
+            }
+            else if(rawString.Contains("нет"))
+            {
+                OutOfStock = true;
+                return default;
             }
             else if (typeof(T) == typeof(double))
             {
@@ -173,9 +178,11 @@ namespace PriceParser.Domain
                 }
 
                 double priceParsed = 0;
+                
                 try
                 {
-                    priceParsed = GetParsedValueFromHtmlDocument<double>(htmlDoc, productFromSite.Site.ParsePricePath, productFromSite.Site.ParsePriceAttributeName, productFromSite.Path);
+                    priceParsed = GetParsedValueFromHtmlDocument<double>(htmlDoc, productFromSite.Site.ParsePricePath, productFromSite.Site.ParsePriceAttributeName, productFromSite.Path, out bool outOfStock);
+                    result.IsOutOfStock = outOfStock;
                 }
                 catch (Exception ex)
                 {
@@ -188,7 +195,7 @@ namespace PriceParser.Domain
 
                 try
                 {
-                    CurrencyRawString = GetParsedValueFromHtmlDocument<string>(htmlDoc, productFromSite.Site.ParseCurrencyPath, productFromSite.Site.ParseCurrencyAttributeName, productFromSite.Path);
+                    CurrencyRawString = GetParsedValueFromHtmlDocument<string>(htmlDoc, productFromSite.Site.ParseCurrencyPath, productFromSite.Site.ParseCurrencyAttributeName, productFromSite.Path, out bool _);
                 }
                 catch (Exception ex)
                 {

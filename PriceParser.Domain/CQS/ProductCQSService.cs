@@ -44,6 +44,12 @@ namespace PriceParser.Domain.CQS
             return await _mediator.Send(new GetAllProductsQuery(), new CancellationToken());
         }
 
+        public async Task<IEnumerable<ProductDTO>> GetAllProductsAsync(int pageNumber)
+        {
+            int pageSize = 10;
+            return await _mediator.Send(new GetAllProductsQuery() { PageNumber = pageNumber, PageSize = pageSize}, new CancellationToken());
+        }
+
         public async Task<ProductDTO> GetProductDetailsAsync(Guid id)
         {
             return await _mediator.Send(new GetProductDetailsQuery(id), new CancellationToken());

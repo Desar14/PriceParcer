@@ -161,5 +161,10 @@ namespace PriceParser.Domain
         {
             throw new NotImplementedException();
         }
+
+        public Task<IEnumerable<ProductDTO>> GetAllProductsAsync(int pageNumber)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

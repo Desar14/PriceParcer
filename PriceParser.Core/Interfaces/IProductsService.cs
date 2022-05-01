@@ -11,6 +11,7 @@ namespace PriceParser.Core.Interfaces
     public interface IProductsService
     {
         Task<IEnumerable<ProductDTO>> GetAllProductsAsync();
+        Task<IEnumerable<ProductDTO>> GetAllProductsAsync(int pageNumber);
         Task<ProductDTO> GetProductDetailsAsync(Guid id);
 
         Task<bool> AddProductAsync(ProductDTO product);

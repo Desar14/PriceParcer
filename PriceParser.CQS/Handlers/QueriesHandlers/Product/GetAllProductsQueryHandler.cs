@@ -29,7 +29,13 @@ namespace PriceParser.CQS.Handlers.QueriesHandlers
 
         public async Task<IEnumerable<ProductDTO>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
         {
-            return await _database.Products.Select(product => _mapper.Map<ProductDTO>(product)).ToListAsync(cancellationToken);
+            if (request.PageSize != 0)
+            {
+                return await _database.Products.Skip(request.PageSize * request.PageNumber).Take(request.PageSize).Select(product => _mapper.Map<ProductDTO>(product)).ToListAsync(cancellationToken);
+            }
+            else
+                return await _database.Products.Select(product => _mapper.Map<ProductDTO>(product)).ToListAsync(cancellationToken);
+
         }
     }
 }
