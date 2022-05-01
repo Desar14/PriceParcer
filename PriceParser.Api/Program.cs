@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
@@ -6,10 +7,12 @@ using Microsoft.IdentityModel.Tokens;
 using PriceParser.Core;
 using PriceParser.Core.Interfaces;
 using PriceParser.Core.Interfaces.Data;
+using PriceParser.Data;
 using PriceParser.Data.Entities;
 using PriceParser.DataAccess;
 using PriceParser.Domain;
 using Serilog;
+using System.Reflection;
 using System.Text;
 
 namespace PriceParser.Api
@@ -105,6 +108,8 @@ namespace PriceParser.Api
             builder.Services.AddScoped<IProductPricesService, ProductPricesService>();
             builder.Services.AddScoped<ICurrenciesService, CurrenciesService>();
             builder.Services.AddScoped<IUserJWTService, UserJWTService>();
+
+            builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
             var app = builder.Build();
 

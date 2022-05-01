@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using PriceParser.CQS.Models.Commands;
+using PriceParser.Data;
 using PriceParser.Data.Entities;
 using System;
 using System.Collections.Generic;

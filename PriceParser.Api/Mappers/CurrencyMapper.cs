@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using PriceParser.Core.DTO;
 using PriceParser.Data.Entities;
 
-namespace PriceParser.Mappers
+namespace PriceParser.Api.Mappers
 {
     public class CurrencyMapper : Profile
     {
@@ -11,7 +11,7 @@ namespace PriceParser.Mappers
         {
             CreateMap<Currency, CurrencyDTO>();
 
-            
+
 
             CreateMap<CurrencyDTO, SelectListItem>()
                 .ForMember(dest => dest.Text,
@@ -27,7 +27,7 @@ namespace PriceParser.Mappers
                     opt => opt.MapFrom(src => src.Id));
 
             CreateMap<CurrencyRate, CurrencyRatesDTO>();
-            
+
 
         }
     }

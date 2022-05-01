@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PriceParser.Core\PriceParser.Core.csproj" />
+    <ProjectReference Include="..\PriceParser.CQS\PriceParser.CQS.csproj" />
     <ProjectReference Include="..\PriceParser.DataAccess\PriceParser.DataAccess.csproj" />
     <ProjectReference Include="..\PriceParser.Data\PriceParser.Data.csproj" />
     <ProjectReference Include="..\PriceParser.Domain\PriceParser.Domain.csproj" />

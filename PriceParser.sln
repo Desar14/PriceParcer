@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PriceParser.Domain", "Price
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PriceParser.Api", "PriceParser.Api\PriceParser.Api.csproj", "{0E7AB79F-EE77-40CC-97EB-0E82765835DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceParser.CQS", "PriceParser.CQS\PriceParser.CQS.csproj", "{1860709A-B3CB-44C6-9B68-2FB9BC7E1D84}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PriceParser.CQS", "PriceParser.CQS\PriceParser.CQS.csproj", "{1860709A-B3CB-44C6-9B68-2FB9BC7E1D84}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

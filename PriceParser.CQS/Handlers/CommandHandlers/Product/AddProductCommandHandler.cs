@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using PriceParser.CQS.Models.Commands;
+using PriceParser.Data;
 using PriceParser.Data.Entities;
 using System;
 using System.Collections.Generic;
@@ -26,9 +27,9 @@ namespace PriceParser.CQS.Handlers.CommandHandlers
             var entity = _mapper.Map<Product>(command.Product);
 
             await _database.Products.AddAsync(entity, token);
-            var result = await _database.SaveChangesAsync(token);           
+            var result = await _database.SaveChangesAsync(token);
 
-            return result > 0;            
+            return result > 0;
         }
     }
 }

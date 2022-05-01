@@ -20,6 +20,10 @@
         <div class="col-3">
             @foreach (var item in Model.marketSites)
             {
+                @if (item.Price == 0)
+                {
+                    continue;
+                }
                 <div class="card" style="width: 18rem;">
                     <div class="card-body">
                         <h5 class="card-title">@item.Name</h5>

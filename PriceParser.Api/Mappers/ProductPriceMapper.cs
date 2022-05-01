@@ -3,7 +3,7 @@ using PriceParser.Api.Models.Prices;
 using PriceParser.Core.DTO;
 using PriceParser.Data.Entities;
 
-namespace PriceParser.Mappers
+namespace PriceParser.Api.Mappers
 {
     public class ProductPriceMapper : Profile
     {

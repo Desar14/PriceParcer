@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PriceParser.Core.DTO;
 using PriceParser.CQS.Models.Queries;
+using PriceParser.Data;
 
 namespace PriceParser.CQS.Handlers.QueriesHandlers
 {
@@ -22,7 +23,7 @@ namespace PriceParser.CQS.Handlers.QueriesHandlers
 
         public async Task<IEnumerable<ProductPriceDTO>> Handle(GetAllProductPricesQuery request, CancellationToken cancellationToken)
         {
-            return  await _database.ProductPricesHistory.Where(price => price.ProductFromSiteId == request.ProductFromSitesId).Include(price => price.ProductFromSite)
+            return await _database.ProductPricesHistory.Where(price => price.ProductFromSiteId == request.ProductFromSitesId).Include(price => price.ProductFromSite)
                  .Select(price => _mapper.Map<ProductPriceDTO>(price)).ToListAsync(cancellationToken);
         }
     }

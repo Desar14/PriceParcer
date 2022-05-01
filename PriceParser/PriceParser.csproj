@@ -14,6 +14,8 @@
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.28" />
     <PackageReference Include="Hangfire.Core" Version="1.7.28" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.7.28" />
+    <PackageReference Include="MediatR" Version="10.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.4" />
@@ -37,6 +39,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PriceParser.Core\PriceParser.Core.csproj" />
+    <ProjectReference Include="..\PriceParser.CQS\PriceParser.CQS.csproj" />
     <ProjectReference Include="..\PriceParser.DataAccess\PriceParser.DataAccess.csproj" />
     <ProjectReference Include="..\PriceParser.Data\PriceParser.Data.csproj" />
     <ProjectReference Include="..\PriceParser.Domain\PriceParser.Domain.csproj" />

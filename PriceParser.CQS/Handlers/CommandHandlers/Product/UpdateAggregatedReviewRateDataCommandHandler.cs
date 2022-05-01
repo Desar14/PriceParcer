@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using PriceParser.CQS.Models.Commands;
+using PriceParser.Data;
 
 namespace PriceParser.CQS.Handlers.CommandHandlers
 {
@@ -20,9 +22,9 @@ namespace PriceParser.CQS.Handlers.CommandHandlers
 
         public async Task<bool> Handle(UpdateAggregatedReviewRateDataCommand request, CancellationToken cancellationToken)
         {
-            var aggReviewRateAverage = _database.UserReviews
+            var aggReviewRateAverage = await _database.UserReviews
                 .Where(x => x.ProductId == request.Id)
-                .Select(x => x.ReviewScore).DefaultIfEmpty().Average();
+                .Select(x => x.ReviewScore).DefaultIfEmpty().AverageAsync(cancellationToken);
 
             var productEntity = await _database.Products.FindAsync(request.Id, cancellationToken);
 

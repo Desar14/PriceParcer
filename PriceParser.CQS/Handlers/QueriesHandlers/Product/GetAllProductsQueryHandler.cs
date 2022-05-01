@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using PriceParser.Core.DTO;
 using PriceParser.CQS.Handlers.CommandHandlers;
 using PriceParser.CQS.Models.Queries;
+using PriceParser.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace PriceParser.CQS.Handlers.QueriesHandlers
         }
 
         public async Task<IEnumerable<ProductDTO>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
-        {            
+        {
             return await _database.Products.Select(product => _mapper.Map<ProductDTO>(product)).ToListAsync(cancellationToken);
         }
     }

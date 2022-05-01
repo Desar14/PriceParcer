@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using PriceParser.CQS.Models.Commands;
+using PriceParser.Data;
 using PriceParser.Data.Entities;
 using System;
 using System.Collections.Generic;
@@ -27,11 +28,11 @@ namespace PriceParser.CQS.Handlers.CommandHandlers
             if (entity == null)
                 throw new Exception();
             else
-                 _database.ProductPricesHistory.Remove(entity);
-            
-            var result = await _database.SaveChangesAsync(token);           
+                _database.ProductPricesHistory.Remove(entity);
 
-            return result > 0;            
+            var result = await _database.SaveChangesAsync(token);
+
+            return result > 0;
         }
     }
 }

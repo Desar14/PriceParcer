@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PriceParser.CQS.Models.Commands 
+namespace PriceParser.CQS.Models.Commands
 {
     public class AddProductPriceRangeCommand : IRequest<bool>
     {

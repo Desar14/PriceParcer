@@ -59,16 +59,17 @@ namespace PriceParser.Controllers
 
                 var model = _mapper.Map<ProductDetailsViewModel>(productDetailDTO);
 
-                model.marketSites.ForEach(async site =>
+                foreach (var site in model.marketSites)
                 {
                     var lastPrice = await _productPricesService.GetLastProductPriceAsync(site.Id) ?? new();
                     site.Price = lastPrice.FullPrice;
                     site.CurrencyCode = lastPrice.CurrencyCode;
-                });
+                }
 
                 model.Currencies = (await _currenciesService.GetUsableAsync())
-                    .Select(curr => _mapper.Map<Core.DTO.CurrencyDTO, SelectListItem>(curr, 
-                        opt => opt.AfterMap((src, dest) => {
+                    .Select(curr => _mapper.Map<Core.DTO.CurrencyDTO, SelectListItem>(curr,
+                        opt => opt.AfterMap((src, dest) =>
+                        {
                             if (currentUser?.UserCurrencyId == null)
                             {
                                 dest.Selected = src.Cur_Abbreviation == "BYN";
@@ -76,7 +77,7 @@ namespace PriceParser.Controllers
                             else
                             {
                                 dest.Selected = currentUser.UserCurrencyId == src.Id;
-                            }                             
+                            }
                         }
                      ))).ToList();
 

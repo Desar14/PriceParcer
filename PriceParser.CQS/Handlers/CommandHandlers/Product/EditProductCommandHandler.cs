@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using PriceParser.CQS.Models.Commands;
+using PriceParser.Data;
 using PriceParser.Data.Entities;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace PriceParser.CQS.Handlers.CommandHandlers
 
             try
             {
-                _database.Products.Update(entity);                
+                _database.Products.Update(entity);
             }
             catch (Exception ex)
             {
@@ -38,9 +39,9 @@ namespace PriceParser.CQS.Handlers.CommandHandlers
                 throw;
             }
 
-            var result = await _database.SaveChangesAsync(token);           
+            var result = await _database.SaveChangesAsync(token);
 
-            return result > 0;            
+            return result > 0;
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PriceParser.CQS.Models.Commands;
+using PriceParser.Data;
 
 namespace PriceParser.CQS.Handlers.CommandHandlers
 {
@@ -20,16 +22,16 @@ namespace PriceParser.CQS.Handlers.CommandHandlers
 
         public async Task<bool> Handle(UpdateAggregatedPricesDataCommand request, CancellationToken cancellationToken)
         {
-            var aggOverallData = _database.ProductPricesHistory
+            var aggOverallData = await _database.ProductPricesHistory
                 .Where(x => x.ProductFromSite.ProductId == request.Id && x.FullPrice != 0)
                 .GroupBy(x => 1)
                 .Select(x => new
                 {
                     AveragePrice = x.Average(x => x.FullPrice),
                     BestPrice = x.Min(x => x.FullPrice)
-                }).FirstOrDefault();
+                }).FirstOrDefaultAsync(cancellationToken);
 
-            var aggNowData = _database.ProductPricesHistory
+            var aggNowData = await _database.ProductPricesHistory
                 .Where(x => x.ProductFromSite.ProductId == request.Id && x.FullPrice != 0)
                 .GroupBy(x => x.ProductFromSiteId, x => x.ParseDate, (prodId, date) => new
                 {
@@ -41,7 +43,7 @@ namespace PriceParser.CQS.Handlers.CommandHandlers
                         rawTable => new { q1 = rawTable.ProductFromSiteId, q2 = rawTable.ParseDate },
                         (maxDates, rawTable) => new
                         {
-                            ProdFromSiteId = maxDates.ProdFromSiteId,
+                            maxDates.ProdFromSiteId,
                             CurrentPrice = rawTable.FullPrice
                         })
                 .GroupBy(x => 1)
@@ -49,7 +51,7 @@ namespace PriceParser.CQS.Handlers.CommandHandlers
                 {
                     AveragePrice = x.Average(x => x.CurrentPrice),
                     BestPrice = x.Min(x => x.CurrentPrice)
-                }).FirstOrDefault();
+                }).FirstOrDefaultAsync(cancellationToken);
 
             var productEntity = await _database.Products.FindAsync(request.Id);
 
