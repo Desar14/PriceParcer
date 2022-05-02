@@ -84,6 +84,11 @@ namespace PriceParser
                 googleOptions.ClientSecret = builder.Configuration["IdentitySecrets:Google:ClientSecret"];
             });
 
+            builder.Services.AddAuthorization(builder =>
+            {
+                builder.AddPolicy("Hangfire", policy => policy.RequireRole(UserRoles.Admin));
+            });
+
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddScoped<IRepository<Product>, Repository<Product>>();
@@ -108,7 +113,7 @@ namespace PriceParser
 
             builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
-            
+
 
             // Add Hangfire services.
             builder.Services.AddHangfire(configuration => configuration
@@ -154,7 +159,7 @@ namespace PriceParser
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
 
-            app.MapHangfireDashboard();
+            app.MapHangfireDashboardWithAuthorizationPolicy("Hangfire");
 
 
             //apply migrations on every startup

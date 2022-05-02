@@ -34,7 +34,9 @@ namespace PriceParser.Api.Controllers
                 var response = await _userService.AuthenticateAsync(model.Username, model.Password, IpAddress());
 
                 if (response == null)
+                {
                     return BadRequest();
+                }
 
                 SetTokenCookie(response.RefreshToken);
 

@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PriceParser.Api.Models.UserReview;
 using PriceParser.Core.DTO;
 using PriceParser.Core.Interfaces;
 using PriceParser.Data;
+using PriceParser.Data.Entities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,14 +18,19 @@ namespace PriceParser.Api.Controllers
     public class UserReviewsController : ControllerBase
     {
         private readonly IUserReviewsService _reviewsService;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
         private readonly ILogger<UserReviewsController> _logger;
 
-        public UserReviewsController(IUserReviewsService reviewsService, IMapper mapper, ILogger<UserReviewsController> logger)
+        public UserReviewsController(IUserReviewsService reviewsService,
+                                     IMapper mapper,
+                                     ILogger<UserReviewsController> logger,
+                                     UserManager<ApplicationUser> userManager)
         {
             _reviewsService = reviewsService;
             _mapper = mapper;
             _logger = logger;
+            _userManager = userManager;
         }
 
         // GET: api/<UserReviewsController>
@@ -52,7 +59,13 @@ namespace PriceParser.Api.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return BadRequest($"User not found");
+                }
                 var dto = _mapper.Map<UserReviewDTO>(value);
+                dto.UserId = user.Id;
                 var result = await _reviewsService.AddAsync(dto);
 
                 if (result)

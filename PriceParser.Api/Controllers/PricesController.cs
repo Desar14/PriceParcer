@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using PriceParser.Api.Models.Prices;
 using PriceParser.Core.DTO;
 using PriceParser.Core.Interfaces;
+using PriceParser.Data;
 
 namespace PriceParser.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = UserRoles.Admin)]
     public class PricesController : ControllerBase
     {
 

@@ -1,3 +1,5 @@
+using Hangfire;
+using Hangfire.SqlServer;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -14,7 +16,6 @@ using PriceParser.Data.Entities;
 using PriceParser.DataAccess;
 using PriceParser.Domain;
 using Serilog;
-using Swashbuckle.Swagger;
 using System.Reflection;
 using System.Text;
 
@@ -112,10 +113,10 @@ namespace PriceParser.Api
 
                 setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
 
-                setup.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    { jwtSecurityScheme, Array.Empty<string>() }
-                });
+                //setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+                //{
+                //    { jwtSecurityScheme, Array.Empty<string>() }
+                //});
                 setup.OperationFilter<SwaggerSecurityScheme>();
             });
 
@@ -140,6 +141,22 @@ namespace PriceParser.Api
             //to get working auto registering mediatr
             Assembly.Load("PriceParser.CQS");
             builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+
+            builder.Services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection"), new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true
+                }));
+
+            // Add the processing server as IHostedService
+            builder.Services.AddHangfireServer();
 
             var app = builder.Build();
 

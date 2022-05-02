@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -8,20 +9,27 @@ namespace PriceParser.Api.Filters
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            if (!context.MethodInfo.GetCustomAttributes(true).Any(x => x is AllowAnonymousAttribute) &&
-            !context.MethodInfo.DeclaringType.GetCustomAttributes(true).Any(x => x is AllowAnonymousAttribute))
+            bool IsAllowAnonymousMethod = context.MethodInfo.GetCustomAttributes(true).Any(x => x is AllowAnonymousAttribute);
+
+            bool IsAllowAnonymousController = context.MethodInfo.DeclaringType.GetCustomAttributes(true).Any(x => x is AllowAnonymousAttribute);
+
+            bool IsAuthorizeMethod = context.MethodInfo.GetCustomAttributes(true).Any(x => x is AuthorizeAttribute);
+
+            bool IsAuthorizeController = context.MethodInfo.DeclaringType.GetCustomAttributes(true).Any(x => x is AuthorizeAttribute);
+
+            if (IsAuthorizeMethod || (IsAuthorizeController && !IsAllowAnonymousMethod))
             {
                 operation.Security = new List<OpenApiSecurityRequirement>
                 {
                     new OpenApiSecurityRequirement
                     {
                         {
-                            new OpenApiSecurityScheme 
+                            new OpenApiSecurityScheme
                             {
-                                Reference = new OpenApiReference 
+                                Reference = new OpenApiReference
                                 {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "bearer"
+                                    Id = JwtBearerDefaults.AuthenticationScheme,
+                                    Type = ReferenceType.SecurityScheme
                                 }
                             }, new string[] { }
                         }

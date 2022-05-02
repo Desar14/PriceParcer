@@ -13,7 +13,7 @@ namespace PriceParser.Core.DTO
     {
         public Guid Id { get; set; }
         public ApplicationUser User { get; set; }
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
         public ProductDTO Product { get; set; }
         public Guid ProductId { get; set; }
         public string ReviewTitle { get; set; }
