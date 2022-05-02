@@ -14,7 +14,7 @@ namespace PriceParser.Mappers
             CreateMap<UserReviewDTO, UserReview>();
             CreateMap<UserReviewDTO, GetUserReviewInProductModel>()
                 .ForMember(dest => dest.UserName,
-                    opt => opt.MapFrom(src => src.User.UserName));            
+                    opt => opt.MapFrom(src => src.User.UserName));
             CreateMap<UserReviewDTO, GetUserReviewModel>();
 
             CreateMap<PostUserReviewModel, UserReviewDTO>();

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -146,7 +145,7 @@ namespace PriceParser.Controllers
             try
             {
                 await _reviewsService.AddAsync(recordToAdd);
-                return RedirectToAction("Details","Product", new { id = recordToAdd.ProductId });
+                return RedirectToAction("Details", "Product", new { id = recordToAdd.ProductId });
             }
             catch (Exception ex)
             {

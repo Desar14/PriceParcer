@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PriceParser.Core.Interfaces;
 using PriceParser.Data.Entities;
@@ -70,7 +68,8 @@ namespace PriceParser.Controllers
 
                 model.Currencies = (await _currenciesService.GetUsableAsync())
                     .Select(curr => _mapper.Map<Core.DTO.CurrencyDTO, SelectListItem>(curr,
-                        opt => opt.AfterMap((src, dest) => {
+                        opt => opt.AfterMap((src, dest) =>
+                        {
                             if (currentUser?.UserCurrencyId == null)
                             {
                                 dest.Selected = src.Cur_Abbreviation == "BYN";
@@ -217,7 +216,7 @@ namespace PriceParser.Controllers
                 return View(model);
             }
         }
-        
+
         public async Task<IActionResult> ParsePrice(Guid id)
         {
             try
@@ -239,7 +238,7 @@ namespace PriceParser.Controllers
             try
             {
                 var prices = await _productPricesService.GetAllProductFromSitePricesAsync(id, startPeriod, endPeriod, true);
-                
+
                 var currency = await _currenciesService.GetDetailsAsync(currencyId ?? Guid.Empty);
 
                 if (currencyId != null && currency != null)

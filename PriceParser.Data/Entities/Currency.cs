@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PriceParser.Data.Entities
+﻿namespace PriceParser.Data.Entities
 {
     public class Currency : BaseEntity
     {
@@ -29,5 +23,5 @@ namespace PriceParser.Data.Entities
         public bool AvailableForUsers { get; set; }
 
         public virtual List<CurrencyRate> Rates { get; set; }
-    }    
+    }
 }

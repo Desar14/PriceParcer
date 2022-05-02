@@ -5,12 +5,6 @@ using Microsoft.Extensions.Logging;
 using PriceParser.Core.DTO;
 using PriceParser.CQS.Handlers.CommandHandlers;
 using PriceParser.CQS.Models.Queries;
-using PriceParser.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PriceParser.CQS.Handlers.QueriesHandlers
 {
@@ -39,9 +33,9 @@ namespace PriceParser.CQS.Handlers.QueriesHandlers
             }
             else
                 return await _database.Products
-                    .Include(x=> x.FromSites).ThenInclude(x=> x.Site)
+                    .Include(x => x.FromSites).ThenInclude(x => x.Site)
                     .Include(x => x.Reviews).ThenInclude(x => x.User)
-                    .Select(product => _mapper.Map<ProductDTO>(product)).ToListAsync(cancellationToken);         
+                    .Select(product => _mapper.Map<ProductDTO>(product)).ToListAsync(cancellationToken);
 
         }
     }

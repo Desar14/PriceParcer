@@ -57,10 +57,10 @@ namespace PriceParser.Domain
                     ProdFromSiteId = prodId,
                     MaxDate = date.Max()
                 })
-                .Join(await _unitOfWork.ProductPricesHistory.GetQueryable(), 
+                .Join(await _unitOfWork.ProductPricesHistory.GetQueryable(),
                         maxDates => new { q1 = maxDates.ProdFromSiteId, q2 = maxDates.MaxDate },
-                        rawTable => new { q1 = rawTable.ProductFromSiteId, q2 = rawTable.ParseDate }, 
-                        (maxDates, rawTable) => new 
+                        rawTable => new { q1 = rawTable.ProductFromSiteId, q2 = rawTable.ParseDate },
+                        (maxDates, rawTable) => new
                         {
                             ProdFromSiteId = maxDates.ProdFromSiteId,
                             CurrentPrice = rawTable.FullPrice
@@ -72,14 +72,14 @@ namespace PriceParser.Domain
                     BestPrice = x.Min(x => x.CurrentPrice)
                 }).FirstOrDefault();
 
-            var productEntity = (await _unitOfWork.Products.FindBy(x=> x.Id.Equals(Id)));
+            var productEntity = (await _unitOfWork.Products.FindBy(x => x.Id.Equals(Id)));
 
             if (productEntity != null)
             {
                 productEntity.AveragePriceOverall = aggOverallData.AveragePrice;
                 productEntity.BestPriceOverall = aggOverallData.BestPrice;
                 productEntity.AveragePriceNow = aggNowData.AveragePrice;
-                productEntity.BestPriceNow = aggNowData.BestPrice;                
+                productEntity.BestPriceNow = aggNowData.BestPrice;
 
                 productEntity.LastAggregate = DateTime.Now;
 

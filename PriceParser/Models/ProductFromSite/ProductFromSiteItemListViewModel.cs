@@ -6,7 +6,7 @@
         public string? ProductName { get; set; }
         public string? SiteName { get; set; }
         public string? Path { get; set; }
-        public bool DoNotParse { get; set; }        
+        public bool DoNotParse { get; set; }
         public DateTime Created { get; set; }
         public string? CreatedByUserName { get; set; }
     }

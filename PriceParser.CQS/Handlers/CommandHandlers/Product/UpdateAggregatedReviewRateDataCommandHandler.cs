@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using PriceParser.CQS.Models.Commands;
-using PriceParser.Data;
 
 namespace PriceParser.CQS.Handlers.CommandHandlers
 {
@@ -26,7 +25,7 @@ namespace PriceParser.CQS.Handlers.CommandHandlers
                 .Where(x => x.ProductId == request.Id)
                 .Select(x => x.ReviewScore).DefaultIfEmpty().AverageAsync(cancellationToken);
 
-            var productEntity = await _database.Products.FirstOrDefaultAsync(x => x.Id == request.Id , cancellationToken: cancellationToken);
+            var productEntity = await _database.Products.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
 
             if (productEntity != null)
             {

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -21,7 +20,7 @@ namespace PriceParser.Domain
         public async Task SendEmailAsync(string toEmail, string subject, string message)
         {
             string SendGridApiKey = _configuration["IdentitySecrets:Email_SendGridApiKey"];
-            
+
             if (string.IsNullOrEmpty(SendGridApiKey))
             {
                 _logger.LogError("Can't send emails: api key is not set");

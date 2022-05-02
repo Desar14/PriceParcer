@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PriceParser.Core.Interfaces;
 using PriceParser.Models;
@@ -66,7 +65,7 @@ namespace PriceParser.Controllers
         {
             await _currenciesService.UpdateRatesAsync(currencyId);
 
-            return RedirectToAction(nameof(Details),new { Id = currencyId});
+            return RedirectToAction(nameof(Details), new { Id = currencyId });
         }
 
         // GET: CurrenciesController/Create
@@ -82,7 +81,7 @@ namespace PriceParser.Controllers
         {
 
             return NotFound();
-            
+
             try
             {
                 return RedirectToAction(nameof(Index));
@@ -100,7 +99,7 @@ namespace PriceParser.Controllers
             {
                 var dto = (await _currenciesService.GetDetailsAsync(id));
 
-                var model = _mapper.Map<CurrencyToggleUpdatingRatesModel>(dto);              
+                var model = _mapper.Map<CurrencyToggleUpdatingRatesModel>(dto);
 
                 return View(model);
             }
@@ -118,7 +117,7 @@ namespace PriceParser.Controllers
         {
             try
             {
-                await _currenciesService.ToggleUpdateRatesAsync(model.Id,model.UpdateRates, model.AvailableForUsers);
+                await _currenciesService.ToggleUpdateRatesAsync(model.Id, model.UpdateRates, model.AvailableForUsers);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)

@@ -29,7 +29,7 @@ namespace PriceParser.Mappers
                     opt => opt.MapFrom(src => src.Id));
 
             CreateMap<ProductDeleteViewModel, ProductDTO>();
-            
+
             CreateMap<ProductCreateEditViewModel, ProductDTO>();
         }
     }

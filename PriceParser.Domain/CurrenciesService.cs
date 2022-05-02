@@ -49,10 +49,10 @@ namespace PriceParser.Domain
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex,ex.Message);
+                    _logger.LogError(ex, ex.Message);
                     throw;
                 }
-                
+
             }
 
             if (response != null && response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -68,7 +68,7 @@ namespace PriceParser.Domain
                 {
                     _logger.LogError(ex, ex.Message);
                     throw;
-                }                
+                }
 
                 if (currList != null)
                 {
@@ -84,8 +84,8 @@ namespace PriceParser.Domain
                             currListToAdd.Add(item);
                         }
                     }
-                    
-                    
+
+
                     await _unitOfWork.Currencies.AddRange(currListToAdd);
                 }
             }
@@ -101,14 +101,14 @@ namespace PriceParser.Domain
 
             var result = prices.Join(
                 currencyRates,
-                t1 => new {t1.ParseDate.Date },
-                t2 => new {t2.Date.Date },
+                t1 => new { t1.ParseDate.Date },
+                t2 => new { t2.Date.Date },
                 (t1, t2) => new ProductPriceDTO()
                 {
                     Id = t1.Id,
                     ProductFromSiteId = t1.ProductFromSiteId,
                     ParseDate = t1.ParseDate,
-                    FullPrice = Math.Round(t1.FullPrice/(double)(t2.Cur_OfficialRate ?? 1) * t2.Cur_Scale, 2),
+                    FullPrice = Math.Round(t1.FullPrice / (double)(t2.Cur_OfficialRate ?? 1) * t2.Cur_Scale, 2),
                     DiscountPrice = t1.DiscountPrice,
                     DiscountPercent = t1.DiscountPercent,
                     CurrencyCode = t2.Currency.Cur_Abbreviation,
@@ -259,7 +259,7 @@ namespace PriceParser.Domain
                 await _unitOfWork.CurrencyRates.AddRange(defaultCurrList);
                 return await _unitOfWork.Commit() > 0;
             }
-            
+
 
             string url = $"https://www.nbrb.by/api/exrates/rates/dynamics/{currency.Cur_ID}";
             var param = new Dictionary<string, string>

@@ -9,7 +9,7 @@ namespace PriceParser.Models
         public string? Name { get; set; }
         public string? Category { get; set; }
         public string? Description { get; set; }
-           
+
         public double BestPriceNow { get; set; }
         public double BestPriceOverall { get; set; }
 
@@ -19,10 +19,10 @@ namespace PriceParser.Models
 
         public float AverageScore { get; set; }
 
-        public List<MarketSiteInProductViewModel> marketSites { get; set; } 
+        public List<MarketSiteInProductViewModel> marketSites { get; set; }
 
         public List<UserReviewInProductViewModel> userReviews { get; set; }
-        
+
         public List<SelectListItem> Currencies { get; set; }
     }
 }

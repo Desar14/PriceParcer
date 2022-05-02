@@ -1,15 +1,10 @@
 ﻿using PriceParser.Core.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PriceParser.Core.Interfaces
 {
     public interface IProductPricesService
     {
-        
+
         Task<IEnumerable<ProductPriceDTO>> GetAllProductPricesAsync(Guid productFromSitesId);
         Task<IEnumerable<ProductFromSitesDTO>> GetAllProductFromSitePricesAsync(Guid productFromSitesId, DateTime? startDate, DateTime? endDate, bool perEveryDay = false);
         Task<IEnumerable<ProductFromSitesDTO>> GetAllProductPricesAsync(Guid productId, DateTime? startDate, DateTime? endDate, bool perEveryDay = false);
@@ -21,6 +16,6 @@ namespace PriceParser.Core.Interfaces
         Task<bool> AddProductPricesRangeAsync(IEnumerable<ProductPriceDTO> productPriceDTORange);
 
         Task<bool> UpdateProductPriceAsync(ProductPriceDTO productPriceDTO);
-        Task<bool> DeleteProductPriceAsync(Guid id);        
+        Task<bool> DeleteProductPriceAsync(Guid id);
     }
 }

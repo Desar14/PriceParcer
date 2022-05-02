@@ -131,8 +131,8 @@ namespace PriceParser.Domain
         }
 
         private static RefreshToken GenerateRefreshToken(string ipAddress)
-        {            
-            var randomBytes = new byte[64];  
+        {
+            var randomBytes = new byte[64];
             using RNGCryptoServiceProvider rng = new();
             rng.GetBytes(randomBytes);
             return new RefreshToken

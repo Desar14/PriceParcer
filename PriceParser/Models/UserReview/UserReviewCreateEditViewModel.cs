@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using PriceParser.Data.Entities;
 
 namespace PriceParser.Models.UserReview
@@ -14,7 +13,7 @@ namespace PriceParser.Models.UserReview
         public string ReviewTitle { get; set; }
         public string ReviewText { get; set; }
         public int ReviewScore { get; set; }
-        public DateTime ReviewDate { get; set; } 
+        public DateTime ReviewDate { get; set; }
         public bool Hidden { get; set; }
 
         public List<SelectListItem> UsersList { get; set; }

@@ -3,12 +3,7 @@ using Microsoft.Extensions.Logging;
 using PriceParser.Core;
 using PriceParser.Data;
 using PriceParser.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PriceParser.DataAccess
 {

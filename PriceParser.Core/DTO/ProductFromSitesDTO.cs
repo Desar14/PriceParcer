@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using PriceParser.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PriceParser.Data.Entities;
 
 namespace PriceParser.Core.DTO
 {
@@ -15,7 +9,7 @@ namespace PriceParser.Core.DTO
         public ProductDTO Product { get; set; }
         public Guid ProductId { get; set; }
 
-        public  MarketSiteDTO Site { get; set; }
+        public MarketSiteDTO Site { get; set; }
         public Guid SiteId { get; set; }
 
         public string? Path { get; set; }

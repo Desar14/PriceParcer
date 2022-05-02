@@ -5,11 +5,6 @@ using PriceParser.Core.Interfaces;
 using PriceParser.CQS.Models.Commands;
 using PriceParser.CQS.Models.Queries;
 using PriceParser.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PriceParser.Domain.CQS
 {
@@ -47,7 +42,7 @@ namespace PriceParser.Domain.CQS
         public async Task<IEnumerable<ProductDTO>> GetAllProductsAsync(int pageNumber)
         {
             int pageSize = 10;
-            return await _mediator.Send(new GetAllProductsQuery() { PageNumber = pageNumber, PageSize = pageSize}, new CancellationToken());
+            return await _mediator.Send(new GetAllProductsQuery() { PageNumber = pageNumber, PageSize = pageSize }, new CancellationToken());
         }
 
         public async Task<ProductDTO> GetProductDetailsAsync(Guid id)
@@ -60,12 +55,12 @@ namespace PriceParser.Domain.CQS
             return await _mediator.Send(new UpdateAggregatedPricesDataCommand(Id), new CancellationToken());
         }
 
-        public  Task<bool> UpdateAggregatedPricesDataAsync(Product product)//not necessary
+        public Task<bool> UpdateAggregatedPricesDataAsync(Product product)//not necessary
         {
             throw new NotImplementedException();
         }
 
-        public  Task<bool> UpdateAggregatedPricesDataAsync()//not necessary
+        public Task<bool> UpdateAggregatedPricesDataAsync()//not necessary
         {
             throw new NotImplementedException();
         }
@@ -75,12 +70,12 @@ namespace PriceParser.Domain.CQS
             return await _mediator.Send(new UpdateAggregatedReviewRateDataCommand(Id), new CancellationToken());
         }
 
-        public  Task<bool> UpdateAggregatedReviewRateDataAsync(Product product)//not necessary
+        public Task<bool> UpdateAggregatedReviewRateDataAsync(Product product)//not necessary
         {
             throw new NotImplementedException();
         }
 
-        public  Task<bool> UpdateAggregatedReviewRateDataAsync()//not necessary
+        public Task<bool> UpdateAggregatedReviewRateDataAsync()//not necessary
         {
             throw new NotImplementedException();
         }

@@ -1,14 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
-using PriceParser.Data.Entities;
-
-namespace PriceParser.Data.Entities
+﻿namespace PriceParser.Data.Entities
 {
     public class MarketSite : BaseEntity
     {
         public string? Name { get; set; }
         public string? AuthType { get; set; }
         public string? SiteLogin { get; set; }
-        public string? SitePassword { get; set; }        
+        public string? SitePassword { get; set; }
         public ParseTypes? ParseType { get; set; }
         public string? ParsePricePath { get; set; }
         public string? ParseCurrencyPath { get; set; }

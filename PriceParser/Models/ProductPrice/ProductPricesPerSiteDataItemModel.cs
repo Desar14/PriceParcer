@@ -6,10 +6,10 @@ namespace PriceParser.Models.ProductPrice
     {
         [JsonPropertyName("product_from_site_id")]
         public Guid ProductFromSiteId { get; set; }
-        
+
         [JsonPropertyName("site_name")]
         public string? SiteName { get; set; }
-        
+
         [JsonPropertyName("currency")]
         public string? CurrencyCode { get; set; }
 

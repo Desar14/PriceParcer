@@ -1,23 +1,20 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using PriceParser.Core.Interfaces;
+using PriceParser.Data;
 using PriceParser.Data.Entities;
 using PriceParser.Models.Account.Manage;
-using Microsoft.AspNetCore.Http.Features;
-using PriceParser.Data;
+using System.Globalization;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 
 namespace PriceParser.Controllers
 {
@@ -49,7 +46,7 @@ namespace PriceParser.Controllers
                                        IMapper mapper,
                                        ILogger<AccountManageController> logger,
                                        IEmailSender emailSender,
-                                       UrlEncoder urlEncoder, 
+                                       UrlEncoder urlEncoder,
                                        IUserStore<ApplicationUser> userStore)
         {
             _userManager = userManager;
@@ -114,7 +111,7 @@ namespace PriceParser.Controllers
 
             if (!ModelState.IsValid)
             {
-                await LoadAsync(user,model);
+                await LoadAsync(user, model);
                 return View(model);
             }
 
@@ -144,7 +141,7 @@ namespace PriceParser.Controllers
         public async Task<IActionResult> ChangePassword()
         {
             var model = new ChangePasswordModel();
-            
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -388,7 +385,7 @@ namespace PriceParser.Controllers
         public async Task<IActionResult> EnableAuthenticator()
         {
             var model = new EnableAuthenticatorModel();
-            
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -448,7 +445,7 @@ namespace PriceParser.Controllers
         public async Task<IActionResult> ExternalLogins()
         {
             var model = new ExternalLoginsModel();
-            
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -487,7 +484,7 @@ namespace PriceParser.Controllers
 
             await _signInManager.RefreshSignInAsync(user);
             model.StatusMessage = "The external login was removed.";
-            return View(nameof(ExternalLogins),model);
+            return View(nameof(ExternalLogins), model);
         }
         [HttpPost]
         public async Task<IActionResult> ExternalLoginsLinkLogin(string provider)
@@ -544,7 +541,7 @@ namespace PriceParser.Controllers
         }
 
         public async Task<IActionResult> TwoFactorAuthentication()
-        { 
+        {
             var model = new TwoFactorAuthenticationModel();
 
             model.trackingConsentFeature = HttpContext.Features.Get<ITrackingConsentFeature>();
@@ -663,7 +660,7 @@ namespace PriceParser.Controllers
         {
             var model = new SetPasswordModel();
             model.StatusMessage = StatusMessage;
-            
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -708,7 +705,7 @@ namespace PriceParser.Controllers
 
             return View(model);
         }
-        
+
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> ManageUserRoles(Guid? userId)
         {
@@ -727,10 +724,10 @@ namespace PriceParser.Controllers
                 var modelItem = new ManageUserRolesItemViewModel();
                 modelItem.UserName = user.UserName;
                 modelItem.UserId = user.Id;
-                modelItem.Roles = new ();
+                modelItem.Roles = new();
                 foreach (var roleName in UserRoles.RolesList())
                 {
-                    
+
                     modelItem.Roles.Add(new()
                     {
                         Text = roleName,
@@ -763,7 +760,7 @@ namespace PriceParser.Controllers
                     currentRoles.Where(x => !newRoles.Contains(x)));
 
                 var resultAdd = await _userManager.AddToRolesAsync(user,
-                    newRoles.Where(x => !currentRoles.Contains(x)));                
+                    newRoles.Where(x => !currentRoles.Contains(x)));
             }
             model.StatusMessage = "Roles changed";
             return View(model);

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -90,13 +89,13 @@ namespace PriceParser.Controllers
             }
         }
 
-        
+
         // GET: ProductController/Create
         public ActionResult Create()
         {
             return View();
         }
-        
+
         // POST: ProductController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -198,17 +197,17 @@ namespace PriceParser.Controllers
             {
                 var prices = await _productPricesService.GetAllProductPricesPerSiteAsync(id, startPeriod, endPeriod, true);
 
-                var currency = await _currenciesService.GetDetailsAsync(currencyId?? Guid.Empty);
+                var currency = await _currenciesService.GetDetailsAsync(currencyId ?? Guid.Empty);
 
                 if (currencyId != null && currency != null)
                 {
                     foreach (var item in prices)
                     {
                         item.Prices = (await _currenciesService.ConvertAtTheRate(item.Prices, currencyId.Value)).ToList();
-                    }                    
+                    }
                 }
 
-                var result = prices.Select(x => _mapper.Map<ProductPricesPerSiteDataItemModel>(x, opt => opt.AfterMap((src, dest) => dest.CurrencyCode = currency?.Cur_Abbreviation)));               
+                var result = prices.Select(x => _mapper.Map<ProductPricesPerSiteDataItemModel>(x, opt => opt.AfterMap((src, dest) => dest.CurrencyCode = currency?.Cur_Abbreviation)));
 
                 return Json(result);
             }

@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PriceParser.Core.DTO;
 using PriceParser.CQS.Models.Queries;
-using PriceParser.Data;
 
 namespace PriceParser.CQS.Handlers.QueriesHandlers
 {

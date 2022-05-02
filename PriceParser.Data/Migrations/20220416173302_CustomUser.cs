@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -173,26 +172,26 @@ namespace PriceParser.Data.Migrations
                         column: "UserId",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);            
+                        onDelete: ReferentialAction.Cascade);
             migrationBuilder.AddForeignKey(name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         table: "AspNetUserTokens",
                         column: "UserId",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);            
+                        onDelete: ReferentialAction.Cascade);
             migrationBuilder.AddForeignKey(name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
                         table: "AspNetUserRoles",
                         column: "RoleId",
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);            
+                        onDelete: ReferentialAction.Cascade);
             migrationBuilder.AddForeignKey(name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         table: "AspNetRoleClaims",
                         column: "RoleId",
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-            
+
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -52,7 +52,7 @@ namespace PriceParser.Controllers
         public async Task<IActionResult> Login(string returnUrl = null)
         {
             var model = new LoginModel();
-            
+
             returnUrl ??= Url.Content("~/");
 
             // Clear the existing external cookie to ensure a clean login process
@@ -61,21 +61,21 @@ namespace PriceParser.Controllers
             model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             model.ReturnUrl = returnUrl;
-            
+
             model.ErrorMessage = ErrorMessage;
 
             return View(model);
         }
-        
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginModel model, string? returnUrl = null)
         {
-                        
-            returnUrl ??= Url.Action("Index","Home");
+
+            returnUrl ??= Url.Action("Index", "Home");
 
             model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            
+
             ModelState.MarkFieldValid("ExternalLogins");
             ModelState.MarkFieldValid("ReturnUrl");
 
@@ -122,7 +122,7 @@ namespace PriceParser.Controllers
             {
                 // This needs to be a redirect so that the browser performs a new
                 // request and the identity for the user gets updated.
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index", "Home");
             }
         }
         [AllowAnonymous]
@@ -132,7 +132,7 @@ namespace PriceParser.Controllers
 
             if (email == null)
             {
-                return RedirectToAction("Index","AccountManage");
+                return RedirectToAction("Index", "AccountManage");
             }
             returnUrl = returnUrl ?? Url.Content("~/");
 
@@ -180,7 +180,7 @@ namespace PriceParser.Controllers
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
             model.StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
-            
+
             return View(model);
         }
         [AllowAnonymous]
@@ -206,7 +206,7 @@ namespace PriceParser.Controllers
             {
                 var user = CreateUser();
                 var firstUser = !_userManager.Users.Any();
-                               
+
 
                 await _userStore.SetUserNameAsync(user, model.Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, model.Input.Email, CancellationToken.None);
@@ -464,7 +464,7 @@ namespace PriceParser.Controllers
 
             return View(model);
         }
-        
+
         [AllowAnonymous]
         public async Task<IActionResult> ForgotPasswordConfirmation()
         {
@@ -480,7 +480,7 @@ namespace PriceParser.Controllers
         public async Task<IActionResult> ResetPassword(string? code = null)
         {
             var model = new ResetPasswordModel();
-            
+
             if (code == null)
             {
                 return BadRequest("A code must be supplied for password reset.");

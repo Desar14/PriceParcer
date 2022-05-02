@@ -1,6 +1,4 @@
-﻿using PriceParser.Data.Entities;
-
-namespace PriceParser.Data.Entities
+﻿namespace PriceParser.Data.Entities
 {
     public class Product : BaseEntity
     {

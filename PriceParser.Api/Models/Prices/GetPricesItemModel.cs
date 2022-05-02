@@ -1,6 +1,6 @@
-﻿namespace PriceParser.Core.DTO
+﻿namespace PriceParser.Api.Models.Prices
 {
-    public class ProductPriceDTO
+    public class GetPricesItemModel
     {
         public Guid Id { get; set; }
 

@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using PriceParser.Core.DTO;
 using PriceParser.Core.Utils;
 using PriceParser.CQS.Models.Queries;
-using PriceParser.Data;
 using PriceParser.Data.Entities;
 using System.Linq.Expressions;
 

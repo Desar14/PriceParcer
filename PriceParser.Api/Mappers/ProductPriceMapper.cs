@@ -19,6 +19,8 @@ namespace PriceParser.Api.Mappers
                 .ForMember(dest => dest.Price,
                     opt => opt.MapFrom(src => src.FullPrice));
 
+            CreateMap<ProductPriceDTO, GetPricesItemModel>();
+
         }
     }
 }

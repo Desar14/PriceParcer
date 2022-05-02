@@ -7,7 +7,7 @@ namespace PriceParser.Api.Models.UserReview
     public class PostUserReviewModel
     {
         public Guid Id = Guid.NewGuid();
-        [JsonIgnore,ValidateNever]
+        [JsonIgnore, ValidateNever]
         public string UserId { get; set; }
         [Required]
         public Guid ProductId { get; set; }

@@ -33,7 +33,7 @@ namespace PriceParser.Api.Controllers
         [HttpGet]
         [AllowAnonymous]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(IEnumerable<GetPricesResponseModel>),200)]
+        [ProducesResponseType(typeof(IEnumerable<GetPricesResponseModel>), 200)]
         public async Task<IActionResult> Get(Guid? prodId, Guid? prodFromSiteId, DateTime? startPeriod, DateTime? endPeriod, Guid? currencyId)
         {
             try
@@ -73,31 +73,31 @@ namespace PriceParser.Api.Controllers
         [HttpGet]
         [Route("{id}")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(IEnumerable<ProductPriceDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<GetPricesItemModel>), 200)]
         public async Task<IActionResult> Get(Guid id)
         {
-            var prices = await _productPricesService.GetAllProductPricesAsync(id);
+            var prices = (await _productPricesService.GetAllProductPricesAsync(id)).Select(x => _mapper.Map<GetPricesItemModel>(x));
 
             return Ok(prices);
         }
 
         [HttpPost]
         [Route("range")]
-        public async Task<IActionResult> Post([FromBody]IEnumerable<PutProductPriceModel> prices)
+        public async Task<IActionResult> Post([FromBody] IEnumerable<PutProductPriceModel> prices)
         {
             var pricesToAdd = prices.Select(x => _mapper.Map<ProductPriceDTO>(x));
             var result = await _productPricesService.AddProductPricesRangeAsync(pricesToAdd);
 
-            if (result)            
-                return Ok("Success");            
+            if (result)
+                return Ok("Success");
             else
                 return BadRequest("Fail");
         }
 
-        [HttpPost]        
-        public async Task<IActionResult> Post([FromBody]PutProductPriceModel price)
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] PutProductPriceModel price)
         {
-            var pricesToAdd =  _mapper.Map<ProductPriceDTO>(price);
+            var pricesToAdd = _mapper.Map<ProductPriceDTO>(price);
             var result = await _productPricesService.AddProductPriceAsync(pricesToAdd);
 
             if (result)
@@ -109,7 +109,7 @@ namespace PriceParser.Api.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(Guid Id)
         {
-            
+
             var result = await _productPricesService.DeleteProductPriceAsync(Id);
 
             if (result)

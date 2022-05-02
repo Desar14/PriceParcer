@@ -11,7 +11,6 @@ using PriceParser.Api.Filters;
 using PriceParser.Core;
 using PriceParser.Core.Interfaces;
 using PriceParser.Core.Interfaces.Data;
-using PriceParser.Data;
 using PriceParser.Data.Entities;
 using PriceParser.DataAccess;
 using PriceParser.Domain;
@@ -176,10 +175,10 @@ namespace PriceParser.Api
                 .WithOrigins(builder.Configuration.GetSection("CorsOrigins").Get<List<string>>().ToArray()));
 
             // Configure the HTTP request pipeline.
-           
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
 
             app.UseHttpsRedirection();
 

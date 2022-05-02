@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using PriceParser.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PriceParser.Data.Entities;
 
 namespace PriceParser.Core.DTO
 {

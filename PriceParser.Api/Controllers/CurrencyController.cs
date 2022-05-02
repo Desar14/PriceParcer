@@ -10,7 +10,7 @@ using PriceParser.Data.Entities;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace PriceParser.Api.Controllers
-{ 
+{
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Moderator)]
@@ -33,7 +33,7 @@ namespace PriceParser.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var result = (await _currencyService.GetAllAsync()).Select(x=> _mapper.Map<GetCurrencyModel>(x));
+            var result = (await _currencyService.GetAllAsync()).Select(x => _mapper.Map<GetCurrencyModel>(x));
             return Ok(result);
         }
 
@@ -109,7 +109,7 @@ namespace PriceParser.Api.Controllers
             {
                 return BadRequest($"Currency with id {id} not found");
             }
-            
+
             var result = await _currencyService.ToggleUpdateRatesAsync(id, value.UpdateRates, value.AvailableForUsers);
 
             if (result)

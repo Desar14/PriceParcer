@@ -5,8 +5,8 @@ namespace PriceParser.Models.Account.Manage
 {
     public class EnableAuthenticatorModel
     {
-        
-        
+
+
         public string SharedKey { get; set; }
 
         public string AuthenticatorUri { get; set; }

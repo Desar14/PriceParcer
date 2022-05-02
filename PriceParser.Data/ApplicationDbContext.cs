@@ -1,8 +1,7 @@
-﻿using PriceParser.Data;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PriceParser.Data.Entities;
-using Microsoft.AspNetCore.Identity;
 
 namespace PriceParser
 {
@@ -22,7 +21,7 @@ namespace PriceParser
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-            
+
         }
     }
 }

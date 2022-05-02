@@ -15,6 +15,6 @@ namespace PriceParser.Models.Account.Manage
     {
         public List<ManageUserRolesItemViewModel> Users { get; set; }
 
-        public string StatusMessage {get; set; }
+        public string StatusMessage { get; set; }
     }
 }

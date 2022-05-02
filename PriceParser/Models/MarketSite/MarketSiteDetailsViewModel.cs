@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using PriceParser.Data.Entities;
+﻿using PriceParser.Data.Entities;
 
 namespace PriceParser.Models
 {
@@ -18,6 +17,6 @@ namespace PriceParser.Models
         public bool IsAvailable { get; set; }
         public DateTime Created { get; set; }
         public ApplicationUser? CreatedByUser { get; set; }
-        
+
     }
 }

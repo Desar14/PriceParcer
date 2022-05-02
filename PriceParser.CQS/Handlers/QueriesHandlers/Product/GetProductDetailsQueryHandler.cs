@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PriceParser.Core.DTO;
 using PriceParser.CQS.Models.Queries;
-using PriceParser.Data;
 
 namespace PriceParser.CQS.Handlers.QueriesHandlers
 {
@@ -23,7 +22,7 @@ namespace PriceParser.CQS.Handlers.QueriesHandlers
 
         public async Task<ProductDTO> Handle(GetProductDetailsQuery request, CancellationToken cancellationToken)
         {
-            var result = await _database.Products.AsNoTracking().FirstOrDefaultAsync(x=> x.Id == request.Id, cancellationToken);
+            var result = await _database.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
             if (result != null)
             {

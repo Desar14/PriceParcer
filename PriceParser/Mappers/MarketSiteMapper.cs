@@ -19,7 +19,7 @@ namespace PriceParser.Mappers
             CreateMap<MarketSiteDTO, MarketSiteDetailsViewModel>();
             CreateMap<MarketSiteDTO, MarketSiteCreateEditViewModel>();
             CreateMap<MarketSiteDTO, MarketSiteDeleteViewModel>();
-            
+
             CreateMap<MarketSiteDTO, MarketSite>();
             CreateMap<MarketSiteDTO, MarketSiteInProductViewModel>();
             CreateMap<MarketSiteDTO, SelectListItem>()

@@ -80,7 +80,7 @@ namespace PriceParser.Domain
             {
                 return (T)Convert.ChangeType(rawString, typeof(T));
             }
-            else if(rawString.Contains("нет"))
+            else if (rawString.Contains("нет"))
             {
                 OutOfStock = true;
                 return default;
@@ -122,7 +122,7 @@ namespace PriceParser.Domain
                 {
                     var dto = await ParseProductPriceAsync(item);
                     parsedPrices.Add(dto);
-                }                
+                }
             });
 
             foreach (var item in parsedPrices)
@@ -132,9 +132,9 @@ namespace PriceParser.Domain
 
             await _productsPricesService.AddProductPricesRangeAsync(parsedPrices);
 
-            
-            var products = dataToParse.Values.SelectMany(x => x.Select(x=>x.ProductId)).Distinct();
-            
+
+            var products = dataToParse.Values.SelectMany(x => x.Select(x => x.ProductId)).Distinct();
+
             foreach (var item in products)
             {
                 await _productsService.UpdateAggregatedPricesDataAsync(item);
@@ -158,9 +158,9 @@ namespace PriceParser.Domain
         {
 
             string defaultCurrencyAbbreviation = _configuration["DefaultCurrency"];
-            
 
-            ProductPriceDTO result = new();            
+
+            ProductPriceDTO result = new();
 
             if (productFromSite.Site.ParseType == ParseTypes.Xpath)
             {
@@ -178,7 +178,7 @@ namespace PriceParser.Domain
                 }
 
                 double priceParsed = 0;
-                
+
                 try
                 {
                     priceParsed = GetParsedValueFromHtmlDocument<double>(htmlDoc, productFromSite.Site.ParsePricePath, productFromSite.Site.ParsePriceAttributeName, productFromSite.Path, out bool outOfStock);
@@ -186,10 +186,10 @@ namespace PriceParser.Domain
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex,"Price not found");
+                    _logger.LogWarning(ex, "Price not found");
                     result.ParseError = true;
                 }
-                
+
 
                 string CurrencyRawString;
 

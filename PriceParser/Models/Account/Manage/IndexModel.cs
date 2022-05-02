@@ -7,19 +7,19 @@ namespace PriceParser.Models.Account.Manage
 {
     public class IndexModel
     {
-        
-        public string Username { get; set; }        
+
+        public string Username { get; set; }
         [TempData, ValidateNever]
-        public string StatusMessage { get; set; }    
+        public string StatusMessage { get; set; }
         [BindProperty]
         public InputModel Input { get; set; }
         public List<SelectListItem> CurrencySelectList { get; set; }
 
         public bool IsPhoneConfirmed { get; set; }
-        
+
         public class InputModel
         {
-            
+
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }

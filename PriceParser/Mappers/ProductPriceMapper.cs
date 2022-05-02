@@ -19,7 +19,7 @@ namespace PriceParser.Mappers
                 .ForMember(dest => dest.Price,
                     opt => opt.MapFrom(src => src.FullPrice));
 
-            
+
         }
     }
 }

@@ -310,7 +310,7 @@ namespace PriceParser.Domain
                     CurrencyId = t2.CurrencyId,
                     IsOutOfStock = t2.IsOutOfStock,
                     ParseError = t2.ParseError
-                });            
+                });
 
             return result;
         }
@@ -335,7 +335,7 @@ namespace PriceParser.Domain
             if (averageData.Any())
             {
                 agg.AddRange(averageData);
-            }            
+            }
 
             return agg;
         }

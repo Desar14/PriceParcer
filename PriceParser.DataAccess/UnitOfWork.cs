@@ -3,11 +3,6 @@ using PriceParser.Core;
 using PriceParser.Core.Interfaces;
 using PriceParser.Core.Interfaces.Data;
 using PriceParser.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PriceParser.DataAccess
 {
@@ -74,7 +69,7 @@ namespace PriceParser.DataAccess
             {
                 _logger.LogError(ex, $"Unit of work commit error");
                 throw;
-            }            
+            }
         }
 
         public void Dispose()

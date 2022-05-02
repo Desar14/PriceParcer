@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -156,9 +155,9 @@ namespace PriceParser.Controllers
             {
                 var siteDetailDTO = (await _marketService.GetSiteDetailsAsync(id));
 
-            var model = _mapper.Map<MarketSiteDeleteViewModel>(siteDetailDTO);
+                var model = _mapper.Map<MarketSiteDeleteViewModel>(siteDetailDTO);
 
-            return View(model);
+                return View(model);
             }
             catch (Exception ex)
             {

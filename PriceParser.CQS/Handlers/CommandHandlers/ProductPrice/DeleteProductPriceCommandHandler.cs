@@ -1,13 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using PriceParser.CQS.Models.Commands;
-using PriceParser.Data;
-using PriceParser.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PriceParser.CQS.Handlers.CommandHandlers
 {

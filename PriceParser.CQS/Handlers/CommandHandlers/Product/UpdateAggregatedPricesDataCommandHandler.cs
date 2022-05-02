@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PriceParser.CQS.Models.Commands;
-using PriceParser.Data;
 
 namespace PriceParser.CQS.Handlers.CommandHandlers
 {

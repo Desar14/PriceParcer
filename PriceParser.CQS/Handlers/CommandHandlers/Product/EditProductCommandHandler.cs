@@ -1,15 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PriceParser.CQS.Models.Commands;
-using PriceParser.Data;
 using PriceParser.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PriceParser.CQS.Handlers.CommandHandlers
 {
@@ -28,7 +21,7 @@ namespace PriceParser.CQS.Handlers.CommandHandlers
 
         public async Task<bool> Handle(EditProductCommand command, CancellationToken token)
         {
-            var entity = _mapper.Map<Product>(command.Product);         
+            var entity = _mapper.Map<Product>(command.Product);
 
             try
             {

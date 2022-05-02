@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using PriceParser.Data.Entities;
-
-namespace PriceParser.Data.Entities
+﻿namespace PriceParser.Data.Entities
 {
     public class UserReview : BaseEntity
     {

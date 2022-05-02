@@ -1,12 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using PriceParser.Data;
+﻿using PriceParser.Data;
 using PriceParser.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PriceParser.Core
 {
@@ -34,6 +28,6 @@ namespace PriceParser.Core
         public void Delete(TEntity entityToDelete);
         public Task Delete(object id);
 
-        
+
     }
 }

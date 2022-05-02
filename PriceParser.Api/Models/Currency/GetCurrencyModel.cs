@@ -2,7 +2,7 @@
 {
     public class GetCurrencyModel
     {
-        public Guid Id { get; set; }        
+        public Guid Id { get; set; }
         public string Cur_Code { get; set; }
         public string Cur_Abbreviation { get; set; }
         public string Cur_Name { get; set; }

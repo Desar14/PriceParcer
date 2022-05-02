@@ -1,7 +1,7 @@
 ﻿namespace PriceParser.Models
 {
     public class ProductItemListViewModel
-    {        
+    {
 
         public Guid Id { get; set; }
         public string Name { get; set; }

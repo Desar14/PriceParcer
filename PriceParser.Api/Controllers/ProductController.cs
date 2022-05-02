@@ -67,7 +67,7 @@ namespace PriceParser.Api.Controllers
         }
 
         // POST api/<ProductController>
-        [HttpPost]        
+        [HttpPost]
         public async Task<IActionResult> Post([FromBody] PostPutProductModel value)
         {
             var productDTO = _mapper.Map<ProductDTO>(value);
@@ -105,7 +105,7 @@ namespace PriceParser.Api.Controllers
             {
                 return StatusCode(500);
             }
-            
+
         }
 
         // DELETE api/<ProductController>/5

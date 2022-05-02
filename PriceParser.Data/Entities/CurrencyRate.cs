@@ -8,5 +8,5 @@
         public int Cur_Scale { get; set; }
         public decimal? Cur_OfficialRate { get; set; }
     }
-    
+
 }

@@ -3,11 +3,6 @@ using Microsoft.Extensions.Logging;
 using PriceParser.Core.DTO;
 using PriceParser.Core.Interfaces;
 using PriceParser.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PriceParser.Domain
 {
@@ -69,7 +64,7 @@ namespace PriceParser.Domain
 
         public async Task<MarketSiteDTO> GetSiteDetailsAsync(Guid id)
         {
-            var result = (await _unitOfWork.MarketSites.GetByID(id));            
+            var result = (await _unitOfWork.MarketSites.GetByID(id));
 
             return _mapper.Map<MarketSiteDTO>(result);
         }

@@ -12,9 +12,9 @@ namespace PriceParser.Api.Mappers
         public ProductMapper()
         {
             CreateMap<Product, ProductDTO>();
-            
+
             CreateMap<ProductDTO, Product>();
-            
+
             CreateMap<ProductDTO, GetProductModel>()
                 .ForMember(dest => dest.FromSites,
                     opt => opt.MapFrom(src => src.FromSites))

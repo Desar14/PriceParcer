@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace PriceParser.Models
+﻿namespace PriceParser.Models
 {
     public class MarketSiteListItemViewModel
     {
