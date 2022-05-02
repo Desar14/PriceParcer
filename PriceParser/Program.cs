@@ -174,7 +174,7 @@ namespace PriceParser
                 catch (Exception ex)
                 {
 
-                    var logger = services.GetRequiredService<Microsoft.Extensions.Logging.ILogger>();
+                    var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occurred while migrating the database.");
                 }
 
@@ -190,7 +190,7 @@ namespace PriceParser
                 catch (Exception ex)
                 {
 
-                    var logger = services.GetRequiredService<Microsoft.Extensions.Logging.ILogger>();
+                    var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occurred while creating roles.");
                 }
             }
