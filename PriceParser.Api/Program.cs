@@ -175,11 +175,10 @@ namespace PriceParser.Api
                 .WithOrigins(builder.Configuration.GetSection("CorsOrigins").Get<List<string>>().ToArray()));
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
+           
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
+            
 
             app.UseHttpsRedirection();
 

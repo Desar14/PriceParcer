@@ -82,7 +82,7 @@ namespace PriceParser.Api.Controllers
         }
 
         [HttpPost]
-        [Route("/range")]
+        [Route("range")]
         public async Task<IActionResult> Post([FromBody]IEnumerable<PutProductPriceModel> prices)
         {
             var pricesToAdd = prices.Select(x => _mapper.Map<ProductPriceDTO>(x));

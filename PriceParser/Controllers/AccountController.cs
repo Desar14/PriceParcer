@@ -125,7 +125,7 @@ namespace PriceParser.Controllers
                 return RedirectToAction("Index","Home");
             }
         }
-
+        [AllowAnonymous]
         public async Task<IActionResult> RegisterConfirmation(string email, string? returnUrl = null)
         {
             var model = new RegisterConfirmationModel();
@@ -183,7 +183,7 @@ namespace PriceParser.Controllers
             
             return View(model);
         }
-
+        [AllowAnonymous]
         public async Task<IActionResult> Register(string? returnUrl = null)
         {
             var model = new RegisterModel();
@@ -197,6 +197,7 @@ namespace PriceParser.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterModel model, string? returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");

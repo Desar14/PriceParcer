@@ -37,7 +37,7 @@ namespace PriceParser.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("/usable")]
+        [HttpGet("usable")]
         [AllowAnonymous]
         public async Task<IActionResult> GetUsable()
         {
@@ -45,7 +45,7 @@ namespace PriceParser.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("/userdefault")]
+        [HttpGet("userdefault")]
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Moderator + "," + UserRoles.User)]
         public async Task<IActionResult> GetUserDefault()
         {
@@ -74,7 +74,7 @@ namespace PriceParser.Api.Controllers
         }
 
         // POST api/<CurrencyController>
-        [HttpPost("/fromNBRB")]
+        [HttpPost("fromNBRB")]
         public async Task<IActionResult> Post()
         {
             await _currencyService.AddFromNBRBAsync();
@@ -82,7 +82,7 @@ namespace PriceParser.Api.Controllers
             return Ok();
         }
 
-        [HttpPost("/{id}/updateRates")]
+        [HttpPost("{id}/updateRates")]
         public async Task<IActionResult> Post(Guid id)
         {
             var entity = _currencyService.GetDetailsAsync(id);
