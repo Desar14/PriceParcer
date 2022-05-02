@@ -9,7 +9,7 @@ using PriceParser.Data;
 namespace PriceParser.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize(Roles = UserRoles.Admin)]
     public class PricesController : ControllerBase
     {
