@@ -26,7 +26,10 @@ namespace PriceParser.Api.Mappers
                 .ForMember(dest => dest.Value,
                     opt => opt.MapFrom(src => src.Id));
 
-            
+            CreateMap<PostPutProductModel, ProductDTO>();
+
+
+
         }
     }
 }

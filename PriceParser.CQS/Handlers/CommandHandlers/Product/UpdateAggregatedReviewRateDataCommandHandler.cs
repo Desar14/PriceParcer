@@ -26,7 +26,7 @@ namespace PriceParser.CQS.Handlers.CommandHandlers
                 .Where(x => x.ProductId == request.Id)
                 .Select(x => x.ReviewScore).DefaultIfEmpty().AverageAsync(cancellationToken);
 
-            var productEntity = await _database.Products.FindAsync(request.Id, cancellationToken);
+            var productEntity = await _database.Products.FirstOrDefaultAsync(x => x.Id == request.Id , cancellationToken: cancellationToken);
 
             if (productEntity != null)
             {

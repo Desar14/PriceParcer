@@ -15,6 +15,7 @@ using PriceParser.Data;
 using PriceParser.Data.Entities;
 using PriceParser.DataAccess;
 using PriceParser.Domain;
+using PriceParser.Domain.CQS;
 using Serilog;
 using System.Reflection;
 using System.Text;
@@ -130,11 +131,11 @@ namespace PriceParser.Api
             builder.Services.AddScoped<ICurrencyRatesRepository, CurrencyRatesRepository>();
             builder.Services.AddScoped<IRepository<RefreshToken>, Repository<RefreshToken>>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IProductsService, ProductService>();
+            builder.Services.AddScoped<IProductsService, ProductCQSService>();
             builder.Services.AddScoped<IMarketSitesService, MarketSitesService>();
             builder.Services.AddScoped<IProductsFromSitesService, ProductFromSitesService>();
             builder.Services.AddScoped<IUserReviewsService, UserReviewsService>();
-            builder.Services.AddScoped<IProductPricesService, ProductPricesService>();
+            builder.Services.AddScoped<IProductPricesService, ProductPricesCQSService>();
             builder.Services.AddScoped<ICurrenciesService, CurrenciesService>();
             builder.Services.AddScoped<IUserJWTService, UserJWTService>();
 

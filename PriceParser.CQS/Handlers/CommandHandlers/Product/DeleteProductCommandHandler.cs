@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using PriceParser.CQS.Models.Commands;
 using PriceParser.Data;
 using PriceParser.Data.Entities;
@@ -24,7 +25,7 @@ namespace PriceParser.CQS.Handlers.CommandHandlers
 
         public async Task<bool> Handle(DeleteProductCommand command, CancellationToken token)
         {
-            var entity = await _database.Products.FindAsync(command.Id, token);
+            var entity = await _database.Products.FirstOrDefaultAsync(x => x.Id == command.Id, token);
             if (entity == null)
                 throw new Exception();
             else

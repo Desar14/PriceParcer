@@ -23,7 +23,7 @@ namespace PriceParser.CQS.Handlers.QueriesHandlers
 
         public async Task<ProductDTO> Handle(GetProductDetailsQuery request, CancellationToken cancellationToken)
         {
-            var result = await _database.Products.FindAsync(request.Id);
+            var result = await _database.Products.AsNoTracking().FirstOrDefaultAsync(x=> x.Id == request.Id, cancellationToken);
 
             if (result != null)
             {

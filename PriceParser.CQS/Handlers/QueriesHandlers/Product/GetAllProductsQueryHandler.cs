@@ -29,12 +29,19 @@ namespace PriceParser.CQS.Handlers.QueriesHandlers
 
         public async Task<IEnumerable<ProductDTO>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
         {
-            if (request.PageSize != 0)
+            if (request.PageNumber != 0)
             {
-                return await _database.Products.Skip(request.PageSize * request.PageNumber).Take(request.PageSize).Select(product => _mapper.Map<ProductDTO>(product)).ToListAsync(cancellationToken);
+                return await _database.Products
+                    .Include(x => x.FromSites).ThenInclude(x => x.Site)
+                    .Include(x => x.Reviews).ThenInclude(x => x.User)
+                    .Skip(request.PageSize * request.PageNumber).Take(request.PageSize)
+                    .Select(product => _mapper.Map<ProductDTO>(product)).ToListAsync(cancellationToken);
             }
             else
-                return await _database.Products.Select(product => _mapper.Map<ProductDTO>(product)).ToListAsync(cancellationToken);
+                return await _database.Products
+                    .Include(x=> x.FromSites).ThenInclude(x=> x.Site)
+                    .Include(x => x.Reviews).ThenInclude(x => x.User)
+                    .Select(product => _mapper.Map<ProductDTO>(product)).ToListAsync(cancellationToken);         
 
         }
     }

@@ -49,7 +49,7 @@ namespace PriceParser.Api.Controllers
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Moderator + "," + UserRoles.User)]
         public async Task<IActionResult> GetUserDefault()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByNameAsync(User.Identity?.Name);
             if (user == null)
                 return BadRequest($"User not found");
 
@@ -104,7 +104,7 @@ namespace PriceParser.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(Guid id, [FromBody] PutCurrencyModel value)
         {
-            var entity = _currencyService.GetDetailsAsync(id);
+            var entity = await _currencyService.GetDetailsAsync(id);
             if (entity == null)
             {
                 return BadRequest($"Currency with id {id} not found");

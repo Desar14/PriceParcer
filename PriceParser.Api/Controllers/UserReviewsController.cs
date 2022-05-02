@@ -59,7 +59,7 @@ namespace PriceParser.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.GetUserAsync(User);
+                var user = await _userManager.FindByNameAsync(User.Identity?.Name);
                 if (user == null)
                 {
                     return BadRequest($"User not found");

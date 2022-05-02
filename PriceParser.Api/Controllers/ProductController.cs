@@ -33,7 +33,7 @@ namespace PriceParser.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Get(int page)
         {
-            var products = (await _productsService.GetAllProductsAsync(page)).Select(x => _mapper.Map<GetProductModel>(x));
+            var products = (await _productsService.GetAllProductsAsync(page)).Select(x => _mapper.Map<GetProductModel>(x)).ToList();
 
 
             foreach (var product in products)
@@ -96,7 +96,7 @@ namespace PriceParser.Api.Controllers
             currentEntity.Hidden = value.Hidden;
             currentEntity.CurrencyCode = value.CurrencyCode;
 
-            var result = await _productsService.EditProductAsync(productDTO);
+            var result = await _productsService.EditProductAsync(currentEntity);
             if (result)
             {
                 return Ok();
