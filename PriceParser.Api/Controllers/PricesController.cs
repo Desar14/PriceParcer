@@ -83,6 +83,8 @@ namespace PriceParser.Api.Controllers
 
         [HttpPost]
         [Route("range")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> Post([FromBody] IEnumerable<PutProductPriceModel> prices)
         {
             var pricesToAdd = prices.Select(x => _mapper.Map<ProductPriceDTO>(x));
@@ -95,6 +97,8 @@ namespace PriceParser.Api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> Post([FromBody] PutProductPriceModel price)
         {
             var pricesToAdd = _mapper.Map<ProductPriceDTO>(price);
@@ -107,6 +111,8 @@ namespace PriceParser.Api.Controllers
         }
 
         [HttpDelete]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> Delete(Guid Id)
         {
 

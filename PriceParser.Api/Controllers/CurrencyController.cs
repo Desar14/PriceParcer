@@ -31,6 +31,8 @@ namespace PriceParser.Api.Controllers
 
         // GET: api/<CurrencyController>
         [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<GetCurrencyModel>), 200)]
         public async Task<IActionResult> Get()
         {
             var result = (await _currencyService.GetAllAsync()).Select(x => _mapper.Map<GetCurrencyModel>(x));
@@ -39,14 +41,18 @@ namespace PriceParser.Api.Controllers
 
         [HttpGet("usable")]
         [AllowAnonymous]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(GetCurrencyModel), 200)]
         public async Task<IActionResult> GetUsable()
         {
             var result = (await _currencyService.GetUsableAsync()).Select(x => _mapper.Map<GetCurrencyModel>(x));
             return Ok(result);
         }
 
-        [HttpGet("userdefault")]
+        [HttpGet("user-default")]
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Moderator + "," + UserRoles.User)]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(GetCurrencyModel), 200)]
         public async Task<IActionResult> GetUserDefault()
         {
             var user = await _userManager.FindByNameAsync(User.Identity?.Name);
@@ -60,6 +66,8 @@ namespace PriceParser.Api.Controllers
 
         // GET api/<CurrencyController>/5
         [HttpGet("{id}")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(GetCurrencyModel), 200)]
         public async Task<IActionResult> Get(Guid id)
         {
             var dto = await _currencyService.GetDetailsAsync(id);
@@ -75,6 +83,7 @@ namespace PriceParser.Api.Controllers
 
         // POST api/<CurrencyController>
         [HttpPost("fromNBRB")]
+        [ProducesResponseType(typeof(string), 200)]
         public async Task<IActionResult> Post()
         {
             await _currencyService.AddFromNBRBAsync();
@@ -82,7 +91,9 @@ namespace PriceParser.Api.Controllers
             return Ok();
         }
 
-        [HttpPost("{id}/updateRates")]
+        [HttpPost("{id}/updateRates")]        
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> Post(Guid id)
         {
             var entity = _currencyService.GetDetailsAsync(id);
@@ -102,6 +113,8 @@ namespace PriceParser.Api.Controllers
 
         // PUT api/<CurrencyController>/5
         [HttpPut("{id}")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> Put(Guid id, [FromBody] PutCurrencyModel value)
         {
             var entity = await _currencyService.GetDetailsAsync(id);
@@ -121,6 +134,8 @@ namespace PriceParser.Api.Controllers
 
         // DELETE api/<CurrencyController>/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> Delete(Guid id)
         {
             var currentEntity = await _currencyService.GetDetailsAsync(id);

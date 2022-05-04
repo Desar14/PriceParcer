@@ -35,6 +35,7 @@ namespace PriceParser.Api.Controllers
 
         // GET: api/<UserReviewsController>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<GetUserReviewModel>), 200)]
         public async Task<IActionResult> Get()
         {
             var result = (await _reviewsService.GetAllAsync()).Select(x => _mapper.Map<GetUserReviewModel>(x));
@@ -44,6 +45,7 @@ namespace PriceParser.Api.Controllers
 
         // GET api/<UserReviewsController>/5
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(GetUserReviewModel), 200)]
         public async Task<IActionResult> Get(Guid id)
         {
             var dto = await _reviewsService.GetDetailsAsync(id);
@@ -55,6 +57,9 @@ namespace PriceParser.Api.Controllers
 
         // POST api/<UserReviewsController>
         [HttpPost]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> Post([FromBody] PostUserReviewModel value)
         {
             if (ModelState.IsValid)
@@ -82,6 +87,9 @@ namespace PriceParser.Api.Controllers
         // PUT api/<UserReviewsController>/5
         [HttpPut("{id}")]
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Moderator)]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> Put(Guid id, [FromBody] PutUserReviewModel value)
         {
             var currentEntity = await _reviewsService.GetDetailsAsync(id);
@@ -117,6 +125,9 @@ namespace PriceParser.Api.Controllers
         // DELETE api/<UserReviewsController>/5
         [HttpDelete("{id}")]
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Moderator)]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> Delete(Guid id)
         {
             var currentEntity = await _reviewsService.GetDetailsAsync(id);

@@ -31,6 +31,7 @@ namespace PriceParser.Api.Controllers
         // GET: api/<ProductController>
         [HttpGet]
         [AllowAnonymous]
+        [ProducesResponseType(typeof(IEnumerable<GetProductModel>), 200)]
         public async Task<IActionResult> Get(int page)
         {
             var products = (await _productsService.GetAllProductsAsync(page)).Select(x => _mapper.Map<GetProductModel>(x)).ToList();
@@ -50,6 +51,7 @@ namespace PriceParser.Api.Controllers
         // GET api/<ProductController>/5
         [HttpGet("{id}")]
         [AllowAnonymous]
+        [ProducesResponseType(typeof(GetProductModel), 200)]
         public async Task<IActionResult> Get(Guid id)
         {
             var productDTO = await _productsService.GetProductDetailsAsync(id);
@@ -68,6 +70,8 @@ namespace PriceParser.Api.Controllers
 
         // POST api/<ProductController>
         [HttpPost]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> Post([FromBody] PostPutProductModel value)
         {
             var productDTO = _mapper.Map<ProductDTO>(value);
@@ -80,6 +84,9 @@ namespace PriceParser.Api.Controllers
         // PUT api/<ProductController>/5
         [HttpPut("{id}")]
         [Authorize(Roles = UserRoles.Admin)]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 400)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> Put(Guid id, [FromBody] PostPutProductModel value)
         {
             var productDTO = _mapper.Map<ProductDTO>(value);
@@ -111,6 +118,9 @@ namespace PriceParser.Api.Controllers
         // DELETE api/<ProductController>/5
         [HttpDelete("{id}")]
         [Authorize(Roles = UserRoles.Admin)]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 500)]
+        [ProducesResponseType(typeof(string), 400)]
         public async Task<IActionResult> Delete(Guid id)
         {
             var currentEntity = await _productsService.GetProductDetailsAsync(id);
