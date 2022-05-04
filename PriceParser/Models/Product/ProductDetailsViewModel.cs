@@ -13,6 +13,8 @@ namespace PriceParser.Models
         public double BestPriceNow { get; set; }
         public double BestPriceOverall { get; set; }
 
+        public string? ImagePath { get; set; }
+
         public double AveragePriceNow { get; set; }
         public double AveragePriceOverall { get; set; }
         public string? CurrencyCode { get; set; }

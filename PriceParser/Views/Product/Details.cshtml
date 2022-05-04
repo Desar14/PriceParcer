@@ -8,7 +8,16 @@
 <div class="container">
     <div class="row">
         <div class="col-3">
-            <img src="~/Regular-Sample-Box.png" class="card-img-top">
+            <div style = "display: flex;  align-items: center;  justify-content: center; height: 300px">
+            @if(!String.IsNullOrEmpty(Model.ImagePath))
+            {
+                <img src="@Model.ImagePath" class="card-img-top" style = "max-width: 300px; max-height: 300px">
+            }
+            else
+            {
+                <img src="~/Regular-Sample-Box.png" class="card-img-top">
+            }    
+            </div>
         </div>
         <div class="col-6">
             @Html.DisplayNameFor(model => model.Name):
@@ -62,7 +71,10 @@
                     {
                         <div style="padding: .5rem 1rem;"><p class="text-start"><h6>No reviews yet.</h6></p></div>
                     }
-                    <a asp-action="CreateFromProduct" asp-controller="UserReviews" asp-route-productId="@Model.Id" asp-fragment="" class="btn btn-primary">Add review</a>
+                    @if(User.Identity.IsAuthenticated)
+                    {
+                        <a asp-action="CreateFromProduct" asp-controller="UserReviews" asp-route-productId="@Model.Id" asp-fragment="" class="btn btn-primary">Add review</a>
+                    }                    
                     <ul class="list-group">
                         @foreach (var item in Model.userReviews)
                         {
@@ -107,10 +119,12 @@
             </div>
         </div>
     </div>
-
-    <div>
-        <a asp-action="Edit" asp-route-id="@Model.Id" asp-fragment="" class="btn btn-primary">Edit</a>
-        <a asp-action="Delete" asp-route-id="@Model.Id" asp-fragment="" class="btn btn-primary">Delete</a>
-        <a asp-action="Index" class="btn btn-primary">Back to List</a>
-    </div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" asp-fragment="" class="btn btn-primary">Edit</a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" asp-fragment="" class="btn btn-primary">Delete</a>
+            <a asp-action="Index" class="btn btn-primary">Back to List</a>
+        </div>
+    }
 </div>

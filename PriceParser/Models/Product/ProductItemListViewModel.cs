@@ -10,6 +10,8 @@
         public float AverageScore { get; set; }
         public string? CurrencyCode { get; set; }
 
+        public string? ImagePath { get; set; }
+
         public ProductItemListViewModel()
         {
             Name = "";

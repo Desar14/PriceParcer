@@ -58,6 +58,11 @@ namespace PriceParser.Controllers
 
                 var model = _mapper.Map<ProductDetailsViewModel>(productDetailDTO);
 
+                if (model.marketSites == null)
+                {
+                    model.marketSites = new();
+                }
+
                 foreach (var site in model.marketSites)
                 {
                     var lastPrice = await _productPricesService.GetLastProductPriceAsync(site.Id) ?? new();

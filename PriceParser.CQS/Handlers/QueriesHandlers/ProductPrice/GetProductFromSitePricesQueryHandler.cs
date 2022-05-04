@@ -49,7 +49,8 @@ namespace PriceParser.CQS.Handlers.QueriesHandlers
                     price.ProductFromSite.ProductId == request.ProductId
                     && price.ParseDate >= request.StartDate
                     && price.ParseDate <= request.EndDate
-                    && !price.ParseError;
+                    && !price.ParseError
+                    && !price.IsOutOfStock;
             }
             else if (request.ProductFromSiteId != default && request.ProductId == default)
             {
@@ -57,7 +58,8 @@ namespace PriceParser.CQS.Handlers.QueriesHandlers
                     price.ProductFromSiteId == request.ProductFromSiteId
                     && price.ParseDate >= request.StartDate
                     && price.ParseDate <= request.EndDate
-                    && !price.ParseError;
+                    && !price.ParseError
+                    && !price.IsOutOfStock;
             }
             else
                 throw new ArgumentException("Incorrect id arguments!");
